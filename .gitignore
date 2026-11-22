@@ -1,0 +1,31 @@
+# Python / AI
+.venv/
+venv/
+__pycache__/
+*.pyc
+chroma_data/
+*.log
+
+# Node / React
+node_modules/
+dist/
+.vite/
+npm-debug.log*
+
+# Java / Maven
+target/
+*.class
+.mvn/
+.idea/
+*.iml
+
+# Environment and secrets (CRITICAL: NEVER COMMIT API KEYS)
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+
+# OS
+.DS_Store
+Thumbs.db
