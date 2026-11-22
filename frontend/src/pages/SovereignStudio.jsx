@@ -76,8 +76,8 @@ export default function SovereignStudio() {
   // Motion blur when scrolling up or down
   const { blurAmount, isScrolling, motionBlurStyle } = useScrollMotionBlur();
 
-  // Voice Output (TTS)
-  const { speak, stop, isPlaying } = useSpeechSynthesis();
+  // Voice Output (TTS) with play, pause, resume, stop, and replay
+  const { speak, stop, pause, resume, replay, isPlaying, isPaused } = useSpeechSynthesis();
 
   const handleLanguageChange = (code) => {
     setSelectedLanguage(code);
@@ -198,7 +198,11 @@ export default function SovereignStudio() {
           onLanguageChange={handleLanguageChange}
           speak={speak}
           stop={stop}
+          pause={pause}
+          resume={resume}
+          replay={replay}
           isPlaying={isPlaying}
+          isPaused={isPaused}
           enableRag={enableRag}
           setEnableRag={setEnableRag}
         />
