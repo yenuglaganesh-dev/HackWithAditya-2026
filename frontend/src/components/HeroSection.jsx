@@ -1,5 +1,5 @@
 import React from 'react';
-import { Mic, ArrowDown } from 'lucide-react';
+import { Mic, ArrowDown, Sparkles } from 'lucide-react';
 
 export default function HeroSection({ onLaunchPlayground }) {
   return (
@@ -10,29 +10,29 @@ export default function HeroSection({ onLaunchPlayground }) {
       {/* Minimal Pill */}
       <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-semibold mb-4 shadow-xs">
         <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-        <span>Voice-First AI for Bharat</span>
+        <span>BhashaBridge AI • AI for Bharat</span>
       </div>
 
       {/* Punchy Headline */}
       <h1 className="text-3xl sm:text-5xl font-headline font-extrabold text-slate-900 tracking-tight leading-tight">
-        Sovereign Voice AI for <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">India</span>
+        Voice & Language AI for <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Bharat</span>
       </h1>
 
-      {/* Crisp 1-Line Description */}
+      {/* Crisp Description */}
       <p className="text-sm sm:text-base text-slate-600 max-w-xl mt-3 font-normal leading-relaxed">
-        Accessible citizen services and farmer welfare guidance in Telugu, Hindi & English.
+        Intelligent voice assistant enabling natural communication in Telugu, Hindi & English with code-mixed dialect understanding and verified government knowledge.
       </p>
 
       {/* 3 Minimal Chips */}
       <div className="flex flex-wrap items-center justify-center gap-2.5 mt-5">
         <span className="text-xs font-medium text-emerald-900 bg-emerald-50/90 px-3 py-1 rounded-full border border-emerald-200/80">
-          🌾 22 Scheduled Languages
+          🗣️ Telugu, Hindi & English
         </span>
         <span className="text-xs font-medium text-emerald-900 bg-emerald-50/90 px-3 py-1 rounded-full border border-emerald-200/80">
-          ⚡ &lt;140ms Voice Latency
+          ⚡ Free-First OpenRouter AI
         </span>
         <span className="text-xs font-medium text-emerald-900 bg-emerald-50/90 px-3 py-1 rounded-full border border-emerald-200/80">
-          🛡️ Verified Government Data
+          🛡️ ChromaDB Verified RAG
         </span>
       </div>
 
@@ -40,7 +40,7 @@ export default function HeroSection({ onLaunchPlayground }) {
       <div className="mt-6">
         <button
           onClick={onLaunchPlayground}
-          className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs sm:text-sm shadow-md shadow-emerald-600/20 hover:scale-105 active:scale-95 transition-all"
+          className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs sm:text-sm shadow-md shadow-emerald-600/20 hover:scale-105 active:scale-95 transition-all cursor-pointer"
         >
           <Mic className="w-4 h-4" />
           <span>Try Voice Assistant</span>

@@ -3,28 +3,28 @@ import React from 'react';
 export default function CapabilitiesSection() {
   const capabilities = [
     {
-      icon: "schema",
-      title: "Multi-Agent Swarms",
-      desc: "Autonomous planning with multi-agent debate and sovereign tool execution.",
-      tag: "ReAct Engine"
+      icon: "translate",
+      title: "Multilingual & Code-Mixed AI",
+      desc: "Native Telugu, Hindi and English conversation with robust support for Tenglish and Hinglish phrases.",
+      tag: "te / hi / en"
     },
     {
-      icon: "graphic_eq",
-      title: "Indic Voice Engine",
-      desc: "Full-duplex regional speech synthesis with natural emotion & prosody.",
-      tag: "<140ms Duplex"
+      icon: "record_voice_over",
+      title: "Voice Input & Speech Output",
+      desc: "Browser-native Web Speech recognition and SpeechSynthesis TTS with Listen Aloud functionality.",
+      tag: "Free Voice"
     },
     {
-      icon: "menu_book",
-      title: "Sovereign RAG",
-      desc: "ChromaDB vector retrieval over verified Indian government welfare schemes.",
-      tag: "Zero Hallucination"
+      icon: "library_books",
+      title: "ChromaDB RAG Citations",
+      desc: "Zero-cost local vector knowledge base retrieving verified guidelines for PM-Kisan, PMAY, and Ayushman Bharat.",
+      tag: "Verified Sources"
     },
     {
-      icon: "document_scanner",
-      title: "Vision & Edge",
-      desc: "Aadhaar masking, crop pest diagnosis, and vernacular OCR on device.",
-      tag: "Edge ViT"
+      icon: "diversity_3",
+      title: "Bharat Citizen Use Cases",
+      desc: "Tailored for Agriculture (Rythu Bharosa), Healthcare (PM-JAY), Education scholarships, and Digital Services.",
+      tag: "Citizen Impact"
     }
   ];
 

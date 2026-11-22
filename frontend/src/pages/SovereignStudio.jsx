@@ -11,17 +11,17 @@ import { sendChatMessage } from '../services/api';
 
 export default function SovereignStudio() {
   const [sessionId, setSessionId] = useState(() => 'sess_' + Math.random().toString(36).substring(2, 9));
-  const [selectedLanguage, setSelectedLanguage] = useState('te-IN');
+  const [selectedLanguage, setSelectedLanguage] = useState('auto');
   const [enableRag, setEnableRag] = useState(true);
   
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: 'నమస్కారం! నేను AI for Bharat వాయిస్ అసిస్టెంట్. నేను తెలుగు, हिन्दी మరియు English లో పీఎం కిసాన్, రైతు భరోసా, ఆయుష్మాన్ భారత్ వంటి పథకాల సమాచారాన్ని అందించగలను.\n\nNamaste! Speak or type your question in Telugu, Hindi, or English.',
+      content: 'నమస్కారం! నేను భాషాబ్రిడ్జ్ (BhashaBridge AI). నేను తెలుగు, हिन्दी మరియు English లో పీఎం కిసాన్, రైతు భరోసా, ఆయుష్మాన్ భారత్ వంటి పథకాల సమాచారాన్ని అందించగలను.\n\nNamaste! I am BhashaBridge AI. Speak or type your question in Telugu, Hindi, or English.',
       language: 'te-IN',
       verified: true,
       modelUsed: 'openrouter/free',
-      agentTrace: ['NagrikOrchestrator: Ready', 'LanguageAgent: te/hi/en', 'KnowledgeAgent: ChromaDB Synced'],
+      agentTrace: ['OrchestratorAgent: Ready', 'LanguageAgent: te/hi/en', 'KnowledgeAgent: ChromaDB Synced'],
       sources: [
         {
           title: "PM Kisan Samman Nidhi",
@@ -47,10 +47,10 @@ export default function SovereignStudio() {
       {
         role: 'assistant',
         content: 'నమస్కారం! కొత్త సంభాషణ ప్రారంభమైంది. మీ ప్రశ్న అడగండి.\nNew session started. How can I help you today?',
-        language: selectedLanguage,
-        verified: true,
+        language: selectedLanguage === 'auto' ? 'te-IN' : selectedLanguage,
+        verified: false,
         modelUsed: 'openrouter/free',
-        agentTrace: ['NagrikOrchestrator: Reset'],
+        agentTrace: ['OrchestratorAgent: Reset Session'],
         sources: []
       }
     ]);
@@ -116,7 +116,7 @@ export default function SovereignStudio() {
   return (
     <div className="min-h-screen bg-[#f5faf7] text-slate-800 flex flex-col justify-between selection:bg-emerald-100 selection:text-emerald-900">
       
-      {/* 1. Minimal Header */}
+      {/* 1. Header with restored BhashaBridge branding & language options */}
       <Header
         selectedLanguage={selectedLanguage}
         onLanguageChange={setSelectedLanguage}
@@ -131,10 +131,10 @@ export default function SovereignStudio() {
         className="w-full pt-16 flex-1 flex flex-col motion-blur-active"
       >
         
-        {/* 2. Minimal Hero */}
+        {/* 2. Hero with restored BhashaBridge tagline */}
         <HeroSection onLaunchPlayground={handleLaunchPlayground} />
 
-        {/* 3. Minimal Emerald Voice Console */}
+        {/* 3. Emerald Voice Console with AI chat, speech, Listen Aloud & RAG */}
         <VoiceConsole
           messages={messages}
           onSendMessage={handleSendMessage}
@@ -148,15 +148,15 @@ export default function SovereignStudio() {
           setEnableRag={setEnableRag}
         />
 
-        {/* 4. Minimal Swarm Mesh */}
+        {/* 4. 7-Agent Swarm Mesh Topology */}
         <SwarmMeshSection />
 
-        {/* 5. Minimal 4 Capabilities */}
+        {/* 5. 4 Capabilities (Multilingual, Voice, RAG, Use Cases) */}
         <CapabilitiesSection />
 
       </main>
 
-      {/* 6. Clean Minimal Footer */}
+      {/* 6. Sovereign Footer */}
       <SovereignFooter />
 
     </div>
