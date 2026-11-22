@@ -40,7 +40,11 @@ export default function SovereignStudio() {
     }
     return 'sess_' + Math.random().toString(36).substring(2, 9);
   });
-  const [selectedLanguage, setSelectedLanguage] = useState('auto');
+  
+  // Persist selected language from localStorage or default to 'auto'
+  const [selectedLanguage, setSelectedLanguage] = useState(() => {
+    return localStorage.getItem('bhashabridge_selected_code') || 'auto';
+  });
   const [enableRag, setEnableRag] = useState(true);
 
   const [messages, setMessages] = useState(() => {
@@ -74,6 +78,11 @@ export default function SovereignStudio() {
 
   // Voice Output (TTS)
   const { speak, stop, isPlaying } = useSpeechSynthesis();
+
+  const handleLanguageChange = (code) => {
+    setSelectedLanguage(code);
+    localStorage.setItem('bhashabridge_selected_code', code);
+  };
 
   const handleNewChat = () => {
     stop();
@@ -162,10 +171,10 @@ export default function SovereignStudio() {
   return (
     <div className="min-h-screen bg-[#f5faf7] text-slate-800 flex flex-col justify-between selection:bg-emerald-100 selection:text-emerald-900">
       
-      {/* 1. Header with restored BhashaBridge branding & language options */}
+      {/* 1. Header with complete 9-item navigation & dynamic multilingual switch */}
       <Header
         selectedLanguage={selectedLanguage}
-        onLanguageChange={setSelectedLanguage}
+        onLanguageChange={handleLanguageChange}
         onNewChat={handleNewChat}
         isScrolling={isScrolling}
         blurAmount={blurAmount}
@@ -177,16 +186,16 @@ export default function SovereignStudio() {
         className="w-full pt-16 flex-1 flex flex-col motion-blur-active"
       >
         
-        {/* 2. Hero with restored BhashaBridge tagline */}
+        {/* 2. Hero with explore links to Portfolio & Playground */}
         <HeroSection onLaunchPlayground={handleLaunchPlayground} />
 
-        {/* 3. Emerald Voice Console with AI chat, speech, Listen Aloud & RAG */}
+        {/* 3. Enlarged Emerald Voice Console with AI chat, speech, Listen Aloud & RAG */}
         <VoiceConsole
           messages={messages}
           onSendMessage={handleSendMessage}
           isLoading={isLoading}
           selectedLanguage={selectedLanguage}
-          onLanguageChange={setSelectedLanguage}
+          onLanguageChange={handleLanguageChange}
           speak={speak}
           stop={stop}
           isPlaying={isPlaying}
@@ -194,15 +203,15 @@ export default function SovereignStudio() {
           setEnableRag={setEnableRag}
         />
 
-        {/* 4. 7-Agent Swarm Mesh Topology */}
+        {/* 4. 7-Agent Swarm Mesh Topology with direct link to Technology */}
         <SwarmMeshSection />
 
-        {/* 5. 4 Capabilities (Multilingual, Voice, RAG, Use Cases) */}
+        {/* 5. 4 Capabilities (Multilingual, Voice, RAG, Use Cases) with direct page links */}
         <CapabilitiesSection />
 
       </main>
 
-      {/* 6. Sovereign Footer */}
+      {/* 6. Sovereign Footer with full portfolio & technical links */}
       <SovereignFooter />
 
     </div>

@@ -1,58 +1,75 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Sparkles, Globe, Menu, X, ArrowRight, Bot } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { Sparkles, Menu, X, ArrowRight, Bot } from 'lucide-react';
 
 export default function Navbar() {
+  const { t, i18n } = useTranslation();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  const currentLang = localStorage.getItem('bhashabridge_selected_code') || 'auto';
+  const [selectedLanguage, setSelectedLanguage] = useState(currentLang);
+
   const navLinks = [
-    { name: 'Sovereign Studio', path: '/' },
-    { name: 'Overview', path: '/home' },
-    { name: 'About', path: '/about' },
-    { name: 'Features', path: '/features' },
-    { name: 'Technology', path: '/technology' },
-    { name: 'Use Cases', path: '/use-cases' },
+    { name: t('nav.home', 'Home'), path: '/' },
+    { name: t('nav.about', 'About'), path: '/about' },
+    { name: t('nav.features', 'Features'), path: '/features' },
+    { name: t('nav.agents', 'AI Agents'), path: '/agents' },
+    { name: t('nav.technology', 'Technology'), path: '/technology' },
+    { name: t('nav.howItWorks', 'How It Works'), path: '/how-it-works' },
+    { name: t('nav.useCases', 'Use Cases'), path: '/use-cases' },
+    { name: t('nav.portfolio', 'Portfolio'), path: '/portfolio' },
+    { name: t('nav.voiceAssistant', 'Voice Assistant'), path: '/assistant' },
   ];
 
+  const handleLangSelect = (code) => {
+    setSelectedLanguage(code);
+    const targetLang = code === 'auto' ? 'en' : (code.startsWith('te') ? 'te' : code.startsWith('hi') ? 'hi' : 'en');
+    i18n.changeLanguage(targetLang);
+    localStorage.setItem('bhashabridge_lang', targetLang);
+    localStorage.setItem('bhashabridge_selected_code', code);
+  };
+
   const isActive = (path) => {
+    if (path === '/') return location.pathname === '/' || location.pathname === '/studio';
     return location.pathname === path;
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-navy-900/85 backdrop-blur-xl border-b border-slate-800/80 transition-all duration-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-emerald-100 shadow-xs transition-all duration-200">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-2">
         
         {/* Brand Logo */}
-        <Link to="/" className="flex items-center gap-3.5 group">
-          <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-bharat-orange via-amber-500 to-bharat-violet flex items-center justify-center shadow-lg shadow-amber-500/20 group-hover:scale-105 transition-all duration-300 ring-1 ring-white/20">
-            <Sparkles className="w-6 h-6 text-navy-900" />
+        <Link to="/" className="flex items-center gap-3 shrink-0 group">
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center shadow-sm shadow-emerald-600/20 group-hover:scale-105 transition-all">
+            <Sparkles className="w-5 h-5 text-white" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-extrabold text-xl tracking-tight bg-gradient-to-r from-amber-200 via-orange-400 to-amber-500 bg-clip-text text-transparent">
-                BhashaBridge
+              <span className="font-headline font-extrabold text-lg sm:text-xl tracking-tight text-slate-900">
+                BhashaBridge <span className="text-emerald-600">AI</span>
               </span>
-              <span className="text-xs font-bold text-slate-100 bg-bharat-violet/30 border border-bharat-violet/50 px-2 py-0.5 rounded-full uppercase tracking-wider">
-                AI
+              <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                Live
               </span>
             </div>
-            <span className="text-[11px] text-slate-400 font-medium tracking-wide">
-              Voice & Language for Bharat
+            <span className="text-[11px] text-emerald-700/80 font-medium tracking-wide hidden sm:block">
+              {t('nav.tagline', 'Voice & Language AI for Bharat')}
             </span>
           </div>
         </Link>
 
         {/* Desktop Nav Links */}
-        <div className="hidden md:flex items-center gap-1 lg:gap-2 bg-navy-800/50 border border-slate-700/50 p-1.5 rounded-full backdrop-blur-md">
+        <div className="hidden xl:flex items-center gap-1 bg-emerald-50/60 border border-emerald-200/80 p-1.5 rounded-full text-xs">
           {navLinks.map((link) => (
             <Link
               key={link.path}
               to={link.path}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+              className={`px-3 py-1.5 rounded-full font-medium transition-all duration-150 ${
                 isActive(link.path)
-                  ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30 shadow-sm'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-800/40'
+                  ? 'bg-emerald-600 text-white font-bold shadow-xs'
+                  : 'text-slate-700 hover:text-emerald-950 hover:bg-emerald-100/60'
               }`}
             >
               {link.name}
@@ -60,37 +77,69 @@ export default function Navbar() {
           ))}
         </div>
 
-        {/* Right Action CTA */}
-        <div className="hidden md:flex items-center gap-4">
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-navy-800/70 border border-slate-700/60 text-xs text-slate-300 font-medium">
-            <Globe className="w-3.5 h-3.5 text-amber-400" />
-            <span>తెలుగు • हिन्दी • English</span>
+        {/* Right Action: Language Selector & CTA */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          
+          {/* Header Language Selector (AUTO, తెలుగు, हिन्दी, ENGLISH) */}
+          <div className="flex items-center bg-emerald-50/80 rounded-full p-1 border border-emerald-200 text-xs shadow-xs">
+            <button
+              onClick={() => handleLangSelect('auto')}
+              className={`px-2.5 py-1 rounded-full transition cursor-pointer ${
+                selectedLanguage === 'auto'
+                  ? 'bg-emerald-600 text-white font-bold shadow-xs'
+                  : 'text-emerald-950 font-normal hover:bg-emerald-100/60'
+              }`}
+            >
+              AUTO
+            </button>
+            <button
+              onClick={() => handleLangSelect('te-IN')}
+              className={`px-2.5 py-1 rounded-full transition cursor-pointer ${
+                selectedLanguage === 'te-IN' || selectedLanguage === 'te'
+                  ? 'bg-emerald-600 text-white font-bold shadow-xs'
+                  : 'text-emerald-950 font-normal hover:bg-emerald-100/60'
+              }`}
+            >
+              తెలుగు
+            </button>
+            <button
+              onClick={() => handleLangSelect('hi-IN')}
+              className={`px-2.5 py-1 rounded-full transition cursor-pointer ${
+                selectedLanguage === 'hi-IN' || selectedLanguage === 'hi'
+                  ? 'bg-emerald-600 text-white font-bold shadow-xs'
+                  : 'text-emerald-950 font-normal hover:bg-emerald-100/60'
+              }`}
+            >
+              हिन्दी
+            </button>
+            <button
+              onClick={() => handleLangSelect('en-IN')}
+              className={`px-2.5 py-1 rounded-full transition cursor-pointer ${
+                selectedLanguage === 'en-IN' || selectedLanguage === 'en'
+                  ? 'bg-emerald-600 text-white font-bold shadow-xs'
+                  : 'text-emerald-950 font-normal hover:bg-emerald-100/60'
+              }`}
+            >
+              EN
+            </button>
           </div>
 
           <Link
             to="/assistant"
-            className="flex items-center gap-2 bg-gradient-to-r from-bharat-orange via-amber-500 to-amber-600 hover:from-amber-500 hover:to-bharat-orange text-navy-900 font-bold text-sm px-5 py-2.5 rounded-xl shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
+            className="hidden sm:flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-3.5 py-2 rounded-xl shadow-sm transition-all shrink-0"
           >
-            <Bot className="w-4 h-4 text-navy-900" />
-            <span>Try AI Assistant</span>
-            <ArrowRight className="w-4 h-4" />
+            <Bot className="w-3.5 h-3.5" />
+            <span>{t('nav.voiceAssistant', 'Voice Assistant')}</span>
+            <ArrowRight className="w-3.5 h-3.5" />
           </Link>
-        </div>
 
-        {/* Mobile Menu Button */}
-        <div className="flex md:hidden items-center gap-2">
-          <Link
-            to="/assistant"
-            className="flex items-center gap-1 bg-amber-500 text-navy-900 font-bold text-xs px-3 py-2 rounded-lg"
-          >
-            <span>Launch</span>
-          </Link>
+          {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-navy-800 border border-slate-800"
+            className="xl:hidden p-2 rounded-xl text-slate-700 hover:text-emerald-900 hover:bg-emerald-50 border border-emerald-200"
             aria-label="Toggle menu"
           >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
 
@@ -98,17 +147,17 @@ export default function Navbar() {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-navy-900/98 border-b border-slate-800 px-6 py-5 space-y-4 shadow-2xl backdrop-blur-2xl">
-          <div className="flex flex-col space-y-2">
+        <div className="xl:hidden bg-white/98 border-b border-emerald-100 px-5 py-4 space-y-3 shadow-xl backdrop-blur-xl">
+          <div className="grid grid-cols-2 gap-2">
             {navLinks.map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`px-4 py-3 rounded-xl text-base font-semibold transition ${
+                className={`px-3 py-2 rounded-xl text-xs font-semibold transition ${
                   isActive(link.path)
-                    ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
-                    : 'text-slate-300 hover:bg-navy-800'
+                    ? 'bg-emerald-600 text-white font-bold'
+                    : 'text-slate-700 hover:bg-emerald-50'
                 }`}
               >
                 {link.name}
@@ -116,19 +165,15 @@ export default function Navbar() {
             ))}
           </div>
 
-          <div className="pt-4 border-t border-slate-800/80 flex flex-col gap-3">
-            <div className="text-xs text-slate-400 flex items-center gap-2">
-              <Globe className="w-4 h-4 text-amber-400" />
-              <span>Native Telugu, Hindi & English Voice Processing</span>
-            </div>
+          <div className="pt-2 border-t border-emerald-100 flex items-center justify-between text-xs text-slate-600">
+            <span>{t('nav.tagline', 'Voice & Language AI for Bharat')}</span>
             <Link
               to="/assistant"
               onClick={() => setMobileMenuOpen(false)}
-              className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-bharat-orange to-amber-500 text-navy-900 font-bold py-3.5 rounded-xl text-center shadow-lg shadow-amber-500/20"
+              className="text-emerald-700 font-bold hover:underline flex items-center gap-1"
             >
-              <Bot className="w-5 h-5" />
-              <span>Launch Live AI Assistant</span>
-              <ArrowRight className="w-4 h-4" />
+              <span>{t('nav.voiceAssistant', 'Voice Assistant')}</span>
+              <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
         </div>

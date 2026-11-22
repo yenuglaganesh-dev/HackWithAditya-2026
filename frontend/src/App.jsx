@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import SovereignStudio from './pages/SovereignStudio';
@@ -9,30 +9,18 @@ import Features from './pages/Features';
 import Technology from './pages/Technology';
 import UseCases from './pages/UseCases';
 import Assistant from './pages/Assistant';
+import Portfolio from './pages/Portfolio';
+import HowItWorks from './pages/HowItWorks';
+import AgentsPage from './pages/AgentsPage';
 
-function Layout() {
-  const location = useLocation();
-  const isSovereignStudio = location.pathname === '/' || location.pathname === '/studio';
-  const isAssistantRoute = location.pathname === '/assistant';
-
-  if (isSovereignStudio) {
-    return <SovereignStudio />;
-  }
-
+function PageWrapper({ children }) {
   return (
-    <div className="min-h-screen bg-navy-900 text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#f5faf7] text-slate-800 flex flex-col font-sans">
       <Navbar />
       <div className="flex-1">
-        <Routes>
-          <Route path="/home" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/features" element={<Features />} />
-          <Route path="/technology" element={<Technology />} />
-          <Route path="/use-cases" element={<UseCases />} />
-          <Route path="/assistant" element={<Assistant />} />
-        </Routes>
+        {children}
       </div>
-      {!isAssistantRoute && <Footer />}
+      <Footer />
     </div>
   );
 }
@@ -41,9 +29,20 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Master Home Page with Studio Voice Console */}
         <Route path="/" element={<SovereignStudio />} />
         <Route path="/studio" element={<SovereignStudio />} />
-        <Route path="/*" element={<Layout />} />
+
+        {/* Global Styled Pages (Clean Emerald & Mint Theme with High Contrast) */}
+        <Route path="/home" element={<PageWrapper><Home /></PageWrapper>} />
+        <Route path="/about" element={<PageWrapper><About /></PageWrapper>} />
+        <Route path="/features" element={<PageWrapper><Features /></PageWrapper>} />
+        <Route path="/agents" element={<PageWrapper><AgentsPage /></PageWrapper>} />
+        <Route path="/technology" element={<PageWrapper><Technology /></PageWrapper>} />
+        <Route path="/how-it-works" element={<PageWrapper><HowItWorks /></PageWrapper>} />
+        <Route path="/use-cases" element={<PageWrapper><UseCases /></PageWrapper>} />
+        <Route path="/portfolio" element={<PageWrapper><Portfolio /></PageWrapper>} />
+        <Route path="/assistant" element={<PageWrapper><Assistant /></PageWrapper>} />
       </Routes>
     </BrowserRouter>
   );

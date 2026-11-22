@@ -6,15 +6,21 @@
   html, body {
     background-color: #f5faf7;
     color: #062c1e;
-    font-family: 'Inter', 'Plus Jakarta Sans', 'Noto Sans Telugu', 'Noto Sans Devanagari', sans-serif;
+    font-family: 'Plus Jakarta Sans', 'Inter', 'Noto Sans Telugu', 'Noto Sans Devanagari', sans-serif;
     scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
-}
 
-/* Motion Blur on Scroll */
-.motion-blur-active {
-  will-change: filter, transform;
-  transition: filter 0.1s cubic-bezier(0.2, 0.9, 0.2, 1), transform 0.1s cubic-bezier(0.2, 0.9, 0.2, 1);
+  h1, h2, h3, h4, h5, h6 {
+    color: #0f172a;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  p {
+    color: #334155;
+  }
 }
 
 /* Animations in Emerald & Mint Green */
