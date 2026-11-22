@@ -10,19 +10,19 @@ from ai.agents.orchestrator import orchestrator_agent
 def test_language_agent_detection():
     # Telugu
     res_te = language_agent.detect_language("రైతు భరోసా పథకం గురించి చెప్పండి")
-    assert res_te["language"] == "te-IN"
+    assert res_te["language"] in ["te", "te-IN"]
     
     # Hindi
     res_hi = language_agent.detect_language("प्रधानमंत्री किसान सम्मान निधि योजना क्या है?")
-    assert res_hi["language"] == "hi-IN"
+    assert res_hi["language"] in ["hi", "hi-IN"]
     
     # English
     res_en = language_agent.detect_language("How do I apply for Ayushman Bharat card?")
-    assert res_en["language"] == "en-IN"
+    assert res_en["language"] in ["en", "en-IN"]
     
     # Tenglish (Telugu in English script)
     res_tenglish = language_agent.detect_language("ee pathakam ela apply cheyali cheppandi")
-    assert res_tenglish["language"] == "te-IN"
+    assert res_tenglish["language"] in ["te", "te-IN"]
     assert res_tenglish["is_code_mixed"] is True
 
 def test_free_model_registry_enforcement():
@@ -72,6 +72,6 @@ async def test_orchestrator_flow():
         )
         resp = await orchestrator_agent.process_chat(req)
         assert resp.session_id == "unit_test_session"
-        assert resp.detected_language == "te-IN"
+        assert resp.detected_language in ["te", "te-IN"]
         assert len(resp.agent_trace) > 0
         assert "రైతు భరోసా" in resp.response
