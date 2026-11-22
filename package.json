@@ -1,0 +1,8 @@
+{
+  "name": "hackwithaditya-2026",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "npm --prefix frontend install --legacy-peer-deps && npm --prefix frontend run build && node -e \"const fs=require('fs'); fs.cpSync('frontend/dist', 'dist', {recursive: true});\""
+  }
+}
