@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Sparkles, Shield, Cpu, Heart, ExternalLink, Github } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -32,7 +32,8 @@ export default function Footer() {
           <div>
             <h4 className="text-white font-bold text-sm tracking-wider uppercase mb-4">Explore</h4>
             <ul className="space-y-2.5 text-xs">
-              <li><Link to="/" className="hover:text-amber-400 transition">Home</Link></li>
+              <li><Link to="/" className="hover:text-amber-400 transition">Sovereign Studio</Link></li>
+              <li><Link to="/home" className="hover:text-amber-400 transition">Home</Link></li>
               <li><Link to="/about" className="hover:text-amber-400 transition">About the Mission</Link></li>
               <li><Link to="/features" className="hover:text-amber-400 transition">Key Capabilities</Link></li>
               <li><Link to="/technology" className="hover:text-amber-400 transition">Multi-Agent Tech</Link></li>

@@ -7,7 +7,8 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
-    { name: 'Home', path: '/' },
+    { name: 'Sovereign Studio', path: '/' },
+    { name: 'Overview', path: '/home' },
     { name: 'About', path: '/about' },
     { name: 'Features', path: '/features' },
     { name: 'Technology', path: '/technology' },

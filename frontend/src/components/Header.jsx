@@ -1,62 +1,107 @@
 import React from 'react';
-import { Sparkles, Globe, Shield, RefreshCw } from 'lucide-react';
+import { RefreshCw, Radio } from 'lucide-react';
 
-export default function Header({ selectedLanguage, onLanguageChange, onNewChat }) {
-  const languages = [
-    { code: 'auto', label: 'Auto Detect (ఆటో / ऑटो)' },
-    { code: 'te-IN', label: 'Telugu (తెలుగు)' },
-    { code: 'hi-IN', label: 'Hindi (हिन्दी)' },
-    { code: 'en-IN', label: 'English (Indian)' },
-  ];
-
+export default function Header({ selectedLanguage, onLanguageChange, onNewChat, activeTab, setActiveTab }) {
   return (
-    <header className="w-full bg-navy-800/80 backdrop-blur-md border-b border-slate-700/60 sticky top-0 z-30 px-4 py-3">
-      <div className="max-w-6xl mx-auto flex items-center justify-between">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200/80 shadow-xs">
+      <div className="h-16 px-4 sm:px-6 max-w-7xl mx-auto flex items-center justify-between gap-4">
         
-        {/* Brand identity */}
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-bharat-orange via-amber-500 to-bharat-violet flex items-center justify-center shadow-lg shadow-amber-500/10">
-            <Sparkles className="w-5 h-5 text-navy-900" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-amber-400 via-orange-400 to-bharat-orange bg-clip-text text-transparent">
-                BhashaBridge AI
-              </span>
-              <span className="bg-emerald-950/60 text-emerald-400 border border-emerald-500/30 text-[10px] px-1.5 py-0.5 rounded font-semibold uppercase tracking-wider">
-                Free-First
-              </span>
+        {/* Logo + Tag */}
+        <div className="flex items-center gap-3 shrink-0 cursor-pointer" onClick={() => setActiveTab('console')}>
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 via-orange-500 to-blue-700 p-0.5 shadow-sm flex items-center justify-center group-hover:scale-105 transition-transform">
+            <div className="w-full h-full bg-white rounded-[10px] flex items-center justify-center">
+              <span className="material-symbols-outlined text-blue-700 text-[20px] font-bold">all_inclusive</span>
             </div>
-            <p className="text-xs text-slate-400 hidden sm:block">
-              Voice & Language AI for Bharat (తెలుగు • हिन्दी • English)
-            </p>
+          </div>
+          <div className="flex flex-col">
+            <div className="flex items-center gap-1.5">
+              <span className="font-headline font-extrabold text-slate-900 text-base sm:text-lg tracking-tight">AI for Bharat</span>
+              <span className="font-mono text-[10px] px-1.5 py-0.5 rounded-full bg-blue-50 text-blue-700 font-bold border border-blue-200">v3.4</span>
+            </div>
+            <span className="text-[11px] font-mono text-slate-500 font-medium tracking-tight hidden sm:block">Sovereign Agentic Cloud</span>
           </div>
         </div>
 
-        {/* Controls: Language Selector and New Chat */}
-        <div className="flex items-center gap-2.5">
-          <div className="relative flex items-center">
-            <Globe className="w-4 h-4 text-amber-400 absolute left-2.5 pointer-events-none" />
-            <select
-              value={selectedLanguage}
-              onChange={(e) => onLanguageChange(e.target.value)}
-              className="bg-navy-900 border border-slate-700 text-slate-200 text-xs rounded-lg pl-8 pr-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-amber-500 appearance-none cursor-pointer hover:border-slate-600 transition"
+        {/* Navigation Tabs */}
+        <nav className="hidden lg:flex items-center gap-6 font-medium text-sm text-slate-600">
+          <button
+            onClick={() => setActiveTab('console')}
+            className={`transition-colors flex items-center gap-1.5 py-1 ${activeTab === 'console' ? 'text-blue-700 font-bold border-b-2 border-blue-700' : 'hover:text-slate-900'}`}
+          >
+            <span className="material-symbols-outlined text-[17px]">record_voice_over</span>
+            Voice AI & Console
+          </button>
+          <button
+            onClick={() => setActiveTab('mesh')}
+            className={`transition-colors flex items-center gap-1.5 py-1 ${activeTab === 'mesh' ? 'text-blue-700 font-bold border-b-2 border-blue-700' : 'hover:text-slate-900'}`}
+          >
+            <span className="material-symbols-outlined text-[17px]">hub</span>
+            Agentic Mesh
+          </button>
+          <button
+            onClick={() => setActiveTab('capabilities')}
+            className={`transition-colors flex items-center gap-1.5 py-1 ${activeTab === 'capabilities' ? 'text-blue-700 font-bold border-b-2 border-blue-700' : 'hover:text-slate-900'}`}
+          >
+            <span className="material-symbols-outlined text-[17px]">memory</span>
+            Core Primitives
+          </button>
+          <button
+            onClick={() => setActiveTab('telephony')}
+            className={`transition-colors flex items-center gap-1.5 py-1 ${activeTab === 'telephony' ? 'text-blue-700 font-bold border-b-2 border-blue-700' : 'hover:text-slate-900'}`}
+          >
+            <span className="material-symbols-outlined text-[17px]">call_split</span>
+            Telephony Flow
+          </button>
+        </nav>
+
+        {/* Language Pill & Actions */}
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          {/* Language Switcher Pill */}
+          <div className="flex items-center bg-slate-100 rounded-full p-1 border border-slate-200 text-xs shadow-xs">
+            <button
+              onClick={() => onLanguageChange('en-IN')}
+              className={`px-2.5 py-1 rounded-full transition-all ${selectedLanguage === 'en-IN' ? 'bg-white text-blue-700 font-bold shadow-xs' : 'font-medium text-slate-600 hover:text-slate-900'}`}
+              type="button"
             >
-              {languages.map(lang => (
-                <option key={lang.code} value={lang.code}>
-                  {lang.label}
-                </option>
-              ))}
-            </select>
+              English
+            </button>
+            <button
+              onClick={() => onLanguageChange('te-IN')}
+              className={`px-2.5 py-1 rounded-full transition-all ${selectedLanguage === 'te-IN' || selectedLanguage === 'auto' ? 'bg-blue-600 text-white font-bold shadow-xs' : 'font-medium text-slate-600 hover:text-slate-900'}`}
+              type="button"
+            >
+              తెలుగు
+            </button>
+            <button
+              onClick={() => onLanguageChange('hi-IN')}
+              className={`px-2.5 py-1 rounded-full transition-all ${selectedLanguage === 'hi-IN' ? 'bg-amber-600 text-white font-bold shadow-xs' : 'font-medium text-slate-600 hover:text-slate-900'}`}
+              type="button"
+            >
+              हिन्दी
+            </button>
           </div>
 
+          {/* New Chat Button */}
           <button
             onClick={onNewChat}
-            className="flex items-center gap-1.5 text-xs font-medium bg-navy-700 hover:bg-navy-600 text-slate-200 px-3 py-1.5 rounded-lg border border-slate-600/60 transition shadow-sm"
-            title="Start new conversation session"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-medium text-xs shadow-xs transition-all hover:border-slate-300"
+            title="Start new conversation"
           >
-            <RefreshCw className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">New Chat</span>
+            <RefreshCw className="w-3.5 h-3.5 text-slate-500" />
+            <span className="hidden sm:inline">Reset</span>
+          </button>
+
+          {/* Launch Console Action */}
+          <button
+            onClick={() => {
+              setActiveTab('console');
+              const el = document.getElementById('voice-console-section');
+              el?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-800 hover:to-indigo-800 text-white font-semibold text-xs shadow-md shadow-blue-500/20 hover:shadow-lg transition-all"
+          >
+            <span className="material-symbols-outlined text-[16px]">terminal</span>
+            <span>Console</span>
           </button>
         </div>
 
