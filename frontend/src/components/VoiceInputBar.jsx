@@ -16,14 +16,25 @@ export default function VoiceInputBar({
   // Native Browser Web Speech API hook
   const {
     isListening,
+    isProcessing,
     transcript,
     setTranscript,
     isSupported,
     startListening,
     stopListening
   } = useSpeechRecognition({
-    language: selectedLanguage === 'auto' ? 'te-IN' : selectedLanguage,
+    language: selectedLanguage === 'auto' ? 'auto' : selectedLanguage,
     onResult: (current) => setText(current),
+    onFinalTranscript: (recognizedText, detectedLang) => {
+      if (recognizedText && recognizedText.trim() && !isLoading) {
+        onSendMessage(recognizedText.trim(), {
+          fromVoice: true,
+          detectedLanguage: detectedLang,
+        });
+        setText('');
+        setTranscript('');
+      }
+    }
   });
 
   // Keep text synced when voice recognition updates
@@ -86,10 +97,12 @@ export default function VoiceInputBar({
             </button>
           </div>
 
-          {isListening && (
+          {(isListening || isProcessing) && (
             <span className="flex items-center gap-1.5 text-rose-400 font-medium animate-pulse">
               <span className="w-2 h-2 rounded-full bg-rose-500"></span>
-              Listening ({selectedLanguage === 'auto' ? 'Telugu/Hindi' : selectedLanguage})...
+              {isProcessing
+                ? 'Recognizing spoken language...'
+                : `Listening (${selectedLanguage === 'auto' ? 'Auto Detect' : selectedLanguage})...`}
             </span>
           )}
         </div>

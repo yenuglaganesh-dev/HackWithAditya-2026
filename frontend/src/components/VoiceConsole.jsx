@@ -17,17 +17,29 @@ export default function VoiceConsole({
   const [inputText, setInputText] = useState('');
   const chatBottomRef = useRef(null);
 
-  const currentLangCode = selectedLanguage === 'auto' ? 'te-IN' : (selectedLanguage.includes('-') ? selectedLanguage : `${selectedLanguage}-IN`);
+  const currentLangCode = selectedLanguage === 'auto' ? 'auto' : (selectedLanguage.includes('-') ? selectedLanguage : `${selectedLanguage}-IN`);
 
   const {
     isListening,
+    isProcessing,
     transcript,
     setTranscript,
+    error: speechError,
     startListening,
     stopListening
   } = useSpeechRecognition({
     language: currentLangCode,
-    onResult: (text) => setInputText(text)
+    onResult: (text) => setInputText(text),
+    onFinalTranscript: (recognizedText, detectedLang) => {
+      if (recognizedText && recognizedText.trim() && !isLoading) {
+        onSendMessage(recognizedText.trim(), {
+          fromVoice: true,
+          detectedLanguage: detectedLang,
+        });
+        setInputText('');
+        setTranscript('');
+      }
+    }
   });
 
   // Sync speech transcript
@@ -75,9 +87,9 @@ export default function VoiceConsole({
               </span>
             </div>
             <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${
-              isListening ? 'bg-rose-50 text-rose-700 border-rose-200 animate-pulse' : 'bg-emerald-50 text-emerald-700 border-emerald-200'
+              isListening ? 'bg-rose-50 text-rose-700 border-rose-200 animate-pulse' : isProcessing ? 'bg-amber-50 text-amber-700 border-amber-200 animate-pulse' : 'bg-emerald-50 text-emerald-700 border-emerald-200'
             }`}>
-              {isListening ? 'Listening...' : 'Ready'}
+              {isListening ? 'Listening...' : isProcessing ? 'Recognizing...' : 'Ready'}
             </span>
           </div>
 
@@ -151,10 +163,12 @@ export default function VoiceConsole({
         <div className="lg:col-span-7 flex flex-col gap-3">
           
           {/* Live ASR Ingest Bubble */}
-          {inputText && (
+          {(inputText || isProcessing || speechError) && (
             <div className="bg-emerald-50/70 border border-emerald-200/80 rounded-2xl p-3 text-xs flex items-center gap-2">
               <span className="material-symbols-outlined text-[16px] text-emerald-700">subtitles</span>
-              <span className="font-medium text-emerald-950 truncate">{inputText}</span>
+              <span className="font-medium text-emerald-950 truncate">
+                {isProcessing ? 'Recognizing spoken language...' : (inputText || speechError)}
+              </span>
             </div>
           )}
 
@@ -219,7 +233,7 @@ export default function VoiceConsole({
                     {msg.role !== 'user' && (
                       <div className="mt-2 pt-1.5 flex items-center gap-2">
                         <button
-                          onClick={() => isPlaying ? stop() : speak(msg.content, msg.language || currentLangCode)}
+                          onClick={() => isPlaying ? stop() : speak(msg.content, msg.language || currentLangCode, msg.audioBase64 || null)}
                           className="flex items-center gap-1 text-[11px] text-emerald-700 hover:text-emerald-900 font-medium bg-white hover:bg-emerald-50 px-2.5 py-0.5 rounded-md border border-emerald-200 transition-colors cursor-pointer"
                           title={isPlaying ? "Stop audio" : "Listen aloud"}
                         >

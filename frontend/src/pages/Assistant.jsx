@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useVoiceAudio } from '../hooks/useVoiceAudio';
-import { sendChatMessage, fetchSystemStatus } from '../services/api';
+import { sendChatMessage, fetchSystemStatus, clearServerSession } from '../services/api';
 import ChatMessage from '../components/ChatMessage';
 import VoiceInputBar from '../components/VoiceInputBar';
 import {
@@ -9,24 +9,48 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
+const ASSISTANT_HISTORY_KEY = 'bhashabridge_assistant_history';
+const ASSISTANT_SESSION_KEY = 'bhashabridge_assistant_session';
+
+const INITIAL_ASSISTANT_MESSAGES = [
+  {
+    role: 'assistant',
+    content: 'నమస్కారం! నేను భాషాబ్రిడ్జ్ (BhashaBridge AI). నేను తెలుగు, హిందీ మరియు ఇంగ్లీష్ లో మీ ప్రశ్నలకు సహాయం చేయగలను. మైక్రోఫోన్ నొక్కి మాట్లాడండి లేదా కింద టైప్ చేయండి.\n\nNamaste! I am BhashaBridge AI. How can I help you today with government schemes, healthcare, or agriculture?',
+    language: 'te',
+    verified: false,
+    modelUsed: 'gemini-4-hydrogen',
+    agentTrace: ['System: Initialized Welcome'],
+    sources: []
+  }
+];
+
 export default function Assistant() {
-  const [sessionId, setSessionId] = useState(() => 'sess_' + Math.random().toString(36).substring(2, 9));
+  const [sessionId, setSessionId] = useState(() => {
+    try {
+      const saved = localStorage.getItem(ASSISTANT_SESSION_KEY);
+      if (saved) return saved;
+    } catch {
+      // ignore
+    }
+    return 'sess_' + Math.random().toString(36).substring(2, 9);
+  });
   const [selectedLanguage, setSelectedLanguage] = useState('auto');
   const [enableRag, setEnableRag] = useState(true);
   const [enableResearch, setEnableResearch] = useState(false);
-  const [backendStatus, setBackendStatus] = useState({ connected: false, model: 'openrouter/free' });
+  const [backendStatus, setBackendStatus] = useState({ connected: false, model: 'gemini-4-hydrogen' });
 
-  const [messages, setMessages] = useState([
-    {
-      role: 'assistant',
-      content: 'నమస్కారం! నేను భాషాబ్రిడ్జ్ (BhashaBridge AI). నేను తెలుగు, హిందీ మరియు ఇంగ్లీష్ లో మీ ప్రశ్నలకు సహాయం చేయగలను. మైక్రోఫోన్ నొక్కి మాట్లాడండి లేదా కింద టైప్ చేయండి.\n\nNamaste! I am BhashaBridge AI. How can I help you today with government schemes, healthcare, or agriculture?',
-      language: 'te',
-      verified: false,
-      modelUsed: 'openrouter/free',
-      agentTrace: ['System: Initialized Welcome'],
-      sources: []
+  const [messages, setMessages] = useState(() => {
+    try {
+      const saved = localStorage.getItem(ASSISTANT_HISTORY_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch {
+      // ignore
     }
-  ]);
+    return INITIAL_ASSISTANT_MESSAGES;
+  });
 
   const [isLoading, setIsLoading] = useState(false);
   const chatBottomRef = useRef(null);
@@ -34,13 +58,23 @@ export default function Assistant() {
   // High-fidelity voice audio service
   const { playAudio, stop, isPlaying } = useVoiceAudio();
 
+  useEffect(() => {
+    try {
+      localStorage.setItem(ASSISTANT_SESSION_KEY, sessionId);
+      const compact = messages.map(({ audioBase64: _audio, ...rest }) => rest);
+      localStorage.setItem(ASSISTANT_HISTORY_KEY, JSON.stringify(compact));
+    } catch {
+      // ignore
+    }
+  }, [messages, sessionId]);
+
   // Check live backend status on load
   useEffect(() => {
     async function checkHealth() {
       const status = await fetchSystemStatus();
       setBackendStatus({
         connected: status.status === 'operational' || status.status === 'healthy',
-        model: status.default_model || 'openrouter/free',
+        model: status.default_model || 'gemini-4-hydrogen',
         voiceEngine: status.voice_integration || 'Web Speech Native'
       });
     }
@@ -54,6 +88,7 @@ export default function Assistant() {
 
   const handleNewChat = () => {
     stop();
+    clearServerSession(sessionId);
     setSessionId('sess_' + Math.random().toString(36).substring(2, 9));
     setMessages([
       {
@@ -68,12 +103,13 @@ export default function Assistant() {
     ]);
   };
 
-  const handleSendMessage = async (text) => {
+  const handleSendMessage = async (text, options = {}) => {
     stop();
 
     const userMsg = {
       role: 'user',
       content: text,
+      language: options.detectedLanguage || selectedLanguage,
       timestamp: new Date().toISOString()
     };
 
@@ -81,18 +117,24 @@ export default function Assistant() {
     setIsLoading(true);
 
     try {
+      const effectiveLanguage =
+        selectedLanguage === 'auto' && options.detectedLanguage
+          ? options.detectedLanguage
+          : selectedLanguage;
+
       const data = await sendChatMessage({
         sessionId,
         message: text,
-        language: selectedLanguage,
+        language: effectiveLanguage,
         enableRag,
-        enableResearch
+        enableResearch,
+        includeAudio: Boolean(options.fromVoice)
       });
 
       const aiMsg = {
         role: 'assistant',
         content: data.response,
-        language: data.language || 'en',
+        language: data.language || effectiveLanguage || 'en',
         detectedLanguage: data.detected_language,
         modelUsed: data.model_used,
         verified: data.verified,
@@ -104,13 +146,13 @@ export default function Assistant() {
       setMessages((prev) => [...prev, aiMsg]);
 
       // Automatically play voice response
-      playAudio(data.response, data.language || 'te', data.audio_base64);
+      playAudio(data.response, data.language || effectiveLanguage || 'te', data.audio_base64);
 
     } catch (err) {
       console.error('Chat error:', err);
       const errorMsg = {
         role: 'assistant',
-        content: 'Connection Error: Unable to reach the AI Engine. Please check that FastAPI (port 8000) is running and OPENROUTER_API_KEY is configured in ai/.env.',
+        content: 'Connection Error: Unable to reach the AI Engine. Please check that the server is running.',
         language: 'en',
         verified: false,
         modelUsed: 'error',

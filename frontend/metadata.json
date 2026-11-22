@@ -1,0 +1,6 @@
+{
+  "name": "BhashaBridge AI",
+  "description": "Multilingual Voice & Language AI Assistant for Bharat supporting Telugu, Hindi, and English with 7-agent RAG orchestration.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

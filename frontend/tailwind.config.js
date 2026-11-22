@@ -24,7 +24,16 @@ export default {
         "on-surface": "#062c1e",
         "on-surface-variant": "#2d4a3e",
         "outline": "#bbf7d0",
-        "outline-variant": "#d1fae5"
+        "outline-variant": "#d1fae5",
+        "navy": {
+          600: "#334155",
+          700: "#1e293b",
+          800: "#111a2e",
+          900: "#0b1120",
+          950: "#070b14"
+        },
+        "bharat-orange": "#f97316",
+        "bharat-violet": "#8b5cf6"
       },
       fontFamily: {
         "display": ["Plus Jakarta Sans", "sans-serif"],
