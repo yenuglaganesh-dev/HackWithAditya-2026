@@ -4,16 +4,23 @@
 
 @layer base {
   html, body {
-    background-color: #faf8ff;
-    color: #0f172a;
+    background-color: #f5faf7;
+    color: #062c1e;
     font-family: 'Inter', 'Plus Jakarta Sans', 'Noto Sans Telugu', 'Noto Sans Devanagari', sans-serif;
+    scroll-behavior: smooth;
   }
 }
 
-/* Animations from Sovereign Indic Modern */
+/* Motion Blur on Scroll */
+.motion-blur-active {
+  will-change: filter, transform;
+  transition: filter 0.1s cubic-bezier(0.2, 0.9, 0.2, 1), transform 0.1s cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+/* Animations in Emerald & Mint Green */
 @keyframes pulse-halo {
   0%, 100% { transform: scale(1); opacity: 0.8; }
-  50% { transform: scale(1.15); opacity: 0.3; }
+  50% { transform: scale(1.15); opacity: 0.25; }
 }
 
 @keyframes beam-flow {
@@ -36,22 +43,22 @@
   50% { height: 98%; }
 }
 
-@keyframes micBreath {
+@keyframes micBreathEmerald {
   0% {
-    box-shadow: 0 0 0 0 rgba(29, 78, 216, 0.4);
+    box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.45);
     transform: scale(1);
   }
   50% {
-    box-shadow: 0 0 0 20px rgba(29, 78, 216, 0);
+    box-shadow: 0 0 0 20px rgba(5, 150, 105, 0);
     transform: scale(1.05);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(29, 78, 216, 0);
+    box-shadow: 0 0 0 0 rgba(5, 150, 105, 0);
     transform: scale(1);
   }
 }
 
-@keyframes flowDot {
+@keyframes flowDotEmerald {
   0% { transform: translateX(0); opacity: 0; }
   20% { opacity: 1; }
   80% { opacity: 1; }
@@ -87,28 +94,28 @@
 .anim-bar-8 { animation: eqBar 0.85s ease-in-out infinite alternate 0.35s; }
 
 .mic-pulsing {
-  animation: micBreath 2.2s infinite ease-in-out;
+  animation: micBreathEmerald 2.2s infinite ease-in-out;
 }
 
 .flow-line-dot {
-  animation: flowDot 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  animation: flowDotEmerald 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
-/* Custom scrollbars */
+/* Custom Emerald Scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(226, 232, 240, 0.5);
+  background: rgba(209, 250, 229, 0.5);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.6);
+  background: rgba(16, 185, 129, 0.5);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(100, 116, 139, 0.9);
+  background: rgba(5, 150, 105, 0.8);
 }

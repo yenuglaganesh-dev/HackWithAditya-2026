@@ -7,22 +7,24 @@ export default {
   theme: {
     extend: {
       colors: {
-        "background": "#faf8ff",
+        "background": "#f5faf7",
         "surface": "#ffffff",
-        "surface-dim": "#f1f3fa",
-        "surface-container": "#eaedff",
-        "surface-container-low": "#f2f3ff",
-        "surface-container-highest": "#dae2fd",
-        "primary": "#1d4ed8",
-        "primary-container": "#eff4ff",
-        "secondary": "#ea580c",
-        "secondary-container": "#fff7ed",
-        "tertiary": "#059669",
-        "tertiary-container": "#ecfdf5",
-        "on-surface": "#0f172a",
-        "on-surface-variant": "#475569",
-        "outline": "#cbd5e1",
-        "outline-variant": "#e2e8f0"
+        "surface-dim": "#ebf5ee",
+        "surface-container": "#dcf0e4",
+        "surface-container-low": "#f0f8f3",
+        "surface-container-highest": "#c8e8d4",
+        "primary": "#059669",
+        "primary-dark": "#047857",
+        "primary-light": "#10b981",
+        "primary-container": "#ecfdf5",
+        "secondary": "#0d9488",
+        "secondary-container": "#f0fdfa",
+        "tertiary": "#15803d",
+        "tertiary-container": "#dcfce7",
+        "on-surface": "#062c1e",
+        "on-surface-variant": "#2d4a3e",
+        "outline": "#bbf7d0",
+        "outline-variant": "#d1fae5"
       },
       fontFamily: {
         "display": ["Plus Jakarta Sans", "sans-serif"],
@@ -31,10 +33,10 @@ export default {
         "mono": ["JetBrains Mono", "monospace"]
       },
       boxShadow: {
-        "soft": "0 2px 10px -2px rgba(15, 23, 42, 0.05), 0 1px 3px -1px rgba(15, 23, 42, 0.03)",
-        "elevated": "0 10px 30px -4px rgba(29, 78, 216, 0.08), 0 4px 12px -2px rgba(15, 23, 42, 0.04)",
-        "glow-blue": "0 0 25px -3px rgba(29, 78, 216, 0.2)",
-        "glow-saffron": "0 0 25px -3px rgba(234, 88, 12, 0.2)"
+        "soft": "0 2px 10px -2px rgba(6, 44, 30, 0.05), 0 1px 3px -1px rgba(6, 44, 30, 0.03)",
+        "elevated": "0 10px 30px -4px rgba(5, 150, 105, 0.1), 0 4px 12px -2px rgba(6, 44, 30, 0.04)",
+        "glow-emerald": "0 0 30px -4px rgba(16, 185, 129, 0.3)",
+        "glow-mint": "0 0 25px -3px rgba(52, 211, 153, 0.25)"
       }
     },
   },
