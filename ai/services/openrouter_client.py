@@ -11,14 +11,16 @@ class OpenRouterClient:
     OpenRouter Client with Strict Free-First enforcement and resilience.
     Sends live HTTP completions and returns meaningful error states if the external API fails.
     """
-    def __init__(self):
+    def __init__(self, api_key: Optional[str] = None):
+        self.api_key_override = api_key
         self.registry = free_model_registry
         self.last_status = "idle"
         self.last_error = None
         self.last_model_used = None
 
     def get_api_key(self) -> str:
-        # Dynamically pull key from settings or environment
+        if self.api_key_override:
+            return self.api_key_override.strip()
         return settings.OPENROUTER_API_KEY.strip()
 
     def get_status_summary(self) -> Dict[str, Any]:
@@ -106,19 +108,19 @@ class OpenRouterClient:
                                 "model_used": current_model,
                                 "free_verified": True
                             }
-                    elif response.status_code == 429:
-                        last_err_msg = f"Rate limited on {current_model} (HTTP 429). Trying fallback free model..."
-                        logger.warning(last_err_msg)
-                        continue
                     elif response.status_code == 401:
                         self.last_status = "error_auth"
                         self.last_error = "OpenRouter returned HTTP 401 Unauthorized"
                         return {
-                            "content": "Authentication Error: The configured OpenRouter API key was rejected (HTTP 401). Please verify your key.",
+                            "content": "Authentication Error: The configured OpenRouter API key was rejected (HTTP 401 Unauthorized). Please verify your OPENROUTER_API_KEY in ai/.env.",
                             "model_used": "error-auth",
                             "free_verified": True,
                             "error": "HTTP 401 Unauthorized"
                         }
+                    elif response.status_code == 429:
+                        last_err_msg = f"Rate limited on {current_model} (HTTP 429). Trying fallback free model..."
+                        logger.warning(last_err_msg)
+                        continue
                     elif response.status_code == 503:
                         last_err_msg = f"Service unavailable on {current_model} (HTTP 503)"
                         continue

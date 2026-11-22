@@ -4,16 +4,23 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import List, Union
 from dotenv import load_dotenv
 
-# Explicitly load from ai/.env first, then root .env
+# Explicitly prioritize ai/.env, fallback to root .env
 base_dir = Path(__file__).resolve().parent.parent
 env_file_ai = base_dir / ".env"
+root_env = base_dir.parent / ".env"
+
 if env_file_ai.exists():
     load_dotenv(dotenv_path=env_file_ai, override=True)
+elif root_env.exists():
+    load_dotenv(dotenv_path=root_env, override=True)
 else:
     load_dotenv(override=True)
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=str(env_file_ai), extra="allow")
+    model_config = SettingsConfigDict(
+        env_file=str(env_file_ai) if env_file_ai.exists() else ".env",
+        extra="allow"
+    )
 
     PROJECT_NAME: str = "BhashaBridge AI"
     VERSION: str = "1.0.0"
@@ -24,10 +31,10 @@ class Settings(BaseSettings):
     OPENROUTER_MODEL: str = "openrouter/free"
     OPENROUTER_BASE_URL: str = "https://openrouter.ai/api/v1"
     
-    # Sarvam AI Optional High-Fidelity Voice Integration
+    # Sarvam AI Integration (STRICTLY DISABLED BY DEFAULT until explicitly set to true in .env)
     SARVAM_API_KEY: str = ""
     ENABLE_SARVAM_STT: bool = False
-    ENABLE_SARVAM_TTS: bool = True  # Verified active free quota
+    ENABLE_SARVAM_TTS: bool = False
     
     # RAG Vector Store
     CHROMA_PERSIST_DIRECTORY: str = "./chroma_data"
