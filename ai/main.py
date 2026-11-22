@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Request, UploadFile, File
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict, Any, List
 import time
@@ -16,7 +16,7 @@ from ai.agents.language_agent import language_agent
 from ai.services.rag_service import rag_service
 from ai.services.free_model_registry import free_model_registry
 from ai.services.speech_service import speech_service
-from ai.agents.voice_agent import voice_agent
+from ai.services.openrouter_client import openrouter_client
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -27,7 +27,7 @@ app = FastAPI(
 # CORS Configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.ALLOWED_ORIGINS,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -55,6 +55,13 @@ async def chat_endpoint(request: ChatRequest):
 async def detect_language_endpoint(request: LanguageDetectRequest):
     result = language_agent.detect_language(request.text)
     return LanguageDetectResponse(**result)
+
+@app.get("/models/status")
+async def models_status():
+    """
+    Returns live model status, provider name, and key status without exposing secrets.
+    """
+    return openrouter_client.get_status_summary()
 
 @app.get("/models/free", response_model=FreeModelListResponse)
 async def list_free_models():
@@ -87,7 +94,9 @@ async def transcribe_speech():
 
 @app.post("/speech/synthesize")
 async def synthesize_speech(request: Dict[str, Any]):
-    return speech_service.get_speech_capabilities()
+    text = request.get("text", "")
+    language = request.get("language", "te")
+    return await speech_service.synthesize_speech(text=text, language=language)
 
 @app.get("/agents/status")
 async def agents_status():
@@ -96,20 +105,21 @@ async def agents_status():
         "language_agent": "ready (Telugu, Hindi, English, Tenglish, Hinglish)",
         "knowledge_agent": f"ready (ChromaDB items: {rag_service.collection.count()})",
         "research_agent": "ready (Verified Gov domains)",
-        "response_agent": "ready (OpenRouter Free)",
+        "response_agent": "ready (OpenRouter Live Free)",
         "verification_agent": "ready (Fact & Source Auditor)",
-        "voice_agent": "ready (Browser Web Speech API)"
+        "voice_agent": f"ready (Sarvam TTS: {speech_service.is_sarvam_tts_active()}, Web Speech Native)"
     }
 
 @app.get("/system/status")
 async def system_status():
     return {
         "status": "operational",
+        "ai_connected": bool(openrouter_client.get_api_key()),
         "openrouter_base_url": settings.OPENROUTER_BASE_URL,
         "default_model": settings.OPENROUTER_MODEL,
         "strict_free_mode": True,
         "chromadb_storage": settings.CHROMA_PERSIST_DIRECTORY,
-        "voice_integration": "Web Speech API (Free Client Native)",
+        "voice_integration": "Sarvam Bulbul v3 + Web Speech Native",
         "knowledge_documents_indexed": rag_service.collection.count()
     }
 

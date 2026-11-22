@@ -6,10 +6,10 @@ class ResponseAgent:
     """
     AGENT 5: RESPONSE GENERATION AGENT
     Responsibilities:
-    - Prepare understandable, compassionate, citizen-centric answers.
-    - Support Telugu, Hindi and English fluently.
-    - Explain complex government or technical procedures simply.
-    - Clearly cite sources and preserve language preference.
+    - Generates conversational, compassionate, culturally natural responses for Bharat.
+    - Honors user language: Telugu, Hindi, or English.
+    - For simple conversational greetings (e.g. "hi", "namaste"), replies naturally without dumping scheme details.
+    - Accurately integrates verified RAG source chunks when relevant.
     """
     def __init__(self):
         self.llm = openrouter_client
@@ -19,36 +19,50 @@ class ResponseAgent:
         user_message: str,
         target_language: str,
         context_history: List[Dict[str, str]],
-        sources: List[SourceCitation]
+        sources: List[SourceCitation],
+        is_greeting: bool = False
     ) -> Dict[str, Any]:
         
-        # Build prompt guidelines based on target language
-        lang_instruction = ""
-        if target_language == "te-IN":
-            lang_instruction = "Respond warmly and accurately in TELUGU (తెలుగు). If technical terms are used, you can provide English in brackets."
-        elif target_language == "hi-IN":
-            lang_instruction = "Respond warmly and accurately in HINDI (हिन्दी). Explain the steps simply and respectfully."
+        # Language instruction
+        if target_language in ["te", "te-IN"]:
+            lang_rule = "Respond naturally and fluently in pure TELUGU (తెలుగు). Use clear, respectful language."
+        elif target_language in ["hi", "hi-IN"]:
+            lang_rule = "Respond naturally and fluently in HINDI (हिन्दी). Use respectful language (आप/नमस्ते)."
         else:
-            lang_instruction = "Respond clearly and accurately in ENGLISH (Indian context), using simple step-by-step guidance."
+            lang_rule = "Respond clearly and pleasantly in ENGLISH with an Indian conversational tone."
 
-        sources_text = ""
-        if sources:
-            sources_text = "VERIFIED SOURCES AND CITATIONS:\n" + "\n".join(
-                [f"- {s.title} ({s.source}): {s.snippet}" for s in sources]
+        if is_greeting:
+            context_instruction = (
+                "The user is sharing a conversational greeting or polite remark. "
+                "Reply warmly and ask how you can help them today with government schemes, healthcare, or agriculture. "
+                "DO NOT dump irrelevant scheme information or eligibility criteria."
             )
+            sources_text = ""
         else:
-            sources_text = "No direct verified document found in local store. Provide general helpful guidance and advise verifying with local government centers."
+            context_instruction = (
+                "Answer the user's specific query clearly and directly. "
+                "If official guidelines or scheme details are provided below, base your factual statements on them. "
+                "Never invent missing subsidy percentages or registration deadlines. "
+                "If unsure, advise the citizen to verify at their local Gram Panchayat / Seva Kendra."
+            )
+            if sources:
+                sources_text = "\nVERIFIED OFFICIAL GUIDELINES:\n" + "\n".join(
+                    [f"- {s.title} ({s.source}): {s.snippet}" for s in sources]
+                )
+            else:
+                sources_text = "\nNo direct local verified scheme document found. Provide general helpful guidance."
 
-        system_prompt = f"""You are BhashaBridge AI, a helpful, respectful multilingual voice & language assistant for Indian citizens (Bharat).
-{lang_instruction}
+        system_prompt = f"""You are BhashaBridge AI, a helpful, intelligent voice and language assistant designed for Indian citizens.
+{lang_rule}
 
+Guidance:
+{context_instruction}
 {sources_text}
 
-Rules:
-1. Always be polite, respectful, and clear.
-2. Directly answer the citizen's question.
-3. If giving government scheme or eligibility details, only state verified facts. Do NOT invent subsidy percentages or eligibility criteria.
-4. Keep the response concise and suitable for voice read-aloud (SpeechSynthesis).
+Formatting Rules:
+1. Be concise, polite, and practical (suitable for voice reading).
+2. Avoid markdown clutter, excessive asterisks, or raw URLs.
+3. Answer follow-up questions using the ongoing conversation history.
 """
 
         messages = [{"role": "system", "content": system_prompt}]

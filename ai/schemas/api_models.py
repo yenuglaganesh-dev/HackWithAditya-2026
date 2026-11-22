@@ -3,9 +3,9 @@ from typing import List, Optional, Dict, Any
 from enum import Enum
 
 class LanguageCode(str, Enum):
-    TELUGU = "te-IN"
-    HINDI = "hi-IN"
-    ENGLISH = "en-IN"
+    TELUGU = "te"
+    HINDI = "hi"
+    ENGLISH = "en"
     AUTO = "auto"
 
 class ChatMessage(BaseModel):
@@ -39,6 +39,7 @@ class ChatResponse(BaseModel):
     verified: bool = False
     verification_notes: Optional[str] = None
     audio_available: bool = False
+    audio_base64: Optional[str] = None
 
 class LanguageDetectRequest(BaseModel):
     text: str
