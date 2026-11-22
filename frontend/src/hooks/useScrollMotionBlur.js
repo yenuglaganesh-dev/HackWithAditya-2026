@@ -9,7 +9,7 @@ export function useScrollMotionBlur() {
   const [blurAmount, setBlurAmount] = useState(0);
   const [isScrolling, setIsScrolling] = useState(false);
   const [direction, setDirection] = useState('none'); // 'up' | 'down' | 'none'
-  
+
   const lastScrollY = useRef(0);
   const scrollTimeout = useRef(null);
   const rafId = useRef(null);
