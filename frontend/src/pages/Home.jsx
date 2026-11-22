@@ -158,6 +158,73 @@ export default function Home() {
         </div>
       </section>
 
+      {/* PROBLEM & SOLUTION SECTION */}
+      <section className="py-20 bg-emerald-50/50 border-y border-emerald-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          
+          <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+            <h2 className="text-xs font-bold text-emerald-800 tracking-widest uppercase">
+              The Digital Divide in India
+            </h2>
+            <h3 className="text-3xl sm:text-4xl font-extrabold text-slate-900">
+              Breaking Language Barriers with Multi-Agent AI
+            </h3>
+            <p className="text-slate-600 text-base">
+              Over 800 million citizens in Bharat face digital friction because public portals and modern AI models are heavily English-centric.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            
+            {/* The Problem */}
+            <div className="bg-white border border-rose-200/80 p-8 rounded-3xl relative overflow-hidden group hover:border-rose-400 transition shadow-soft">
+              <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center mb-6">
+                <Activity className="w-6 h-6" />
+              </div>
+              <h4 className="text-xl font-bold text-slate-900 mb-3">The Problem for Everyday Citizens</h4>
+              <ul className="space-y-3 text-sm text-slate-600">
+                <li className="flex items-start gap-2.5">
+                  <span className="text-rose-500 font-bold">•</span>
+                  <span><strong>Complex English Portals:</strong> Critical welfare schemes (PMAY, Ayushman, PM-Kisan) are buried in bureaucratic documents.</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <span className="text-rose-500 font-bold">•</span>
+                  <span><strong>Regional Dialect Exclusion:</strong> Millions speak mixed Telugu (Tenglish) or Hindi (Hinglish) that standard voice systems fail to transcribe.</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <span className="text-rose-500 font-bold">•</span>
+                  <span><strong>AI Hallucination Risk:</strong> Off-the-shelf chatbots frequently invent welfare eligibility criteria and subsidies.</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* The Solution */}
+            <div className="bg-white border border-emerald-200/80 p-8 rounded-3xl relative overflow-hidden group hover:border-emerald-400 transition shadow-soft">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-6">
+                <ShieldCheck className="w-6 h-6" />
+              </div>
+              <h4 className="text-xl font-bold text-slate-900 mb-3">The BhashaBridge AI Solution</h4>
+              <ul className="space-y-3 text-sm text-slate-600">
+                <li className="flex items-start gap-2.5">
+                  <span className="text-emerald-600 font-bold">•</span>
+                  <span><strong>Native Voice In & Out:</strong> Speak directly via browser Web Speech API in Telugu, Hindi, or English without expensive speech APIs.</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <span className="text-emerald-600 font-bold">•</span>
+                  <span><strong>7-Agent RAG Orchestration:</strong> Verified against institutional government documents stored inside ChromaDB.</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <span className="text-emerald-600 font-bold">•</span>
+                  <span><strong>Free-First Architecture:</strong> Zero paid GPU or credits needed. Runs on verified OpenRouter Free models.</span>
+                </li>
+              </ul>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
       {/* FOUR-STEP WORKFLOW TIMELINE */}
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -189,6 +256,20 @@ export default function Home() {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Quick Action Banner */}
+          <div className="mt-16 bg-gradient-to-r from-emerald-500/10 via-teal-500/15 to-emerald-500/10 border border-emerald-300 p-8 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-6 shadow-soft">
+            <div className="space-y-2 text-center md:text-left">
+              <h4 className="text-xl sm:text-2xl font-bold text-slate-900">Ready to experience conversational AI for Bharat?</h4>
+              <p className="text-sm text-slate-600">Try our live assistant right in your browser with zero configuration.</p>
+            </div>
+            <Link
+              to="/assistant"
+              className="bg-emerald-600 text-white font-extrabold px-6 py-3.5 rounded-xl shadow-md hover:bg-emerald-700 hover:scale-105 transition"
+            >
+              Launch AI Assistant
+            </Link>
           </div>
 
         </div>

@@ -184,13 +184,23 @@ export default function Assistant() {
                 <h1 className="font-headline font-bold text-base sm:text-lg text-slate-900">
                   BhashaBridge Voice Console
                 </h1>
-                <span className="flex items-center gap-1 text-[10px] bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-full font-bold">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                  Live AI Engine
+                {backendStatus.connected ? (
+                  <span className="flex items-center gap-1 text-[10px] bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-full font-bold">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    AI Connected
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1 text-[10px] bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-full font-bold">
+                    <AlertCircle className="w-3 h-3 text-amber-600" />
+                    AI Local Standby
+                  </span>
+                )}
+                <span className="hidden sm:inline bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] px-2 py-0.5 rounded-full font-medium">
+                  Model: {backendStatus.model.split('/').pop()}
                 </span>
               </div>
               <p className="text-[11px] text-slate-500 hidden sm:block">
-                Model: <span className="font-mono text-emerald-700 font-semibold">{backendStatus.model}</span> • Speech: <span className="font-semibold text-emerald-700">Native Web Speech STT/TTS</span>
+                Free-First Architecture • Speech: <span className="font-semibold text-emerald-700">Native Web Speech STT/TTS</span>
               </p>
             </div>
           </div>
