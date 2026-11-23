@@ -17,8 +17,8 @@ const INITIAL_STUDIO_MESSAGES = [
     content: 'నమస్కారం! నేను భాషాబ్రిడ్జ్ (BhashaBridge AI). నేను తెలుగు, हिन्दी మరియు English లో పీఎం కిసాన్, రైతు భరోసా, ఆయుష్మాన్ భారత్ వంటి పథకాల సమాచారాన్ని అందించగలను.\n\nNamaste! I am BhashaBridge AI. Speak or type your question in Telugu, Hindi, or English.',
     language: 'te-IN',
     verified: true,
-    modelUsed: 'BhashaBridge AI',
-    agentTrace: [],
+    modelUsed: 'gemini-4-hydrogen',
+    agentTrace: ['OrchestratorAgent: Ready', 'LanguageAgent: te/hi/en', 'KnowledgeAgent: Synced'],
     sources: [
       {
         title: "PM Kisan Samman Nidhi",
@@ -39,7 +39,7 @@ export default function SovereignStudio() {
     }
     return 'sess_' + Math.random().toString(36).substring(2, 9);
   });
-  
+
   // Persist selected language from localStorage or default to 'auto'
   const [selectedLanguage, setSelectedLanguage] = useState(() => {
     return localStorage.getItem('bhashabridge_selected_code') || 'auto';
@@ -80,8 +80,8 @@ export default function SovereignStudio() {
         content: 'నమస్కారం! కొత్త సంభాషణ ప్రారంభమైంది. మీ ప్రశ్న అడగండి.\nNew session started. How can I help you today?',
         language: selectedLanguage === 'auto' ? 'te-IN' : selectedLanguage,
         verified: false,
-        modelUsed: 'BhashaBridge AI',
-        agentTrace: [],
+        modelUsed: 'gemini-4-hydrogen',
+        agentTrace: ['OrchestratorAgent: Reset Session'],
         sources: []
       }
     ];
@@ -150,11 +150,11 @@ export default function SovereignStudio() {
 
   const handleMosaicSubmit = ({ prompt, platform, model, files }) => {
     // Connect template submission directly to existing AI Engine
-    const fullPrompt = files && files.length > 0 
+    const fullPrompt = files && files.length > 0
       ? `${prompt} (Platform: ${platform}, Model: ${model}, Attached: ${files.join(', ')})`
       : prompt;
     handleSendMessage(fullPrompt);
-    
+
     // Smoothly scroll to the voice console conversation section
     setTimeout(() => {
       const consoleEl = document.getElementById('voice-console-section');
@@ -164,7 +164,7 @@ export default function SovereignStudio() {
 
   return (
     <div className="min-h-screen bg-[#050506] text-[#f5f5f6] flex flex-col justify-between selection:bg-cyan-500/20 selection:text-cyan-200">
-      
+
       {/* 1. Header with complete 9-item navigation & dynamic multilingual switch */}
       <Header
         selectedLanguage={selectedLanguage}

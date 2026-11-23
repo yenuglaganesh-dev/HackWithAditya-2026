@@ -102,29 +102,29 @@ class OrchestratorAgent:
         # Step 6: Verification
         verification = self.verify_agent.verify(response_text, citations)
         if citations and verification["verified"]:
-            agent_trace.append("Verified against official scheme references")
+            agent_trace.append("VerificationAgent: Verified against official scheme references")
         else:
-            agent_trace.append("General guidance")
+            agent_trace.append("VerificationAgent: Conversational / General guidance")
 
         # Step 7: Update Conversation History
         self.memory.add_message(request.session_id, "user", request.message)
         self.memory.add_message(request.session_id, "assistant", response_text)
 
-        # Step 8: Audio Synthesis (TTS provider abstraction)
+        # Step 8: Audio Synthesis (Sarvam TTS if active, else client fallback)
         audio_payload = None
         if self.speech.is_sarvam_tts_active():
             synth_res = await self.speech.synthesize_speech(text=response_text, language=target_lang)
             if synth_res.get("success"):
                 audio_payload = synth_res.get("audio_base64")
-                agent_trace.append("Synthesized audio response")
+                agent_trace.append(f"VoiceAgent: Synthesized natural audio via Sarvam {synth_res.get('speaker')}")
 
         return ChatResponse(
             session_id=request.session_id,
             response=response_text,
             language=target_lang,
             detected_language=detected_info["language"],
-            model_used="BhashaBridge AI",
-            agent_trace=[],
+            model_used=model_used,
+            agent_trace=agent_trace,
             sources=citations if (citations and not is_greeting) else [],
             verified=verification["verified"] if (citations and not is_greeting) else False,
             verification_notes=verification.get("notes"),

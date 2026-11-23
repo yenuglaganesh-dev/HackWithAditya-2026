@@ -32,16 +32,16 @@ export default function Home() {
 
   return (
     <div className="pt-24 pb-20">
-      
+
       {/* HERO SECTION */}
       <section className="relative overflow-hidden pt-8 pb-16 md:pt-12 md:pb-24">
-        
+
         {/* Soft Ambient Glow */}
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[380px] bg-sky-500/10 blur-3xl pointer-events-none rounded-full" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center max-w-4xl mx-auto space-y-6">
-            
+
             {/* Pill Banner */}
             <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 shadow-sm">
               <span className="flex h-2 w-2 rounded-full bg-sky-400 animate-pulse" />
@@ -100,7 +100,7 @@ export default function Home() {
       {/* INTERACTIVE VOICE ACCENT DEMO IN MOSAIC GLASS */}
       <section className="py-16 border-y border-white/10 bg-[#050506]/50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
-          
+
           <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
             <h2 className="text-xs font-bold text-sky-400 tracking-widest uppercase">
               Real Multi-Dialect Demonstration
@@ -109,7 +109,7 @@ export default function Home() {
               Instant Knowledge in Your Mother Tongue
             </h3>
             <p className="text-sm text-zinc-400">
-              Select an Indic dialect below to preview speech recognition and verified knowledge responses.
+              Select an Indic dialect below to preview speech recognition and verified ChromaDB RAG responses.
             </p>
           </div>
 
@@ -120,11 +120,10 @@ export default function Home() {
                 <button
                   key={code}
                   onClick={() => setActiveVoiceDemo(code)}
-                  className={`px-5 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-                    activeVoiceDemo === code
-                      ? 'bg-gradient-to-r from-sky-400 to-cyan-300 text-[#06233a] shadow-md shadow-sky-400/20 scale-105'
-                      : 'bg-white/5 text-zinc-400 hover:text-white hover:bg-white/10 border border-white/10'
-                  }`}
+                  className={`px-5 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${activeVoiceDemo === code
+                    ? 'bg-gradient-to-r from-sky-400 to-cyan-300 text-[#06233a] shadow-md shadow-sky-400/20 scale-105'
+                    : 'bg-white/5 text-zinc-400 hover:text-white hover:bg-white/10 border border-white/10'
+                    }`}
                 >
                   {voiceDemos[code].lang}
                 </button>
@@ -133,7 +132,7 @@ export default function Home() {
 
             {/* Current Selected Demo */}
             <div className="space-y-6">
-              
+
               {/* Citizen Question */}
               <div className="p-5 rounded-2xl bg-white/5 border border-white/10">
                 <div className="flex items-center justify-between text-xs font-bold text-zinc-400 mb-2">
@@ -156,7 +155,7 @@ export default function Home() {
                 <div className="flex items-center justify-between text-xs font-bold text-sky-300 mb-2">
                   <span className="flex items-center gap-1.5">
                     <CheckCircle2 className="w-4 h-4 text-sky-400" />
-                    Verified Sources (Verified Knowledge Grounding):
+                    Verified RAG Answer (OpenRouter Free Tier + ChromaDB):
                   </span>
                   <span className="bg-sky-400 text-[#06233a] px-2 py-0.5 rounded text-[10px] font-mono font-bold">
                     VERIFIED

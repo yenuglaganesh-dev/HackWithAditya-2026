@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { 
-  Mic, MicOff, Send, Square, Play, Pause, XCircle, 
+import {
+  Mic, MicOff, Send, Square, Play, Pause, XCircle,
   Sparkles, Loader2, Database, Search, Volume2
 } from 'lucide-react';
 import { useSpeechRecognition } from '../hooks/useSpeechRecognition';
@@ -112,7 +112,7 @@ export default function AssistantChatComposer({
   return (
     <div className="w-full bg-[#070b14]/90 backdrop-blur-md border-t border-white/[0.08] p-3 sm:p-4">
       <div className="max-w-3xl mx-auto space-y-2.5">
-        
+
         {/* Recording Animation Bar (When active) */}
         {isRecording && (
           <div className="flex items-center justify-between px-4 py-2.5 rounded-2xl bg-gradient-to-r from-red-500/15 via-rose-500/20 to-sky-500/15 border border-rose-500/30 text-xs text-white shadow-lg animate-pulse">
@@ -185,16 +185,15 @@ export default function AssistantChatComposer({
 
         {/* ChatGPT Style Glass Input Composer Box */}
         <div className="relative flex items-end gap-2 p-2 rounded-2xl bg-white/[0.04] hover:bg-white/[0.06] border border-white/[0.1] focus-within:border-cyan-400/50 focus-within:ring-1 focus-within:ring-cyan-400/30 transition-all shadow-inner">
-          
+
           {/* Microphone Action Button */}
           <button
             type="button"
             onClick={toggleRecording}
-            className={`p-2.5 rounded-xl transition-all duration-200 cursor-pointer shrink-0 ${
-              isRecording
-                ? 'bg-rose-500 text-white shadow-lg shadow-rose-500/40 animate-pulse'
-                : 'text-slate-400 hover:text-cyan-300 hover:bg-white/[0.08]'
-            }`}
+            className={`p-2.5 rounded-xl transition-all duration-200 cursor-pointer shrink-0 ${isRecording
+              ? 'bg-rose-500 text-white shadow-lg shadow-rose-500/40 animate-pulse'
+              : 'text-slate-400 hover:text-cyan-300 hover:bg-white/[0.08]'
+              }`}
             title={isRecording ? 'Stop Recording' : 'Speak to BhashaBridge AI'}
           >
             {isRecording ? <Square className="w-5 h-5 fill-current" /> : <Mic className="w-5 h-5" />}
@@ -233,11 +232,10 @@ export default function AssistantChatComposer({
             type="button"
             onClick={handleSubmit}
             disabled={!input.trim() || isLoading}
-            className={`p-2.5 rounded-xl transition-all duration-200 cursor-pointer shrink-0 ${
-              input.trim() && !isLoading
-                ? 'bg-gradient-to-r from-sky-400 to-cyan-300 text-[#07131e] font-bold shadow-md shadow-cyan-400/20 hover:scale-105'
-                : 'bg-white/5 text-slate-600 cursor-not-allowed'
-            }`}
+            className={`p-2.5 rounded-xl transition-all duration-200 cursor-pointer shrink-0 ${input.trim() && !isLoading
+              ? 'bg-gradient-to-r from-sky-400 to-cyan-300 text-[#07131e] font-bold shadow-md shadow-cyan-400/20 hover:scale-105'
+              : 'bg-white/5 text-slate-600 cursor-not-allowed'
+              }`}
             title="Send message (Enter)"
           >
             {isLoading ? (
@@ -252,31 +250,29 @@ export default function AssistantChatComposer({
         {/* Feature Toggles & Capabilities bar */}
         <div className="flex items-center justify-between flex-wrap gap-2 text-[11px] text-slate-400 px-1">
           <div className="flex items-center gap-2">
-            
+
             {/* RAG Verification Pill */}
             <button
               type="button"
               onClick={() => setEnableRag(!enableRag)}
-              className={`flex items-center gap-1 px-2.5 py-1 rounded-full border transition cursor-pointer font-medium ${
-                enableRag 
-                  ? 'bg-sky-500/10 text-cyan-300 border-sky-400/30' 
-                  : 'bg-white/[0.02] text-slate-400 border-white/[0.06]'
-              }`}
-              title="Toggle Verified Knowledge Base"
+              className={`flex items-center gap-1 px-2.5 py-1 rounded-full border transition cursor-pointer font-medium ${enableRag
+                ? 'bg-sky-500/10 text-cyan-300 border-sky-400/30'
+                : 'bg-white/[0.02] text-slate-400 border-white/[0.06]'
+                }`}
+              title="Toggle ChromaDB Welfare Scheme RAG Knowledge Base"
             >
               <Database className="w-3 h-3 text-cyan-400" />
-              <span>Verified Knowledge</span>
+              <span>RAG Knowledge</span>
             </button>
 
             {/* Deep Research Pill */}
             <button
               type="button"
               onClick={() => setEnableResearch(!enableResearch)}
-              className={`flex items-center gap-1 px-2.5 py-1 rounded-full border transition cursor-pointer font-medium ${
-                enableResearch 
-                  ? 'bg-indigo-500/15 text-indigo-300 border-indigo-400/30' 
-                  : 'bg-white/[0.02] text-slate-400 border-white/[0.06]'
-              }`}
+              className={`flex items-center gap-1 px-2.5 py-1 rounded-full border transition cursor-pointer font-medium ${enableResearch
+                ? 'bg-indigo-500/15 text-indigo-300 border-indigo-400/30'
+                : 'bg-white/[0.02] text-slate-400 border-white/[0.06]'
+                }`}
               title="Enable Deep Web Research on Government Portals"
             >
               <Search className="w-3 h-3 text-indigo-400" />
@@ -287,11 +283,10 @@ export default function AssistantChatComposer({
             <button
               type="button"
               onClick={() => setAutoSpeak(!autoSpeak)}
-              className={`flex items-center gap-1 px-2.5 py-1 rounded-full border transition cursor-pointer font-medium ${
-                autoSpeak 
-                  ? 'bg-emerald-500/10 text-emerald-300 border-emerald-400/30' 
-                  : 'bg-white/[0.02] text-slate-400 border-white/[0.06]'
-              }`}
+              className={`flex items-center gap-1 px-2.5 py-1 rounded-full border transition cursor-pointer font-medium ${autoSpeak
+                ? 'bg-emerald-500/10 text-emerald-300 border-emerald-400/30'
+                : 'bg-white/[0.02] text-slate-400 border-white/[0.06]'
+                }`}
               title="Automatically read aloud new AI answers"
             >
               <Volume2 className="w-3 h-3 text-emerald-400" />

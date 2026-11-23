@@ -26,10 +26,12 @@ public class AiIntegrationService {
                 .onErrorResume(e -> {
                     ChatDto.Response fallback = new ChatDto.Response();
                     fallback.setSession_id(request.getSession_id());
-                    fallback.setResponse("I'm temporarily unable to respond. Please try again in a moment.");
+                    fallback.setResponse(
+                            "Error connecting to AI backend engine. Please check that the Python AI service is running on port 8000: "
+                                    + e.getMessage());
                     fallback.setLanguage(request.getLanguage());
                     fallback.setDetected_language("en-IN");
-                    fallback.setModel_used("BhashaBridge AI");
+                    fallback.setModel_used("gateway-fallback");
                     return Mono.just(fallback);
                 });
     }

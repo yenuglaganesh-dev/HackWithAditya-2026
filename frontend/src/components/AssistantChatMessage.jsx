@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { 
-  Volume2, VolumeX, Pause, Play, RotateCcw, Copy, Check, 
-  Bot, User, Sparkles, ShieldCheck, CheckCircle2, ExternalLink 
+import {
+  Volume2, VolumeX, Pause, Play, RotateCcw, Copy, Check,
+  Bot, User, Sparkles, ShieldCheck, CheckCircle2, ExternalLink
 } from 'lucide-react';
 
 export default function AssistantChatMessage({
@@ -24,32 +24,30 @@ export default function AssistantChatMessage({
   };
 
   return (
-    <div className={`w-full py-4 px-3 sm:px-6 transition-colors duration-200 ${
-      isUser ? 'bg-transparent' : 'bg-[#0f172a]/40 border-y border-white/[0.04]'
-    }`}>
+    <div className={`w-full py-4 px-3 sm:px-6 transition-colors duration-200 ${isUser ? 'bg-transparent' : 'bg-[#0f172a]/40 border-y border-white/[0.04]'
+      }`}>
       <div className="max-w-3xl mx-auto flex gap-4">
-        
+
         {/* Avatar */}
-        <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-sm font-semibold shadow-md ${
-          isUser 
-            ? 'bg-gradient-to-tr from-sky-500 to-cyan-400 text-[#050b14]' 
-            : 'bg-gradient-to-tr from-indigo-500 via-sky-600 to-cyan-400 text-white shadow-cyan-500/10'
-        }`}>
+        <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-sm font-semibold shadow-md ${isUser
+          ? 'bg-gradient-to-tr from-sky-500 to-cyan-400 text-[#050b14]'
+          : 'bg-gradient-to-tr from-indigo-500 via-sky-600 to-cyan-400 text-white shadow-cyan-500/10'
+          }`}>
           {isUser ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
         </div>
 
         {/* Message Content Container */}
         <div className="flex-1 min-w-0 space-y-2">
-          
-          {/* Header row (name, status, timestamp) */}
+
+          {/* Header row (name, model, timestamp) */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold text-slate-200">
                 {isUser ? 'You' : 'BhashaBridge AI'}
               </span>
-              {!isUser && (
+              {!isUser && message.modelUsed && (
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-300 border border-sky-400/20 font-medium">
-                  Assistant
+                  {message.modelUsed.split('/').pop()}
                 </span>
               )}
               {message.detectedLanguage && (
@@ -103,7 +101,7 @@ export default function AssistantChatMessage({
           {/* Action toolbar (Listen / Pause / Resume / Stop / Replay / Copy) */}
           {!isUser && (
             <div className="flex items-center flex-wrap gap-1.5 pt-2 text-xs">
-              
+
               {/* Play / Pause / Resume / Stop controls */}
               {!isCurrentlyPlaying ? (
                 <button
@@ -171,11 +169,11 @@ export default function AssistantChatMessage({
                 <span>{copied ? 'Copied' : 'Copy'}</span>
               </button>
 
-              {/* Verified Sources Tag */}
-              {message.sources && message.sources.length > 0 && (
-                <div className="hidden sm:flex items-center gap-1 text-[11px] text-emerald-400 ml-auto font-medium">
-                  <ShieldCheck className="w-3 h-3 text-emerald-400" />
-                  <span>Verified Sources</span>
+              {/* Agent Orchestration Tag */}
+              {message.agentTrace && message.agentTrace.length > 0 && (
+                <div className="hidden sm:flex items-center gap-1 text-[11px] text-slate-500 ml-auto">
+                  <Sparkles className="w-3 h-3 text-sky-400" />
+                  <span>Verified 7-Agent Mesh</span>
                 </div>
               )}
 

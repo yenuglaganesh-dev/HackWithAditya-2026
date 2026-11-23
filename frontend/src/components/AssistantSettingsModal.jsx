@@ -21,7 +21,7 @@ export default function AssistantSettingsModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
       <div className="w-full max-w-md rounded-2xl bg-[#0c1220] border border-white/10 shadow-2xl text-slate-200 overflow-hidden">
-        
+
         {/* Header */}
         <div className="p-4 border-b border-white/[0.08] flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -41,7 +41,7 @@ export default function AssistantSettingsModal({
 
         {/* Content body */}
         <div className="p-5 space-y-5 text-xs">
-          
+
           {/* Primary Language */}
           <div className="space-y-1.5">
             <label className="font-semibold text-slate-300 flex items-center gap-1.5">
@@ -108,14 +108,14 @@ export default function AssistantSettingsModal({
             />
           </div>
 
-          {/* Assistant Info Badge */}
+          {/* Backend Info Badge */}
           <div className="p-3 rounded-xl bg-sky-950/40 border border-sky-400/20 text-[11px] text-slate-300 space-y-1">
             <div className="flex items-center gap-1.5 font-bold text-sky-300">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>BhashaBridge AI Assistant</span>
+              <span>Multi-Agent AI Engine</span>
             </div>
-            <div>Status: <span className="font-mono text-cyan-200 font-semibold">{backendStatus?.connected ? 'Ready' : 'Standby'}</span></div>
-            <div>Capabilities: <span className="text-slate-400">Multilingual Speech In & Out • Verified Knowledge Grounding</span></div>
+            <div>Model: <span className="font-mono text-cyan-200 font-semibold">{backendStatus?.model || 'gemini-4-hydrogen'}</span></div>
+            <div>Architecture: <span className="text-slate-400">FastAPI • ChromaDB RAG • OpenRouter Free Tier</span></div>
           </div>
 
         </div>

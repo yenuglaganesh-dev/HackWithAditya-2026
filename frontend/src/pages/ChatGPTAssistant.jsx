@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  Menu, Plus, Sparkles, Globe, Settings, Volume2, 
+import {
+  Menu, Plus, Sparkles, Globe, Settings, Volume2,
   Trash2, ShieldCheck, Database, RefreshCw, AlertCircle
 } from 'lucide-react';
 import AssistantSidebar from '../components/AssistantSidebar';
@@ -28,7 +28,7 @@ export default function ChatGPTAssistant() {
   const [speechRate, setSpeechRate] = useState(1.0);
 
   // Backend status
-  const [backendStatus, setBackendStatus] = useState({ connected: false, model: 'BhashaBridge AI' });
+  const [backendStatus, setBackendStatus] = useState({ connected: false, model: 'gemini-4-hydrogen' });
 
   // Conversations history state
   const [conversations, setConversations] = useState(() => {
@@ -67,13 +67,13 @@ export default function ChatGPTAssistant() {
   const chatBottomRef = useRef(null);
 
   // Dedicated speech synthesis and audio hook
-  const { 
-    playAudio, 
-    stop: stopVoice, 
-    pause: pauseVoice, 
-    resume: resumeVoice, 
-    isPlaying: isVoicePlaying, 
-    isPaused: isVoicePaused 
+  const {
+    playAudio,
+    stop: stopVoice,
+    pause: pauseVoice,
+    resume: resumeVoice,
+    isPlaying: isVoicePlaying,
+    isPaused: isVoicePaused
   } = useVoiceAudio();
 
   // Find active conversation
@@ -235,12 +235,12 @@ export default function ChatGPTAssistant() {
       const errorMsg = {
         id: 'msg_err_' + Date.now(),
         role: 'assistant',
-        content: "I'm temporarily unable to respond. Please try again in a moment.",
+        content: `Error: Unable to connect to the AI engine. Please verify the Python AI server is running on port 8000.\nDetails: ${err.message}`,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        modelUsed: 'BhashaBridge AI',
+        modelUsed: 'system-error',
         detectedLanguage: 'en',
         sources: [],
-        agentTrace: []
+        agentTrace: ['System: Connection Error']
       };
       updateActiveMessages(prev => [...prev, errorMsg]);
     } finally {
@@ -280,7 +280,7 @@ export default function ChatGPTAssistant() {
 
   return (
     <div className="flex h-screen w-full bg-[#05070d] text-slate-100 font-sans overflow-hidden">
-      
+
       {/* ChatGPT Style Sidebar */}
       <AssistantSidebar
         conversations={conversations}
@@ -296,7 +296,7 @@ export default function ChatGPTAssistant() {
 
       {/* Main Conversation Area */}
       <main className="flex-1 flex flex-col h-full min-w-0 relative bg-gradient-to-b from-[#070b14] via-[#05070d] to-[#04060a]">
-        
+
         {/* Top Floating App Bar */}
         <header className="h-14 border-b border-white/[0.06] bg-[#070b14]/80 backdrop-blur-md px-4 flex items-center justify-between shrink-0 z-20">
           <div className="flex items-center gap-3">
@@ -324,7 +324,7 @@ export default function ChatGPTAssistant() {
 
           {/* Right Header Actions */}
           <div className="flex items-center gap-2">
-            
+
             {/* Language Quick Dropdown */}
             <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-white/[0.04] border border-white/[0.08] text-xs text-slate-300">
               <Globe className="w-3.5 h-3.5 text-cyan-400" />
