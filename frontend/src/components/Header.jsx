@@ -12,13 +12,6 @@ export default function Header({ onNewChat }) {
 
   const navItems = [
     { name: t('nav.home', 'Home'), path: '/' },
-    { name: t('nav.about', 'About'), path: '/about' },
-    { name: t('nav.features', 'Features'), path: '/features' },
-    { name: t('nav.agents', 'AI Agents'), path: '/agents' },
-    { name: t('nav.technology', 'Technology'), path: '/technology' },
-    { name: t('nav.howItWorks', 'How It Works'), path: '/how-it-works' },
-    { name: t('nav.useCases', 'Use Cases'), path: '/use-cases' },
-    { name: t('nav.portfolio', 'Portfolio'), path: '/portfolio' },
     { name: t('nav.voiceAssistant', 'Voice Assistant'), path: '/assistant' },
   ];
 

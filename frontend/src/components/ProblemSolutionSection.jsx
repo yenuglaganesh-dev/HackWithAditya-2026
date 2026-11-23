@@ -101,13 +101,6 @@ export default function ProblemSolutionSection() {
               <span>Launch Voice Console</span>
               <ArrowRight className="w-4 h-4 text-[#06233a]" />
             </Link>
-
-            <Link
-              to="/agents"
-              className="flex items-center gap-2 px-5 py-3.5 rounded-2xl bg-white/5 hover:bg-white/10 text-white border border-white/10 text-sm font-bold transition cursor-pointer"
-            >
-              <span>View 7-Agent Mesh</span>
-            </Link>
           </div>
         </div>
 

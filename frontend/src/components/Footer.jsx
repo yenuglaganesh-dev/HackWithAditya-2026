@@ -47,14 +47,7 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2 text-xs">
               <li><Link to="/" className="text-zinc-400 hover:text-white font-medium transition">Home</Link></li>
-              <li><Link to="/about" className="text-zinc-400 hover:text-white font-medium transition">About the Mission</Link></li>
-              <li><Link to="/features" className="text-zinc-400 hover:text-white font-medium transition">Key Capabilities</Link></li>
-              <li><Link to="/agents" className="text-zinc-400 hover:text-white font-medium transition">AI Agents Mesh</Link></li>
-              <li><Link to="/technology" className="text-zinc-400 hover:text-white font-medium transition">Multi-Agent Tech</Link></li>
-              <li><Link to="/how-it-works" className="text-zinc-400 hover:text-white font-medium transition">How It Works</Link></li>
-              <li><Link to="/use-cases" className="text-zinc-400 hover:text-white font-medium transition">Use Cases in Bharat</Link></li>
-              <li><Link to="/portfolio" className="text-zinc-400 hover:text-white font-medium transition">Engineering Portfolio</Link></li>
-              <li><Link to="/assistant" className="text-sky-400 font-bold hover:underline transition">Launch AI Assistant</Link></li>
+              <li><Link to="/assistant" className="text-sky-400 font-bold hover:underline transition">Launch AI Voice Assistant</Link></li>
             </ul>
           </div>
 

@@ -38,13 +38,6 @@ export default function SovereignFooter() {
           {/* Quick Page Links */}
           <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-zinc-400">
             <Link to="/" className="hover:text-white transition">Home</Link>
-            <Link to="/about" className="hover:text-white transition">About</Link>
-            <Link to="/features" className="hover:text-white transition">Features</Link>
-            <Link to="/agents" className="hover:text-white transition">AI Agents</Link>
-            <Link to="/technology" className="hover:text-white transition">Technology</Link>
-            <Link to="/how-it-works" className="hover:text-white transition">How It Works</Link>
-            <Link to="/use-cases" className="hover:text-white transition">Use Cases</Link>
-            <Link to="/portfolio" className="hover:text-white transition">Portfolio</Link>
             <Link to="/assistant" className="text-sky-400 hover:text-sky-300 font-semibold transition">Voice Assistant</Link>
           </div>
 
