@@ -77,6 +77,73 @@
   animation: orangePulse 1.6s ease-in-out infinite;
 }
 
+/* Hero Heading Text Glow Effect matching Reference */
+.hero-heading-glow {
+  color: #1a1a1c;
+  text-shadow: 
+    0 0 1px rgba(245, 130, 32, 0.55),
+    0 1px 3px rgba(245, 130, 32, 0.28),
+    0 2px 10px rgba(245, 130, 32, 0.12);
+  -webkit-text-stroke: 0.5px rgba(245, 130, 32, 0.45);
+}
+
+/* Smooth Staggered Word Entrance (Upward + Blur to Sharp) */
+@keyframes heroWordEntrance {
+  0% {
+    opacity: 0;
+    transform: translateY(22px);
+    filter: blur(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0px);
+  }
+}
+
+.hero-word-animate {
+  display: inline-block;
+  opacity: 0;
+  animation: heroWordEntrance 0.95s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity, filter;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-word-animate {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    animation: none !important;
+  }
+}
+
+/* Floating Orange Dots Animation */
+@keyframes floatDotDown {
+  0% {
+    transform: translateY(-8px) translateX(0);
+    opacity: 0;
+  }
+  20% {
+    opacity: var(--dot-opacity, 0.45);
+  }
+  80% {
+    opacity: var(--dot-opacity, 0.45);
+  }
+  100% {
+    transform: translateY(48px) translateX(var(--dot-sway, 6px));
+    opacity: 0;
+  }
+}
+
+.hero-floating-dot {
+  position: absolute;
+  border-radius: 9999px;
+  background-color: #F58220;
+  pointer-events: none;
+  animation: floatDotDown var(--dot-duration, 5s) cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  animation-delay: var(--dot-delay, 0s);
+}
+
 /* Scrollbar clean styling */
 ::-webkit-scrollbar {
   width: 8px;

@@ -20,6 +20,7 @@ import { useSpeechSynthesis } from '../hooks/useSpeechSynthesis';
 import { sendChatMessage } from '../services/api';
 import { useLanguage } from '../context/LanguageContext';
 import StrokeText from '../components/ui/StrokeText';
+import HeroHeading from '../components/ui/HeroHeading';
 import SwarmMeshSection from '../components/SwarmMeshSection';
 import CapabilitiesSection from '../components/CapabilitiesSection';
 
@@ -140,31 +141,8 @@ export default function Home() {
               </span>
             </div>
 
-            {/* Main Hero Heading with Animated Stroke & Liquid Fill */}
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-headline font-black text-[#202124] tracking-tight leading-[1.15]">
-              <span className="sr-only">Your Voice. Your Language. Your AI.</span>
-              <div className="w-full max-w-4xl mx-auto py-1">
-                <StrokeText
-                  text="Your Voice. Your Language. Your AI."
-                  strokeColor="#F58220"
-                  fillColor="#202124"
-                  strokeStyle="solid"
-                  strokeWidth={1.6}
-                  drawDuration={1.8}
-                  fillDelay={0.25}
-                  stagger={0.04}
-                  ease="power2.out"
-                  trigger="mount"
-                  fillMode="wipe"
-                  wipeFrom="bottom"
-                  fontSize={84}
-                  fontWeight={900}
-                  letterSpacing={-2}
-                  hoverRedraw={true}
-                  shadow={false}
-                />
-              </div>
-            </h1>
+            {/* Main Hero Heading Matching Reference */}
+            <HeroHeading />
 
             {/* Subheading */}
             <h2 className="text-xl sm:text-2xl font-semibold text-[#202124]">
