@@ -12,11 +12,11 @@
     "newChat": "New Chat",
     "motionBlur": "Motion Blur",
     "live": "Live",
-    "tagline": "Voice & Language AI for Bharat",
+    "tagline": "Multilingual AI Assistant",
     "tryAssistant": "Try AI Assistant"
   },
   "hero": {
-    "pill": "BhashaBridge AI • AI for Bharat",
+    "pill": "BhashaBridge AI",
     "headline1": "Voice & Language AI for",
     "headlineHighlight": "Bharat",
     "description": "Intelligent voice assistant enabling natural communication in Telugu, Hindi & English with code-mixed dialect understanding and verified government knowledge.",
@@ -84,7 +84,7 @@
     "c4Tag": "Citizen Impact"
   },
   "footer": {
-    "copyright": "© 2026 BhashaBridge AI • Voice & Language AI for Bharat",
+    "copyright": "© 2026 BhashaBridge AI",
     "tech": "ChromaDB RAG • OpenRouter Free LLM",
     "hackathon": "HackWithAditya 2026"
   },

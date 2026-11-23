@@ -137,7 +137,7 @@ export default function Home() {
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#FFF3E8] border border-[#FBD3B6]">
               <span className="flex h-2 w-2 rounded-full bg-[#F58220] animate-pulse" />
               <span className="text-xs font-bold text-[#E96B16] tracking-wide">
-                BhashaBridge AI – Voice & Language AI for Bharat
+                BhashaBridge AI
               </span>
             </div>
 
