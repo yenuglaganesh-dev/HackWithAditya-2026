@@ -10,17 +10,7 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { selectedLanguage, changeLanguage } = useLanguage();
 
-  const navLinks = [
-    { name: t('nav.home', 'Home'), path: '/' },
-    { name: t('nav.about', 'About'), path: '/about' },
-    { name: t('nav.features', 'Features'), path: '/features' },
-    { name: t('nav.agents', 'AI Agents'), path: '/agents' },
-    { name: t('nav.technology', 'Technology'), path: '/technology' },
-    { name: t('nav.howItWorks', 'How It Works'), path: '/how-it-works' },
-    { name: t('nav.useCases', 'Use Cases'), path: '/use-cases' },
-    { name: t('nav.portfolio', 'Portfolio'), path: '/portfolio' },
-    { name: t('nav.voiceAssistant', 'Voice Assistant'), path: '/assistant' },
-  ];
+  const navLinks = [];
 
   const handleLangSelect = (code) => {
     changeLanguage(code);
@@ -101,53 +91,14 @@ export default function Navbar() {
           {/* Voice Assistant CTA Button */}
           <Link
             to="/assistant"
-            className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-[#F58220] to-[#E96B16] hover:brightness-105 shadow-md shadow-orange-500/25 active:scale-95 transition-all cursor-pointer"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-[#F58220] to-[#E96B16] hover:brightness-105 shadow-md shadow-orange-500/25 active:scale-95 transition-all cursor-pointer"
           >
             <Mic className="w-3.5 h-3.5 text-white" />
             <span>Voice Assistant</span>
           </Link>
 
-          {/* Mobile Hamburger */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden w-9 h-9 rounded-xl bg-[#F8F9FA] border border-[#E8EAED] flex items-center justify-center text-[#202124]"
-            aria-label="Toggle navigation menu"
-          >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
-
         </div>
       </div>
-
-      {/* Mobile Drawer */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden bg-white border-b border-[#E8EAED] px-4 pt-2 pb-6 space-y-2 shadow-lg">
-          {navLinks.map((link) => (
-            <Link
-              key={link.path}
-              to={link.path}
-              onClick={() => setMobileMenuOpen(false)}
-              className={`block px-4 py-2.5 rounded-xl text-sm font-semibold ${
-                isActive(link.path)
-                  ? 'bg-[#FFF3E8] text-[#F58220]'
-                  : 'text-[#202124] hover:bg-[#F8F9FA]'
-              }`}
-            >
-              {link.name}
-            </Link>
-          ))}
-          <div className="pt-2">
-            <Link
-              to="/assistant"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-[#F58220] to-[#E96B16] shadow-md shadow-orange-500/25"
-            >
-              <Mic className="w-4 h-4 text-white" />
-              <span>Launch Voice Assistant</span>
-            </Link>
-          </div>
-        </div>
-      )}
     </nav>
   );
 }

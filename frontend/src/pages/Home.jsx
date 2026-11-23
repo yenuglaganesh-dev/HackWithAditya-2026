@@ -20,6 +20,8 @@ import { useSpeechSynthesis } from '../hooks/useSpeechSynthesis';
 import { sendChatMessage } from '../services/api';
 import { useLanguage } from '../context/LanguageContext';
 import StrokeText from '../components/ui/StrokeText';
+import SwarmMeshSection from '../components/SwarmMeshSection';
+import CapabilitiesSection from '../components/CapabilitiesSection';
 
 export default function Home() {
   const { t } = useTranslation();
@@ -397,6 +399,16 @@ export default function Home() {
           </div>
 
         </div>
+      </section>
+
+      {/* 5. 7-AGENT AUTONOMOUS ARCHITECTURE */}
+      <section className="py-8">
+        <SwarmMeshSection />
+      </section>
+
+      {/* 6. CORE CAPABILITIES */}
+      <section className="py-8">
+        <CapabilitiesSection />
       </section>
 
     </div>
