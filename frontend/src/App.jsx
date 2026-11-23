@@ -43,6 +43,9 @@ export default function App() {
           <Route path="/how-it-works" element={<PageWrapper><HowItWorks /></PageWrapper>} />
           <Route path="/use-cases" element={<PageWrapper><UseCases /></PageWrapper>} />
           <Route path="/assistant" element={<PageWrapper><Assistant /></PageWrapper>} />
+
+          {/* Fallback route */}
+          <Route path="*" element={<PageWrapper><Home /></PageWrapper>} />
         </Routes>
       </BrowserRouter>
     </LanguageProvider>
