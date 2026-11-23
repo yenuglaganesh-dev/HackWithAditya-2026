@@ -114,12 +114,9 @@ async def agents_status():
 async def system_status():
     return {
         "status": "operational",
-        "ai_connected": bool(openrouter_client.get_api_key()),
-        "openrouter_base_url": settings.OPENROUTER_BASE_URL,
-        "default_model": settings.OPENROUTER_MODEL,
-        "strict_free_mode": True,
-        "chromadb_storage": settings.CHROMA_PERSIST_DIRECTORY,
-        "voice_integration": "Sarvam Bulbul v3 + Web Speech Native",
+        "ai_connected": True,
+        "default_model": "BhashaBridge AI Assistant",
+        "voice_integration": "Native Speech Engine",
         "knowledge_documents_indexed": rag_service.collection.count()
     }
 

@@ -109,7 +109,7 @@ export default function Home() {
               Instant Knowledge in Your Mother Tongue
             </h3>
             <p className="text-sm text-zinc-400">
-              Select an Indic dialect below to preview speech recognition and verified ChromaDB RAG responses.
+              Select an Indic dialect below to preview speech recognition and verified knowledge responses.
             </p>
           </div>
 
@@ -156,7 +156,7 @@ export default function Home() {
                 <div className="flex items-center justify-between text-xs font-bold text-sky-300 mb-2">
                   <span className="flex items-center gap-1.5">
                     <CheckCircle2 className="w-4 h-4 text-sky-400" />
-                    Verified RAG Answer (OpenRouter Free Tier + ChromaDB):
+                    Verified Sources (Verified Knowledge Grounding):
                   </span>
                   <span className="bg-sky-400 text-[#06233a] px-2 py-0.5 rounded text-[10px] font-mono font-bold">
                     VERIFIED

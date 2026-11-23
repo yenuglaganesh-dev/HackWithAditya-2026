@@ -262,10 +262,10 @@ export default function AssistantChatComposer({
                   ? 'bg-sky-500/10 text-cyan-300 border-sky-400/30' 
                   : 'bg-white/[0.02] text-slate-400 border-white/[0.06]'
               }`}
-              title="Toggle ChromaDB Welfare Scheme RAG Knowledge Base"
+              title="Toggle Verified Knowledge Base"
             >
               <Database className="w-3 h-3 text-cyan-400" />
-              <span>RAG Knowledge</span>
+              <span>Verified Knowledge</span>
             </button>
 
             {/* Deep Research Pill */}

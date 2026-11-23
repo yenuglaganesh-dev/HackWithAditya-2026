@@ -41,15 +41,15 @@ export default function AssistantChatMessage({
         {/* Message Content Container */}
         <div className="flex-1 min-w-0 space-y-2">
           
-          {/* Header row (name, model, timestamp) */}
+          {/* Header row (name, status, timestamp) */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold text-slate-200">
                 {isUser ? 'You' : 'BhashaBridge AI'}
               </span>
-              {!isUser && message.modelUsed && (
+              {!isUser && (
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-300 border border-sky-400/20 font-medium">
-                  {message.modelUsed.split('/').pop()}
+                  Assistant
                 </span>
               )}
               {message.detectedLanguage && (
@@ -171,11 +171,11 @@ export default function AssistantChatMessage({
                 <span>{copied ? 'Copied' : 'Copy'}</span>
               </button>
 
-              {/* Agent Orchestration Tag */}
-              {message.agentTrace && message.agentTrace.length > 0 && (
-                <div className="hidden sm:flex items-center gap-1 text-[11px] text-slate-500 ml-auto">
-                  <Sparkles className="w-3 h-3 text-sky-400" />
-                  <span>Verified 7-Agent Mesh</span>
+              {/* Verified Sources Tag */}
+              {message.sources && message.sources.length > 0 && (
+                <div className="hidden sm:flex items-center gap-1 text-[11px] text-emerald-400 ml-auto font-medium">
+                  <ShieldCheck className="w-3 h-3 text-emerald-400" />
+                  <span>Verified Sources</span>
                 </div>
               )}
 

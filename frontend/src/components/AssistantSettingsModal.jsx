@@ -108,14 +108,14 @@ export default function AssistantSettingsModal({
             />
           </div>
 
-          {/* Backend Info Badge */}
+          {/* Assistant Info Badge */}
           <div className="p-3 rounded-xl bg-sky-950/40 border border-sky-400/20 text-[11px] text-slate-300 space-y-1">
             <div className="flex items-center gap-1.5 font-bold text-sky-300">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Multi-Agent AI Engine</span>
+              <span>BhashaBridge AI Assistant</span>
             </div>
-            <div>Model: <span className="font-mono text-cyan-200 font-semibold">{backendStatus?.model || 'gemini-4-hydrogen'}</span></div>
-            <div>Architecture: <span className="text-slate-400">FastAPI • ChromaDB RAG • OpenRouter Free Tier</span></div>
+            <div>Status: <span className="font-mono text-cyan-200 font-semibold">{backendStatus?.connected ? 'Ready' : 'Standby'}</span></div>
+            <div>Capabilities: <span className="text-slate-400">Multilingual Speech In & Out • Verified Knowledge Grounding</span></div>
           </div>
 
         </div>

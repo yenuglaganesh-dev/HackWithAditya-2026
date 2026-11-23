@@ -18,8 +18,8 @@ const INITIAL_ASSISTANT_MESSAGES = [
     content: 'నమస్కారం! నేను భాషాబ్రిడ్జ్ (BhashaBridge AI). నేను తెలుగు, హిందీ మరియు ఇంగ్లీష్ లో మీ ప్రశ్నలకు సహాయం చేయగలను. మైక్రోఫోన్ నొక్కి మాట్లాడండి లేదా కింద టైప్ చేయండి.\n\nNamaste! I am BhashaBridge AI. How can I help you today with government schemes, healthcare, or agriculture?',
     language: 'te',
     verified: false,
-    modelUsed: 'gemini-4-hydrogen',
-    agentTrace: ['System: Initialized Welcome'],
+    modelUsed: 'BhashaBridge AI',
+    agentTrace: [],
     sources: []
   }
 ];
@@ -37,7 +37,7 @@ export default function Assistant() {
   const [selectedLanguage, setSelectedLanguage] = useState(() => localStorage.getItem('bhashabridge_selected_code') || 'auto');
   const [enableRag, setEnableRag] = useState(true);
   const [enableResearch, setEnableResearch] = useState(false);
-  const [backendStatus, setBackendStatus] = useState({ connected: false, model: 'gemini-4-hydrogen' });
+  const [backendStatus, setBackendStatus] = useState({ connected: false, model: 'BhashaBridge AI' });
 
   const [messages, setMessages] = useState(() => {
     try {
@@ -152,11 +152,11 @@ export default function Assistant() {
       console.error('Chat error:', err);
       const errorMsg = {
         role: 'assistant',
-        content: 'Kshaminchandi / Sorry, could not connect to the AI engine. Please ensure the backend is running.',
+        content: "I'm temporarily unable to respond. Please try again in a moment.",
         language: 'en',
         verified: false,
-        modelUsed: 'error',
-        agentTrace: ['System: Connection Failed'],
+        modelUsed: 'BhashaBridge AI',
+        agentTrace: [],
         sources: []
       };
       setMessages((prev) => [...prev, errorMsg]);

@@ -17,8 +17,8 @@ const INITIAL_STUDIO_MESSAGES = [
     content: 'నమస్కారం! నేను భాషాబ్రిడ్జ్ (BhashaBridge AI). నేను తెలుగు, हिन्दी మరియు English లో పీఎం కిసాన్, రైతు భరోసా, ఆయుష్మాన్ భారత్ వంటి పథకాల సమాచారాన్ని అందించగలను.\n\nNamaste! I am BhashaBridge AI. Speak or type your question in Telugu, Hindi, or English.',
     language: 'te-IN',
     verified: true,
-    modelUsed: 'gemini-4-hydrogen',
-    agentTrace: ['OrchestratorAgent: Ready', 'LanguageAgent: te/hi/en', 'KnowledgeAgent: Synced'],
+    modelUsed: 'BhashaBridge AI',
+    agentTrace: [],
     sources: [
       {
         title: "PM Kisan Samman Nidhi",
@@ -80,8 +80,8 @@ export default function SovereignStudio() {
         content: 'నమస్కారం! కొత్త సంభాషణ ప్రారంభమైంది. మీ ప్రశ్న అడగండి.\nNew session started. How can I help you today?',
         language: selectedLanguage === 'auto' ? 'te-IN' : selectedLanguage,
         verified: false,
-        modelUsed: 'gemini-4-hydrogen',
-        agentTrace: ['OrchestratorAgent: Reset Session'],
+        modelUsed: 'BhashaBridge AI',
+        agentTrace: [],
         sources: []
       }
     ];

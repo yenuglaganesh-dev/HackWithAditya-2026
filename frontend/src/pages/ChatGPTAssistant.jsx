@@ -28,7 +28,7 @@ export default function ChatGPTAssistant() {
   const [speechRate, setSpeechRate] = useState(1.0);
 
   // Backend status
-  const [backendStatus, setBackendStatus] = useState({ connected: false, model: 'gemini-4-hydrogen' });
+  const [backendStatus, setBackendStatus] = useState({ connected: false, model: 'BhashaBridge AI' });
 
   // Conversations history state
   const [conversations, setConversations] = useState(() => {
@@ -235,12 +235,12 @@ export default function ChatGPTAssistant() {
       const errorMsg = {
         id: 'msg_err_' + Date.now(),
         role: 'assistant',
-        content: `Error: Unable to connect to the AI engine. Please verify the Python AI server is running on port 8000.\nDetails: ${err.message}`,
+        content: "I'm temporarily unable to respond. Please try again in a moment.",
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        modelUsed: 'system-error',
+        modelUsed: 'BhashaBridge AI',
         detectedLanguage: 'en',
         sources: [],
-        agentTrace: ['System: Connection Error']
+        agentTrace: []
       };
       updateActiveMessages(prev => [...prev, errorMsg]);
     } finally {
