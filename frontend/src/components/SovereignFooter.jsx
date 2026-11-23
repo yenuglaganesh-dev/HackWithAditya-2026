@@ -1,12 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { Sparkles } from 'lucide-react';
 import { PixelText } from './ui/mosaic-prompt-template';
 
 export default function SovereignFooter() {
-  const { t } = useTranslation();
-
   return (
     <footer className="w-full bg-[#050506] border-t border-white/10 text-zinc-400 text-xs py-14 px-4 sm:px-6 lg:px-8 mt-12 relative z-10">
       <div className="max-w-7xl mx-auto space-y-10">
@@ -37,15 +34,8 @@ export default function SovereignFooter() {
 
           {/* Quick Page Links */}
           <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-zinc-400">
-            <Link to="/" className="hover:text-white transition">Home</Link>
-            <Link to="/about" className="hover:text-white transition">About</Link>
-            <Link to="/features" className="hover:text-white transition">Features</Link>
-            <Link to="/agents" className="hover:text-white transition">AI Agents</Link>
-            <Link to="/technology" className="hover:text-white transition">Technology</Link>
-            <Link to="/how-it-works" className="hover:text-white transition">How It Works</Link>
-            <Link to="/use-cases" className="hover:text-white transition">Use Cases</Link>
-            <Link to="/portfolio" className="hover:text-white transition">Portfolio</Link>
-            <Link to="/assistant" className="text-sky-400 hover:text-sky-300 font-semibold transition">Voice Assistant</Link>
+            <Link to="/" className="hover:text-white transition font-medium">Home</Link>
+            <Link to="/assistant" className="text-sky-400 hover:text-sky-300 font-bold transition">Launch AI Assistant</Link>
           </div>
 
           {/* Architecture Badge */}
