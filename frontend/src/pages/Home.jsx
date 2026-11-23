@@ -138,9 +138,9 @@ export default function Home() {
             </div>
 
             {/* Main Hero Heading */}
-            <h1 className="text-4xl sm:text-6xl font-headline font-bold text-[#202124] tracking-tight leading-[1.15]">
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-headline font-black text-[#202124] tracking-tight leading-[1.15]">
               Your Voice.{' '}
-              <span className="text-[#F58220]">
+              <span className="text-[#F58220] font-black">
                 Your Language.
               </span>{' '}
               Your AI.
