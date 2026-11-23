@@ -204,7 +204,7 @@ export default function SovereignStudio() {
           { name: "Gram Panchayat", price: 0, blurb: "For local community kiosks and village administration centres.", features: ["Offline-capable vector sync", "Multi-user citizen queue", "Kiosk audio playback", "Zero subscription fees"], cta: "Deploy Kiosk", featured: true, badge: "Community" },
           { name: "Developer", price: 0, blurb: "Open API integration for researchers and public service apps.", features: ["FastAPI REST endpoints", "7-Agent orchestration trace", "Custom ChromaDB indexing", "OpenRouter free router"], cta: "View API Docs" },
         ]}
-        footerNote="Built for 1.4B Indian Citizens • National Hackathon 2026."
+        footerNote="Built for 1.4B Indian Citizens • Free-First Sovereign AI."
         onSubmit={handleMosaicSubmit}
         onGetStarted={() => {
           const consoleEl = document.getElementById('voice-console-section');
