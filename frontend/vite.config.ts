@@ -34,6 +34,9 @@ export default defineConfig(() => {
         '@': path.resolve(import.meta.dirname || '.', '.'),
       },
     },
+    build: {
+      chunkSizeWarningLimit: 1500,
+    },
     server: {
       proxy: {
         '/api': {

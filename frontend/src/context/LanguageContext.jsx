@@ -12,21 +12,24 @@ export function LanguageProvider({ children }) {
     setSelectedLanguageState(code);
     const targetLang = code === 'auto' ? 'en' : (code.startsWith('te') ? 'te' : code.startsWith('hi') ? 'hi' : 'en');
     i18n.changeLanguage(targetLang);
-    localStorage.setItem('bhashabridge_lang', targetLang);
-    localStorage.setItem('bhashabridge_selected_code', code);
+    try {
+      localStorage.setItem('bhashabridge_lang', targetLang);
+      localStorage.setItem('bhashabridge_selected_code', code);
+    } catch {}
   };
 
   useEffect(() => {
-    // Sync i18n on initial mount
-    const saved = localStorage.getItem('bhashabridge_selected_code') || 'auto';
-    const targetLang = saved === 'auto' ? 'en' : (saved.startsWith('te') ? 'te' : saved.startsWith('hi') ? 'hi' : 'en');
-    i18n.changeLanguage(targetLang);
+    const code = selectedLanguage;
+    const targetLang = code === 'auto' ? 'en' : (code.startsWith('te') ? 'te' : code.startsWith('hi') ? 'hi' : 'en');
+    if (i18n.language !== targetLang) {
+      i18n.changeLanguage(targetLang);
+    }
+  }, [selectedLanguage]);
 
+  useEffect(() => {
     const handleStorageChange = (e) => {
       if (e.key === 'bhashabridge_selected_code' && e.newValue) {
         setSelectedLanguageState(e.newValue);
-        const nextLang = e.newValue === 'auto' ? 'en' : (e.newValue.startsWith('te') ? 'te' : e.newValue.startsWith('hi') ? 'hi' : 'en');
-        i18n.changeLanguage(nextLang);
       }
     };
     window.addEventListener('storage', handleStorageChange);
