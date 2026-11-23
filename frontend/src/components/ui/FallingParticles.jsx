@@ -43,7 +43,7 @@ export default function FallingParticles({ className = "" }) {
 
   return (
     <div
-      className={`fixed inset-0 pointer-events-none z-0 overflow-hidden select-none bg-white ${className}`}
+      className={`fixed inset-0 pointer-events-none -z-10 overflow-hidden select-none ${className}`}
       aria-hidden="true"
       style={{ pointerEvents: 'none' }}
     >
