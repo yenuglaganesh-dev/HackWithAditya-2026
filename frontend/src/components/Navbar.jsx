@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Sparkles, ArrowRight } from 'lucide-react';
+import { Sparkles, ArrowRight, Mic, Menu, X } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function Navbar() {
@@ -12,6 +12,13 @@ export default function Navbar() {
 
   const navLinks = [
     { name: t('nav.home', 'Home'), path: '/' },
+    { name: t('nav.about', 'About'), path: '/about' },
+    { name: t('nav.features', 'Features'), path: '/features' },
+    { name: t('nav.agents', 'AI Agents'), path: '/agents' },
+    { name: t('nav.technology', 'Technology'), path: '/technology' },
+    { name: t('nav.howItWorks', 'How It Works'), path: '/how-it-works' },
+    { name: t('nav.useCases', 'Use Cases'), path: '/use-cases' },
+    { name: t('nav.portfolio', 'Portfolio'), path: '/portfolio' },
     { name: t('nav.voiceAssistant', 'Voice Assistant'), path: '/assistant' },
   ];
 
@@ -20,144 +27,123 @@ export default function Navbar() {
   };
 
   const isActive = (path) => {
-    if (path === '/') return location.pathname === '/' || location.pathname === '/studio';
+    if (path === '/') return location.pathname === '/' || location.pathname === '/home';
     return location.pathname === path;
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#08080a]/65 backdrop-blur-xl border-b border-white/10 shadow-2xl transition-all duration-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-18 flex items-center justify-between gap-3">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-[#E8EAED] transition-all duration-200 shadow-xs">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-18 flex items-center justify-between gap-4">
         
-        {/* Brand Logo */}
+        {/* Brand Logo & Name */}
         <Link to="/" className="flex items-center gap-3 shrink-0 group">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-400 via-cyan-300 to-blue-500 flex items-center justify-center text-[#06233a] shadow-lg shadow-sky-500/25 group-hover:scale-105 transition-all">
-            <Sparkles className="w-5 h-5 text-[#06233a]" />
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#F58220] to-[#E96B16] flex items-center justify-center text-white shadow-md shadow-orange-500/20 group-hover:scale-105 transition-all">
+            <Sparkles className="w-5 h-5 text-white" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <span className="font-headline font-extrabold text-lg sm:text-xl tracking-tight text-white">
-                BhashaBridge <span className="text-sky-300">AI</span>
-              </span>
-            </div>
+            <span className="font-headline font-bold text-lg sm:text-xl tracking-tight text-[#202124]">
+              BhashaBridge <span className="text-[#F58220]">AI</span>
+            </span>
           </div>
         </Link>
 
-        {/* Desktop Navigation Links with Mosaic pill styling */}
-        <div className="hidden xl:flex items-center gap-1 bg-white/5 border border-white/10 p-1.5 rounded-2xl backdrop-blur-md">
-          {navLinks.map((item) => {
-            const active = isActive(item.path);
+        {/* Center Navigation Links */}
+        <div className="hidden lg:flex items-center gap-1 xl:gap-2">
+          {navLinks.map((link) => {
+            const active = isActive(link.path);
             return (
               <Link
-                key={item.path}
-                to={item.path}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                key={link.path}
+                to={link.path}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                   active
-                    ? 'bg-white/15 text-white shadow-inner border border-white/15'
-                    : 'text-zinc-400 hover:text-white hover:bg-white/5'
+                    ? 'text-[#F58220] font-bold bg-[#FFF3E8]'
+                    : 'text-[#202124] hover:text-[#F58220] hover:bg-[#F8F9FA]'
                 }`}
               >
-                {item.name}
+                {link.name}
               </Link>
             );
           })}
         </div>
 
-        {/* Right Tools: Multilingual Selector + Get Started CTA */}
+        {/* Right Action Tools: Language Selector & Voice Assistant Button */}
         <div className="flex items-center gap-2 sm:gap-3">
           
-          {/* Language Switcher */}
-          <div className="flex items-center bg-white/5 border border-white/10 rounded-xl p-0.5 text-xs">
-            <button
-              onClick={() => handleLangSelect('auto')}
-              className={`px-2.5 py-1 rounded-lg font-bold transition cursor-pointer ${
-                selectedLanguage === 'auto'
-                  ? 'bg-sky-400 text-[#06233a] shadow-sm'
-                  : 'text-zinc-400 hover:text-white'
-              }`}
-            >
-              AUTO
-            </button>
-            <button
-              onClick={() => handleLangSelect('te')}
-              className={`px-2.5 py-1 rounded-lg font-bold transition cursor-pointer ${
-                selectedLanguage.startsWith('te')
-                  ? 'bg-sky-400 text-[#06233a] shadow-sm'
-                  : 'text-zinc-400 hover:text-white'
-              }`}
-            >
-              తెలుగు
-            </button>
-            <button
-              onClick={() => handleLangSelect('hi')}
-              className={`px-2.5 py-1 rounded-lg font-bold transition cursor-pointer ${
-                selectedLanguage.startsWith('hi')
-                  ? 'bg-sky-400 text-[#06233a] shadow-sm'
-                  : 'text-zinc-400 hover:text-white'
-              }`}
-            >
-              हिन्दी
-            </button>
-            <button
-              onClick={() => handleLangSelect('en')}
-              className={`px-2.5 py-1 rounded-lg font-bold transition cursor-pointer ${
-                selectedLanguage.startsWith('en')
-                  ? 'bg-sky-400 text-[#06233a] shadow-sm'
-                  : 'text-zinc-400 hover:text-white'
-              }`}
-            >
-              EN
-            </button>
+          {/* Language Selector */}
+          <div className="flex items-center bg-[#F8F9FA] border border-[#E8EAED] rounded-xl p-0.5 text-xs">
+            {[
+              { code: 'auto', label: 'AUTO' },
+              { code: 'te', label: 'తెలుగు' },
+              { code: 'hi', label: 'हिन्दी' },
+              { code: 'en', label: 'EN' },
+            ].map(({ code, label }) => {
+              const selected =
+                code === 'auto'
+                  ? selectedLanguage === 'auto'
+                  : selectedLanguage.startsWith(code);
+              return (
+                <button
+                  key={code}
+                  onClick={() => handleLangSelect(code)}
+                  className={`px-2.5 py-1 rounded-lg text-xs transition cursor-pointer ${
+                    selected
+                      ? 'bg-[#F58220] text-white font-bold shadow-xs'
+                      : 'text-[#707070] hover:text-[#202124] font-medium'
+                  }`}
+                >
+                  {label}
+                </button>
+              );
+            })}
           </div>
 
-          {/* Launch / Get Started Button */}
+          {/* Voice Assistant CTA Button */}
           <Link
             to="/assistant"
-            className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-[#06233a] bg-gradient-to-r from-sky-200 via-sky-300 to-cyan-400 hover:brightness-110 shadow-lg shadow-sky-400/20 active:scale-95 transition-all cursor-pointer"
+            className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-[#F58220] to-[#E96B16] hover:brightness-105 shadow-md shadow-orange-500/25 active:scale-95 transition-all cursor-pointer"
           >
-            <span>Get Started</span>
-            <ArrowRight className="w-3.5 h-3.5" />
+            <Mic className="w-3.5 h-3.5 text-white" />
+            <span>Voice Assistant</span>
           </Link>
 
-          {/* Mobile Menu Hamburger */}
+          {/* Mobile Hamburger */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="xl:hidden w-9 h-9 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center text-white"
+            className="lg:hidden w-9 h-9 rounded-xl bg-[#F8F9FA] border border-[#E8EAED] flex items-center justify-center text-[#202124]"
             aria-label="Toggle navigation menu"
           >
-            <span className="material-symbols-outlined text-[20px]">
-              {mobileMenuOpen ? 'close' : 'menu'}
-            </span>
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
 
         </div>
-
       </div>
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="xl:hidden bg-[#0c0c10]/95 backdrop-blur-2xl border-b border-white/10 px-4 py-4 space-y-2 animate-in fade-in">
-          {navLinks.map((item) => (
+        <div className="lg:hidden bg-white border-b border-[#E8EAED] px-4 pt-2 pb-6 space-y-2 shadow-lg">
+          {navLinks.map((link) => (
             <Link
-              key={item.path}
-              to={item.path}
+              key={link.path}
+              to={link.path}
               onClick={() => setMobileMenuOpen(false)}
-              className={`block px-3 py-2 rounded-xl text-sm font-semibold transition ${
-                isActive(item.path)
-                  ? 'bg-sky-500/20 text-sky-300 border border-sky-400/30'
-                  : 'text-zinc-300 hover:text-white hover:bg-white/5'
+              className={`block px-4 py-2.5 rounded-xl text-sm font-semibold ${
+                isActive(link.path)
+                  ? 'bg-[#FFF3E8] text-[#F58220]'
+                  : 'text-[#202124] hover:bg-[#F8F9FA]'
               }`}
             >
-              {item.name}
+              {link.name}
             </Link>
           ))}
           <div className="pt-2">
             <Link
               to="/assistant"
               onClick={() => setMobileMenuOpen(false)}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-[#06233a] bg-gradient-to-r from-sky-200 to-cyan-400"
+              className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-[#F58220] to-[#E96B16] shadow-md shadow-orange-500/25"
             >
-              <span>Get Started • Launch Voice Assistant</span>
-              <ArrowRight className="w-4 h-4" />
+              <Mic className="w-4 h-4 text-white" />
+              <span>Launch Voice Assistant</span>
             </Link>
           </div>
         </div>

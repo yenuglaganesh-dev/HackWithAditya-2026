@@ -14,7 +14,9 @@ import {
   User,
   CheckCircle2,
   Loader2,
-  AlertCircle
+  AlertCircle,
+  Mic,
+  StopCircle
 } from 'lucide-react';
 import { useSpeechRecognition } from '../hooks/useSpeechRecognition';
 
@@ -48,394 +50,393 @@ export default function VoiceConsole({
 
   const {
     isRecording,
-    isPaused: isRecordingPaused,
-    recordingSeconds,
+    isPaused: isMicPaused,
     transcript,
-    setTranscript,
-    error: speechError,
-    startListening,
-    stopListening,
-    pauseListening,
-    resumeListening,
+    interimTranscript,
+    elapsedSeconds,
+    permissionError,
+    startRecording,
+    stopRecording,
+    pauseRecording,
+    resumeRecording,
     cancelRecording,
+    setTranscript,
+    isSupported
   } = useSpeechRecognition({
     language: currentLangCode,
-    autoSubmit,
-    onResult: (text) => {
-      setInputText(text);
-    },
-    onFinalTranscript: (recognizedText, detectedLang) => {
-      if (recognizedText && recognizedText.trim()) {
-        setInputText(recognizedText.trim());
-        if (autoSubmit && !isLoading) {
-          onSendMessage(recognizedText.trim(), {
-            fromVoice: true,
-            detectedLanguage: detectedLang,
-          });
-          setInputText('');
-          setTranscript('');
-        }
-      }
-    },
+    continuous: true,
+    interimResults: true
   });
 
-  // Sync speech transcript
+  // When speech transcript updates, populate input box
   useEffect(() => {
-    if (transcript) setInputText(transcript);
+    if (transcript) {
+      setInputText(transcript);
+    }
   }, [transcript]);
 
-  // Auto-scroll
+  // Handle auto-submit if enabled
+  const handleStopRecording = () => {
+    const finalTxt = stopRecording();
+    const candidate = finalTxt || inputText;
+    if (autoSubmit && candidate && candidate.trim()) {
+      onSendMessage(candidate.trim(), { fromVoice: true });
+      setInputText('');
+      setTranscript('');
+    }
+  };
+
+  const handleCancelRecording = () => {
+    cancelRecording();
+    setInputText('');
+  };
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    if (!inputText.trim() || isLoading) return;
+    onSendMessage(inputText.trim(), { fromVoice: false });
+    setInputText('');
+    setTranscript('');
+  };
+
   useEffect(() => {
     chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isLoading]);
 
-  const handleSubmit = (e) => {
-    e?.preventDefault();
-    if (!inputText.trim() || isLoading) return;
-    onSendMessage(inputText.trim(), {
-      fromVoice: Boolean(isRecording),
-      detectedLanguage: selectedLanguage === 'auto' ? null : selectedLanguage,
-    });
-    setInputText('');
-    setTranscript('');
-    if (isRecording) stopListening();
-  };
-
-  const toggleMic = () => {
-    if (isRecording) {
-      stopListening();
-    } else {
-      startListening();
-    }
-  };
-
-  const formatTimer = (totalSeconds) => {
-    const mins = Math.floor(totalSeconds / 60);
-    const secs = totalSeconds % 60;
-    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  const formatTimer = (secs) => {
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return `${m}:${s < 10 ? '0' : ''}${s}`;
   };
 
   return (
-    <section className="w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8 mx-auto" id="voice-console-section">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+    <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      
+      {/* LEFT: Microphone Console & Audio Controls Card */}
+      <div className="lg:col-span-5 bg-white border border-[#E8EAED] rounded-3xl p-6 sm:p-8 flex flex-col items-center justify-between min-h-[520px] shadow-card">
         
-        {/* Left Column: Mosaic Glass Voice Ingest Panel */}
-        <div className="lg:col-span-5 mosaic-glass rounded-3xl p-6 sm:p-7 flex flex-col justify-between gap-6 relative overflow-hidden">
-          
-          {/* Status Header */}
-          <div className="flex items-center justify-between pb-3 border-b border-white/10">
-            <div className="flex items-center gap-2.5">
-              <span className={`w-3 h-3 rounded-full ${isRecording ? 'bg-rose-500 animate-ping' : 'bg-sky-400'} ring-4 ring-sky-400/20`} />
-              <span className="font-headline text-base sm:text-lg font-bold text-white">
-                {t('console.title', 'BhashaBridge Voice Assistant')}
-              </span>
-            </div>
-
-            {/* Recording badge */}
-            <span
-              className={`px-3 py-1 rounded-full text-xs font-semibold border flex items-center gap-1.5 ${
-                isRecording
-                  ? 'bg-rose-500/20 text-rose-300 border-rose-500/30 animate-pulse'
-                  : 'bg-white/5 text-zinc-300 border-white/10'
-              }`}
-            >
-              {isRecording ? (
-                <>
-                  <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
-                  <span>Recording ({formatTimer(recordingSeconds)})</span>
-                </>
-              ) : (
-                t('console.ready', 'Ready')
-              )}
-            </span>
+        {/* Top Header of Console */}
+        <div className="w-full flex items-center justify-between pb-5 border-b border-[#E8EAED]">
+          <div className="flex items-center gap-2.5">
+            <span className={`w-3 h-3 rounded-full ${isRecording ? 'bg-red-500 animate-ping' : 'bg-[#F58220]'}`} />
+            <h2 className="font-headline font-bold text-base sm:text-lg text-[#202124]">
+              BhashaBridge Voice Assistant
+            </h2>
           </div>
+          <span className="text-xs px-2.5 py-1 rounded-full font-bold bg-[#FFF3E8] text-[#E96B16] border border-[#FBD3B6]">
+            {isRecording ? (isMicPaused ? 'Paused' : 'Recording...') : 'Ready'}
+          </span>
+        </div>
 
-          {/* Interactive Mic Waveform Box */}
-          <div className="relative w-full h-64 sm:h-72 rounded-3xl bg-gradient-to-b from-white/10 via-white/5 to-transparent border border-white/10 flex flex-col items-center justify-center overflow-hidden">
-            {/* Concentric Pulse Rings */}
-            <div className={`absolute w-56 h-56 rounded-full border border-sky-400/20 pointer-events-none transition-all ${isRecording ? 'animate-ping' : ''}`} />
-            <div className={`absolute w-40 h-40 rounded-full border border-cyan-400/20 pointer-events-none transition-all ${isRecording ? 'animate-pulse' : ''}`} />
-            <div className={`absolute w-28 h-28 rounded-full border border-sky-300/25 pointer-events-none transition-all ${isRecording ? 'animate-pulse' : ''}`} />
+        {/* Center: Microphone Interactive Ring */}
+        <div className="my-auto py-8 flex flex-col items-center justify-center relative w-full">
+          
+          {/* Animated Background Ring during recording */}
+          {isRecording && (
+            <div className="absolute w-44 h-44 rounded-full bg-[#FFF3E8] mic-pulsing-orange pointer-events-none" />
+          )}
 
-            {/* Glowing Accent Microphone Button */}
-            <button
-              onClick={toggleMic}
-              className={`relative z-10 w-20 h-20 sm:w-22 sm:h-22 rounded-3xl text-white flex items-center justify-center shadow-2xl transition-all active:scale-95 cursor-pointer ${
-                isRecording
-                  ? 'bg-rose-600 shadow-rose-600/50 ring-8 ring-rose-500/20 animate-pulse'
-                  : 'bg-gradient-to-tr from-sky-400 to-cyan-300 hover:scale-105 shadow-sky-400/30 text-[#06233a] ring-8 ring-sky-400/20'
-              }`}
-              title={isRecording ? 'Stop Recording' : 'Start Recording in Telugu, Hindi or English'}
-              type="button"
-              aria-label={isRecording ? 'Stop recording' : 'Start recording'}
-            >
-              <span className="material-symbols-outlined text-[36px]">
-                {isRecording ? 'stop' : 'mic'}
-              </span>
-            </button>
+          {/* Big Mic Button */}
+          <button
+            type="button"
+            onClick={isRecording ? handleStopRecording : startRecording}
+            className={`relative z-10 w-28 h-28 rounded-3xl flex items-center justify-center transition-all duration-300 shadow-xl cursor-pointer ${
+              isRecording
+                ? 'bg-red-500 hover:bg-red-600 text-white shadow-red-500/30 scale-105'
+                : 'bg-gradient-to-tr from-[#F58220] to-[#E96B16] hover:brightness-105 text-white shadow-orange-500/25 hover:scale-105 active:scale-95'
+            }`}
+            title={isRecording ? "Click to stop recording" : "Click to speak"}
+          >
+            {isRecording ? (
+              <StopCircle className="w-12 h-12 text-white animate-pulse" />
+            ) : (
+              <Mic className="w-12 h-12 text-white" />
+            )}
+          </button>
 
-            {/* Equalizer Waveform Bars */}
-            <div className="absolute bottom-4 inset-x-8 flex items-end justify-center gap-1.5 h-12 pointer-events-none">
-              <div className={`w-1.5 bg-sky-400 rounded-t ${isRecording ? 'anim-bar-1' : 'h-2 opacity-30'}`} />
-              <div className={`w-1.5 bg-cyan-300 rounded-t ${isRecording ? 'anim-bar-2' : 'h-3 opacity-30'}`} />
-              <div className={`w-1.5 bg-blue-400 rounded-t ${isRecording ? 'anim-bar-3' : 'h-5 opacity-30'}`} />
-              <div className={`w-1.5 bg-sky-300 rounded-t ${isRecording ? 'anim-bar-4' : 'h-3 opacity-30'}`} />
-              <div className={`w-1.5 bg-cyan-400 rounded-t ${isRecording ? 'anim-bar-1' : 'h-6 opacity-30'}`} />
-              <div className={`w-1.5 bg-sky-500 rounded-t ${isRecording ? 'anim-bar-2' : 'h-4 opacity-30'}`} />
-              <div className={`w-1.5 bg-blue-300 rounded-t ${isRecording ? 'anim-bar-3' : 'h-2 opacity-30'}`} />
-              <div className={`w-1.5 bg-sky-400 rounded-t ${isRecording ? 'anim-bar-4' : 'h-3 opacity-30'}`} />
-            </div>
-
-            {/* Sub-label */}
-            <p className="mt-3 text-xs font-semibold text-zinc-300 z-10">
-              {isRecording ? `Recording audio (${formatTimer(recordingSeconds)}) - Click to stop` : 'Click microphone to record your voice'}
+          {/* Instruction Label & Timer */}
+          <div className="mt-5 text-center space-y-1">
+            <p className="text-sm font-semibold text-[#202124]">
+              {isRecording
+                ? (isMicPaused ? 'Recording Paused' : `Listening... (${formatTimer(elapsedSeconds)})`)
+                : 'Click microphone to record your voice'}
+            </p>
+            <p className="text-xs text-[#707070]">
+              Speak in Telugu, Hindi or English
             </p>
           </div>
 
-          {/* Real-time Voice Controls during recording: Pause, Resume, Cancel */}
+          {/* Audio Visualizer Equalizer Simulation */}
+          <div className="flex items-center gap-1.5 h-6 mt-4">
+            <div className={`w-1.5 rounded-full bg-[#F58220] ${isRecording && !isMicPaused ? 'anim-bar-1' : 'h-1.5 opacity-30'}`} />
+            <div className={`w-1.5 rounded-full bg-[#E96B16] ${isRecording && !isMicPaused ? 'anim-bar-2' : 'h-2 opacity-30'}`} />
+            <div className={`w-1.5 rounded-full bg-[#F58220] ${isRecording && !isMicPaused ? 'anim-bar-3' : 'h-3 opacity-30'}`} />
+            <div className={`w-1.5 rounded-full bg-[#E96B16] ${isRecording && !isMicPaused ? 'anim-bar-4' : 'h-1.5 opacity-30'}`} />
+            <div className={`w-1.5 rounded-full bg-[#F58220] ${isRecording && !isMicPaused ? 'anim-bar-2' : 'h-2.5 opacity-30'}`} />
+          </div>
+
+          {/* Pause / Resume & Cancel Controls during active recording */}
           {isRecording && (
-            <div className="flex items-center justify-center gap-3 bg-white/5 border border-white/10 rounded-2xl p-3 animate-in fade-in">
+            <div className="flex items-center gap-3 mt-4">
               <button
                 type="button"
-                onClick={isRecordingPaused ? resumeListening : pauseListening}
-                className="flex items-center gap-1.5 text-xs font-bold text-white bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-xl border border-white/15 transition cursor-pointer"
+                onClick={isMicPaused ? resumeRecording : pauseRecording}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#F8F9FA] hover:bg-[#E8EAED] border border-[#E8EAED] text-xs font-semibold text-[#202124] transition cursor-pointer"
               >
-                {isRecordingPaused ? <Play className="w-3.5 h-3.5 text-sky-400" /> : <Pause className="w-3.5 h-3.5" />}
-                <span>{isRecordingPaused ? 'Resume' : 'Pause'}</span>
+                {isMicPaused ? <Play className="w-3.5 h-3.5 text-[#F58220]" /> : <Pause className="w-3.5 h-3.5 text-[#F58220]" />}
+                <span>{isMicPaused ? 'Resume' : 'Pause'}</span>
               </button>
 
               <button
                 type="button"
-                onClick={cancelRecording}
-                className="flex items-center gap-1.5 text-xs font-bold text-zinc-300 hover:text-white bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-xl border border-white/10 transition cursor-pointer"
+                onClick={handleCancelRecording}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-xs font-semibold text-rose-700 transition cursor-pointer"
               >
-                <XCircle className="w-3.5 h-3.5 text-rose-400" />
+                <XCircle className="w-3.5 h-3.5 text-rose-600" />
                 <span>Cancel</span>
               </button>
             </div>
           )}
 
-          {/* Permission / Speech Error Notification */}
-          {speechError && (
-            <div className="bg-rose-500/15 border border-rose-500/30 text-rose-300 rounded-2xl p-3.5 text-xs flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
-              <span>{speechError}</span>
+          {/* Microphone Permission Warning */}
+          {permissionError && (
+            <div className="mt-4 p-3 rounded-xl bg-red-50 border border-red-200 flex items-center gap-2 text-xs text-red-700">
+              <AlertCircle className="w-4 h-4 shrink-0 text-red-600" />
+              <span>{permissionError}</span>
             </div>
           )}
 
-          {/* Target Language & Auto-submit Preferences */}
-          <div className="border border-white/10 rounded-2xl p-3.5 bg-white/5 space-y-2">
-            <div className="flex items-center justify-between text-xs">
-              <span className="font-semibold text-zinc-300">Target Language:</span>
-              <span className="font-bold text-sky-300 uppercase">
-                {selectedLanguage === 'auto' ? 'Auto Detect (te / hi / en)' : selectedLanguage}
-              </span>
+          {!isSupported && (
+            <div className="mt-4 p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-[11px] text-amber-800 text-center">
+              Browser Web Speech API not supported. Please type in the chat box.
             </div>
-
-            <div className="flex items-center justify-between text-xs pt-2 border-t border-white/10">
-              <span className="text-zinc-400">Auto-submit when recording stops:</span>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={autoSubmit}
-                  onChange={(e) => setAutoSubmit(e.target.checked)}
-                  className="sr-only peer"
-                />
-                <div className="w-8 h-4 bg-zinc-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-sky-400"></div>
-              </label>
-            </div>
-          </div>
-
+          )}
         </div>
 
-        {/* Right Column: Mosaic Glass Conversation Panel & Composer */}
-        <div className="lg:col-span-7 flex flex-col gap-4">
-          
-          {/* Live Recognized Speech Pill */}
-          {inputText && isRecording && (
-            <div className="bg-white/10 border border-white/15 rounded-2xl p-3.5 text-xs sm:text-sm flex items-center gap-2.5 shadow-xs animate-in fade-in">
-              <span className="material-symbols-outlined text-[18px] text-sky-400 animate-pulse">subtitles</span>
-              <span className="font-semibold text-white truncate">Transcribing: {inputText}</span>
-            </div>
-          )}
-
-          {/* Conversation Stream */}
-          <div className="mosaic-glass rounded-3xl p-5 sm:p-6 flex flex-col h-[420px] sm:h-[480px] overflow-y-auto space-y-4">
-            {messages.map((msg, idx) => (
-              <div key={idx} className={`flex w-full ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`flex max-w-[92%] sm:max-w-[85%] gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                  
-                  {/* Avatar */}
-                  <div
-                    className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-white text-xs shadow-md ${
-                      msg.role === 'user' ? 'bg-sky-600 text-white' : 'bg-gradient-to-tr from-sky-400 to-cyan-300 text-[#06233a]'
-                    }`}
-                  >
-                    {msg.role === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
-                  </div>
-
-                  {/* Message Bubble */}
-                  <div
-                    className={`rounded-2xl p-4 sm:p-4.5 text-xs sm:text-sm leading-relaxed shadow-sm ${
-                      msg.role === 'user'
-                        ? 'bg-gradient-to-r from-sky-500 to-cyan-500 text-white rounded-tr-none'
-                        : 'bg-white/5 border border-white/10 text-zinc-100 rounded-tl-none backdrop-blur-md'
-                    }`}
-                  >
-                    {/* Assistant Metadata Header */}
-                    {msg.role !== 'user' && (
-                      <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10 text-[11px] text-sky-300">
-                        <span className="font-bold">BhashaBridge AI</span>
-                        {msg.verified && msg.sources && msg.sources.length > 0 && (
-                          <span className="flex items-center gap-1 text-cyan-300 font-bold bg-cyan-500/20 px-2 py-0.5 rounded-full border border-cyan-400/30">
-                            <CheckCircle2 className="w-3 h-3 text-cyan-400" />
-                            {t('console.verifiedScheme', 'Verified Scheme')}
-                          </span>
-                        )}
-                      </div>
-                    )}
-
-                    <div className="whitespace-pre-wrap font-normal text-zinc-200">{msg.content}</div>
-
-                    {/* Citations */}
-                    {msg.sources && msg.sources.length > 0 && (
-                      <div className="mt-3 pt-2.5 border-t border-white/10 space-y-1.5">
-                        <span className="text-[11px] font-bold text-sky-300 uppercase tracking-wider block">
-                          {t('console.verifiedReferences', 'Verified References:')}
-                        </span>
-                        {msg.sources.map((s, sIdx) => (
-                          <div key={sIdx} className="bg-black/30 p-2.5 rounded-xl border border-white/10 text-xs text-zinc-300">
-                            <div className="font-bold flex items-center justify-between text-sky-300">
-                              <span>{s.title}</span>
-                              {s.url && (
-                                <a href={s.url} target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:text-sky-200 p-0.5">
-                                  <ExternalLink className="w-3.5 h-3.5" />
-                                </a>
-                              )}
-                            </div>
-                            <div className="text-zinc-400 mt-1 italic line-clamp-2">"{s.snippet}"</div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Audio Controls for AI Response: Listen, Pause, Resume, Replay, Stop */}
-                    {msg.role !== 'user' && (
-                      <div className="mt-3 pt-2 flex items-center flex-wrap gap-2 border-t border-white/10">
-                        <button
-                          onClick={() => isPlaying ? stop() : speak(msg.content, msg.language || currentLangCode, msg.audioBase64 || null)}
-                          className="flex items-center gap-1.5 text-xs text-sky-200 hover:text-white font-bold bg-white/10 hover:bg-white/15 px-3 py-1 rounded-lg border border-white/15 transition-colors cursor-pointer shadow-sm"
-                          title={isPlaying ? 'Stop audio' : 'Listen aloud'}
-                        >
-                          {isPlaying ? <VolumeX className="w-3.5 h-3.5 text-rose-400" /> : <Volume2 className="w-3.5 h-3.5 text-sky-400" />}
-                          <span>{isPlaying ? 'Stop Audio' : 'Listen Aloud'}</span>
-                        </button>
-
-                        {isPlaying && pause && (
-                          <button
-                            onClick={isPaused ? resume : pause}
-                            className="flex items-center gap-1 text-xs text-zinc-300 font-semibold bg-white/5 hover:bg-white/10 px-2.5 py-1 rounded-lg border border-white/10 cursor-pointer"
-                            title={isPaused ? 'Resume' : 'Pause'}
-                          >
-                            {isPaused ? <Play className="w-3 h-3 text-sky-400" /> : <Pause className="w-3 h-3 text-zinc-400" />}
-                            <span>{isPaused ? 'Resume' : 'Pause'}</span>
-                          </button>
-                        )}
-
-                        {replay && (
-                          <button
-                            onClick={() => speak(msg.content, msg.language || currentLangCode, msg.audioBase64 || null)}
-                            className="flex items-center gap-1 text-xs text-zinc-400 hover:text-white font-semibold bg-white/5 hover:bg-white/10 px-2.5 py-1 rounded-lg border border-white/10 cursor-pointer"
-                            title="Replay Response"
-                          >
-                            <RotateCcw className="w-3 h-3" />
-                            <span>Replay</span>
-                          </button>
-                        )}
-                      </div>
-                    )}
-
-                  </div>
-                </div>
-              </div>
-            ))}
-
-            {isLoading && (
-              <div className="flex items-center gap-2.5 p-3 bg-white/5 rounded-2xl border border-white/10 w-fit text-xs sm:text-sm text-sky-300 font-semibold animate-pulse">
-                <Loader2 className="w-4 h-4 text-sky-400 animate-spin" />
-                <span>{t('console.generating', 'Searching & synthesizing response...')}</span>
-              </div>
-            )}
-
-            <div ref={chatBottomRef} />
+        {/* Bottom Options: Language & Auto-submit */}
+        <div className="w-full pt-4 border-t border-[#E8EAED] flex flex-col gap-3">
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-[#707070] font-medium">Target Language:</span>
+            <span className="font-bold text-[#E96B16]">
+              {selectedLanguage === 'auto'
+                ? 'AUTO DETECT (TE / HI / EN)'
+                : selectedLanguage.toUpperCase()}
+            </span>
           </div>
 
-          {/* Editable Transcription Input Bar with Mosaic glow send button */}
-          <div className="mosaic-glass rounded-3xl p-3 sm:p-3.5">
-            <form onSubmit={handleSubmit} className="flex items-center gap-2.5">
-              
-              {/* Record / Stop Button */}
-              <button
-                type="button"
-                onClick={toggleMic}
-                className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 transition cursor-pointer ${
-                  isRecording
-                    ? 'bg-rose-600 text-white animate-pulse ring-4 ring-rose-500/20'
-                    : 'bg-white/10 hover:bg-white/15 text-sky-300 border border-white/10'
-                }`}
-                title={isRecording ? 'Stop Recording' : 'Speak or record your question'}
-                aria-label="Toggle voice input"
-              >
-                <span className="material-symbols-outlined text-[22px]">
-                  {isRecording ? 'stop' : 'mic'}
-                </span>
-              </button>
-
-              {/* Editable Input Field */}
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-[#707070]">Auto-submit when recording stops:</span>
+            <label className="relative inline-flex items-center cursor-pointer">
               <input
-                type="text"
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-                placeholder={t('console.inputPlaceholder', 'Ask in Telugu, Hindi or English (e.g. రైతు భరోసా ఎలా వస్తుంది?)...')}
-                disabled={isLoading}
-                className="flex-1 bg-transparent border-0 px-3 py-2 text-xs sm:text-sm text-white placeholder-zinc-500 focus:outline-none"
+                type="checkbox"
+                checked={autoSubmit}
+                onChange={(e) => setAutoSubmit(e.target.checked)}
+                className="sr-only peer"
               />
-
-              {/* RAG Toggle */}
-              <button
-                type="button"
-                onClick={() => setEnableRag(!enableRag)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition cursor-pointer flex items-center gap-1.5 shrink-0 ${
-                  enableRag ? 'bg-sky-500/20 text-sky-300 border-sky-400/40' : 'bg-white/5 text-zinc-500 border-white/10'
-                }`}
-                title={t('console.ragTooltip', 'Toggle ChromaDB RAG Knowledge Retrieval')}
-              >
-                <Database className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">RAG {enableRag ? t('console.ragOn', 'ON') : t('console.ragOff', 'OFF')}</span>
-              </button>
-
-              {/* Glowing Send Button */}
-              <button
-                type="submit"
-                disabled={!inputText.trim() || isLoading}
-                className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 transition shadow-lg cursor-pointer ${
-                  !inputText.trim() || isLoading
-                    ? 'bg-white/5 text-zinc-600 border border-white/5 cursor-not-allowed'
-                    : 'bg-gradient-to-r from-sky-400 to-cyan-300 hover:brightness-110 text-[#06233a] active:scale-95 shadow-sky-400/30'
-                }`}
-                title={t('console.send', 'Send')}
-                aria-label="Send message"
-              >
-                <Send className="w-4 h-4" />
-              </button>
-
-            </form>
+              <div className="w-9 h-5 bg-[#DADCE0] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#F58220]"></div>
+            </label>
           </div>
-
         </div>
 
       </div>
 
-    </section>
+      {/* RIGHT: Chat Stream & Message Input Card */}
+      <div className="lg:col-span-7 bg-white border border-[#E8EAED] rounded-3xl flex flex-col h-[580px] shadow-card overflow-hidden">
+        
+        {/* Chat Messages Container */}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5 bg-[#FAFAFA]">
+          {messages.map((msg, index) => {
+            const isUser = msg.role === 'user';
+
+            return (
+              <div
+                key={index}
+                className={`flex gap-3.5 ${isUser ? 'justify-end' : 'justify-start'}`}
+              >
+                {/* AI Avatar */}
+                {!isUser && (
+                  <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#F58220] to-[#E96B16] text-white flex items-center justify-center shrink-0 shadow-sm mt-1">
+                    <Bot className="w-4 h-4 text-white" />
+                  </div>
+                )}
+
+                {/* Message Bubble Card */}
+                <div
+                  className={`max-w-[85%] rounded-2xl p-4 sm:p-5 shadow-soft ${
+                    isUser
+                      ? 'bg-[#202124] text-white rounded-tr-xs'
+                      : 'bg-white border border-[#E8EAED] text-[#202124] rounded-tl-xs'
+                  }`}
+                >
+                  {/* Top Bar for Assistant message */}
+                  {!isUser && (
+                    <div className="flex items-center justify-between gap-2 mb-2 pb-2 border-b border-[#F1F3F4] text-xs">
+                      <span className="font-bold text-[#F58220]">
+                        BhashaBridge AI
+                      </span>
+                      {msg.verified && (
+                        <span className="flex items-center gap-1 text-[11px] text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full font-bold">
+                          <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                          Verified Scheme
+                        </span>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Main Message Text */}
+                  <div className={`text-sm sm:text-base leading-relaxed whitespace-pre-line font-medium ${isUser ? 'text-white' : 'text-[#202124]'}`}>
+                    {msg.content}
+                  </div>
+
+                  {/* Verified Sources / References */}
+                  {!isUser && msg.sources && msg.sources.length > 0 && (
+                    <div className="mt-3.5 pt-3 border-t border-[#F1F3F4] space-y-2">
+                      <div className="text-[11px] font-bold text-[#707070] uppercase tracking-wider">
+                        Verified References:
+                      </div>
+                      <div className="space-y-1.5">
+                        {msg.sources.map((s, i) => (
+                          <div key={i} className="text-xs bg-[#F8F9FA] p-2.5 rounded-xl border border-[#E8EAED]">
+                            <div className="font-bold text-[#E96B16] flex items-center justify-between">
+                              <span>{s.title || s.source}</span>
+                              {s.url && (
+                                <a href={s.url} target="_blank" rel="noopener noreferrer" className="text-xs text-[#F58220] hover:underline flex items-center gap-1">
+                                  <span>link</span>
+                                  <ExternalLink className="w-3 h-3" />
+                                </a>
+                              )}
+                            </div>
+                            {s.snippet && (
+                              <p className="text-[11px] text-[#707070] mt-1 line-clamp-2">
+                                "{s.snippet}"
+                              </p>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Audio TTS Action Controls */}
+                  {!isUser && (
+                    <div className="flex items-center gap-2 mt-3 pt-2">
+                      <button
+                        type="button"
+                        onClick={() => speak(msg.content, msg.language)}
+                        className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-xl bg-[#FFF3E8] hover:bg-[#FFE6D0] text-[#E96B16] border border-[#FBD3B6] transition cursor-pointer"
+                        title="Listen aloud in native pronunciation"
+                      >
+                        <Volume2 className="w-3.5 h-3.5 text-[#F58220]" />
+                        <span>Listen Aloud</span>
+                      </button>
+
+                      {isPlaying && (
+                        <button
+                          type="button"
+                          onClick={stop}
+                          className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 transition cursor-pointer"
+                        >
+                          <VolumeX className="w-3.5 h-3.5" />
+                          <span>Stop</span>
+                        </button>
+                      )}
+
+                      <button
+                        type="button"
+                        onClick={() => replay(msg.content, msg.language)}
+                        className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1.5 rounded-xl bg-white hover:bg-[#F8F9FA] text-[#707070] border border-[#E8EAED] transition cursor-pointer"
+                        title="Replay audio"
+                      >
+                        <RotateCcw className="w-3 h-3" />
+                        <span>Replay</span>
+                      </button>
+                    </div>
+                  )}
+
+                </div>
+
+                {/* User Avatar */}
+                {isUser && (
+                  <div className="w-8 h-8 rounded-xl bg-[#202124] text-white flex items-center justify-center shrink-0 shadow-sm mt-1">
+                    <User className="w-4 h-4 text-white" />
+                  </div>
+                )}
+              </div>
+            );
+          })}
+
+          {/* Loading indicator */}
+          {isLoading && (
+            <div className="flex items-center gap-2 p-3.5 rounded-2xl bg-white border border-[#E8EAED] w-fit shadow-xs animate-pulse">
+              <Loader2 className="w-4 h-4 text-[#F58220] animate-spin" />
+              <span className="text-xs text-[#707070] font-medium">
+                Searching verified sources & synthesizing response...
+              </span>
+            </div>
+          )}
+
+          <div ref={chatBottomRef} />
+        </div>
+
+        {/* Bottom Input Composer Form */}
+        <form
+          onSubmit={handleFormSubmit}
+          className="p-3.5 bg-white border-t border-[#E8EAED] flex items-center gap-2"
+        >
+          {/* Mic quick record icon */}
+          <button
+            type="button"
+            onClick={isRecording ? handleStopRecording : startRecording}
+            className={`p-2.5 rounded-xl border transition cursor-pointer ${
+              isRecording
+                ? 'bg-red-500 text-white border-red-500'
+                : 'bg-[#F8F9FA] text-[#707070] hover:text-[#F58220] border-[#E8EAED]'
+            }`}
+            title="Record voice"
+          >
+            <Mic className="w-4 h-4" />
+          </button>
+
+          {/* Editable Text Area */}
+          <input
+            type="text"
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+            placeholder="Ask in Telugu, Hindi or English (e.g. రైతు భరోసా ఎలా వస్తుంది?)..."
+            className="flex-1 bg-[#F8F9FA] border border-[#E8EAED] rounded-xl px-4 py-2.5 text-xs sm:text-sm text-[#202124] placeholder-[#707070] focus:outline-none focus:border-[#F58220] transition"
+          />
+
+          {/* RAG Toggle Button */}
+          <button
+            type="button"
+            onClick={() => setEnableRag(!enableRag)}
+            className={`flex items-center gap-1.5 px-3 py-2.5 rounded-xl border text-xs font-bold transition cursor-pointer ${
+              enableRag
+                ? 'bg-[#FFF3E8] border-[#FBD3B6] text-[#E96B16]'
+                : 'bg-[#F8F9FA] border-[#E8EAED] text-[#707070]'
+            }`}
+            title="Toggle ChromaDB RAG Vector Grounding"
+          >
+            <Database className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">RAG {enableRag ? 'ON' : 'OFF'}</span>
+          </button>
+
+          {/* Send Button */}
+          <button
+            type="submit"
+            disabled={!inputText.trim() || isLoading}
+            className={`p-2.5 rounded-xl font-bold transition cursor-pointer ${
+              inputText.trim() && !isLoading
+                ? 'btn-orange text-white'
+                : 'bg-[#F1F3F4] text-[#BDC1C6] border border-[#E8EAED] cursor-not-allowed'
+            }`}
+          >
+            <Send className="w-4 h-4" />
+          </button>
+        </form>
+
+      </div>
+
+    </div>
   );
 }

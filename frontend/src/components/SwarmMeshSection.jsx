@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 export default function SwarmMeshSection() {
   const { t } = useTranslation();
@@ -18,29 +18,29 @@ export default function SwarmMeshSection() {
 
   return (
     <section className="w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8 mx-auto" id="agents-mesh-section">
-      <div className="rounded-3xl mosaic-glass p-6 sm:p-8 relative overflow-hidden">
+      <div className="rounded-3xl bg-white border border-[#E8EAED] p-6 sm:p-8 relative shadow-card">
         
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-white/10">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-[#E8EAED]">
           <div className="flex items-center gap-3">
-            <span className="material-symbols-outlined text-[24px] text-sky-400">hub</span>
+            <span className="material-symbols-outlined text-[24px] text-[#F58220]">hub</span>
             <div>
-              <h2 className="text-base sm:text-lg font-headline font-bold text-white">
+              <h2 className="text-base sm:text-lg font-headline font-bold text-[#202124]">
                 {t('agentsSection.title', '7-Agent Autonomous Multi-Agent AI System')}
               </h2>
-              <span className="text-xs text-sky-300 font-mono">
+              <span className="text-xs text-[#E96B16] font-mono font-bold">
                 {t('agentsSection.subtitle', 'BhashaBridge Modular Engine')}
               </span>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-sky-500/10 text-sky-300 border border-sky-400/20">
+            <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-[#FFF3E8] text-[#E96B16] border border-[#FBD3B6]">
               🟢 {t('agentsSection.badge', 'Active Architecture')}
             </span>
             <Link
               to="/technology"
-              className="text-xs font-bold text-sky-400 hover:text-sky-200 flex items-center gap-1 hover:underline ml-2"
+              className="text-xs font-bold text-[#F58220] hover:text-[#E96B16] flex items-center gap-1 hover:underline ml-2"
             >
               <span>{t('agentsSection.viewDetails', 'Explore Technology & Agents')}</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -48,33 +48,33 @@ export default function SwarmMeshSection() {
           </div>
         </div>
 
-        {/* 7 Agent Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
-          {agents.map((agent, index) => (
+        {/* Mesh Agents Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-6">
+          {agents.map((a, i) => (
             <div
-              key={index}
-              className="p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-sky-400/30 hover:bg-white/10 transition-all duration-300 flex flex-col justify-between group shadow-sm"
+              key={i}
+              className="bg-[#F8F9FA] border border-[#E8EAED] hover:border-[#FBD3B6] hover:bg-white p-5 rounded-2xl transition shadow-2xs group flex flex-col justify-between"
             >
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <span className="material-symbols-outlined text-[24px] text-sky-300 group-hover:scale-110 transition-transform">
-                    {agent.icon}
-                  </span>
-                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-white/10 text-zinc-300 border border-white/10">
-                    {agent.role}
+                  <div className="w-9 h-9 rounded-xl bg-white border border-[#E8EAED] group-hover:bg-[#FFF3E8] group-hover:border-[#FBD3B6] flex items-center justify-center text-[#F58220] transition">
+                    <span className="material-symbols-outlined text-[20px]">{a.icon}</span>
+                  </div>
+                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-white text-[#707070] border border-[#E8EAED]">
+                    {a.role}
                   </span>
                 </div>
-                <h3 className="font-headline font-bold text-sm text-white group-hover:text-sky-300 transition-colors">
-                  {agent.name}
+                <h3 className="text-sm font-bold text-[#202124] mb-1 group-hover:text-[#F58220] transition">
+                  {a.name}
                 </h3>
-                <p className="text-xs text-zinc-400 mt-1.5 leading-relaxed">
-                  {agent.desc}
+                <p className="text-xs text-[#707070] leading-relaxed">
+                  {a.desc}
                 </p>
               </div>
 
-              <div className="pt-3 mt-3 border-t border-white/10 flex items-center justify-between text-[11px] text-zinc-500">
+              <div className="pt-4 mt-3 border-t border-[#E8EAED] flex items-center justify-between text-[11px] text-[#707070]">
                 <span>Autonomous Node</span>
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
               </div>
             </div>
           ))}

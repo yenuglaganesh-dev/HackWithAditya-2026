@@ -2,7 +2,6 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import SovereignStudio from './pages/SovereignStudio';
 import Home from './pages/Home';
 import About from './pages/About';
 import Features from './pages/Features';
@@ -12,13 +11,13 @@ import Assistant from './pages/Assistant';
 import Portfolio from './pages/Portfolio';
 import HowItWorks from './pages/HowItWorks';
 import AgentsPage from './pages/AgentsPage';
-import MosaicSkyBackground from './components/ui/MosaicSkyBackground';
+import FallingDotsBackground from './components/ui/FallingDotsBackground';
 import { LanguageProvider } from './context/LanguageContext';
 
 function PageWrapper({ children }) {
   return (
-    <div className="min-h-screen bg-[#050506] text-[#f5f5f6] flex flex-col font-sans selection:bg-cyan-500/20 selection:text-cyan-200 relative">
-      <MosaicSkyBackground />
+    <div className="min-h-screen bg-white text-[#202124] flex flex-col font-sans relative selection:bg-orange-100 selection:text-[#F58220]">
+      <FallingDotsBackground />
       <Navbar />
       <div className="flex-1 relative z-10">
         {children}
@@ -33,12 +32,11 @@ export default function App() {
     <LanguageProvider>
       <BrowserRouter>
         <Routes>
-          {/* Master Home Page with Sovereign Studio & Mosaic Prompt Template */}
-          <Route path="/" element={<SovereignStudio />} />
-          <Route path="/studio" element={<SovereignStudio />} />
-
-          {/* Global Dark Glassmorphism Pages */}
+          {/* Main Landing & Home Page */}
+          <Route path="/" element={<PageWrapper><Home /></PageWrapper>} />
           <Route path="/home" element={<PageWrapper><Home /></PageWrapper>} />
+
+          {/* Subpages in Clean White & Orange */}
           <Route path="/about" element={<PageWrapper><About /></PageWrapper>} />
           <Route path="/features" element={<PageWrapper><Features /></PageWrapper>} />
           <Route path="/agents" element={<PageWrapper><AgentsPage /></PageWrapper>} />

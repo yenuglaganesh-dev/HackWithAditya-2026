@@ -118,15 +118,13 @@ export default function Assistant() {
       };
 
       setMessages((prev) => [...prev, aiMsg]);
-
-      // Automatically speak the response aloud in the citizen's tongue
       speak(data.response, data.language || effectiveLanguage);
 
     } catch (err) {
       console.error('Chat error:', err);
       const errorMsg = {
         role: 'assistant',
-        content: 'క్షమించండి, AI ఇంజిన్ తో కనెక్ట్ కాలేకపోయాము. దయచేసి Python AI సర్వీస్ రన్ అవుతుందో లేదో తనిఖీ చేయండి.\n(Error connecting to AI backend engine. Please check that Python service is running on port 8000).',
+        content: 'క్షమించండి, AI ఇంజిన్ తో కనెక్ట్ కాలేకపోయాము. దయచేసి Python AI సర్వీస్ రన్ అవుతుందో లేదో తనిఖీ చేయండి.',
         language: 'te-IN',
         verified: false,
         modelUsed: 'error',
@@ -140,29 +138,29 @@ export default function Assistant() {
   };
 
   return (
-    <div className="pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8">
+    <div className="pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8 relative z-10">
       
       {/* Top Banner & Navigation */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 rounded-3xl mosaic-glass">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 rounded-3xl bg-white border border-[#E8EAED] shadow-card">
         <div className="flex items-center gap-3">
           <Link
             to="/"
-            className="p-2.5 rounded-2xl bg-white/10 hover:bg-white/15 text-white transition flex items-center justify-center cursor-pointer shadow-sm"
-            title="Return to Home Studio"
+            className="p-2.5 rounded-2xl bg-[#F8F9FA] hover:bg-[#E8EAED] text-[#202124] transition flex items-center justify-center cursor-pointer shadow-xs border border-[#E8EAED]"
+            title="Return to Home"
           >
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="font-headline font-extrabold text-lg sm:text-xl text-white tracking-tight">
+              <h1 className="font-headline font-extrabold text-lg sm:text-xl text-[#202124] tracking-tight">
                 BhashaBridge Voice Console
               </h1>
-              <span className="flex items-center gap-1.5 text-[10px] bg-sky-500/10 text-sky-300 border border-sky-400/20 px-2.5 py-0.5 rounded-full font-bold">
-                <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse" />
+              <span className="flex items-center gap-1.5 text-[10px] bg-[#FFF3E8] text-[#E96B16] border border-[#FBD3B6] px-2.5 py-0.5 rounded-full font-bold">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#F58220] animate-pulse" />
                 Live AI Mesh
               </span>
             </div>
-            <p className="text-xs text-zinc-400">
+            <p className="text-xs text-[#707070]">
               Interactive Multilingual Speech Assistant • Free-First Architecture
             </p>
           </div>
@@ -171,15 +169,15 @@ export default function Assistant() {
         <div className="flex items-center gap-2.5">
           <button
             onClick={handleNewChat}
-            className="flex items-center gap-1.5 text-xs font-bold bg-white/10 hover:bg-white/15 text-white px-4 py-2 rounded-xl border border-white/10 transition shadow-sm cursor-pointer"
+            className="flex items-center gap-1.5 text-xs font-bold bg-[#F8F9FA] hover:bg-[#E8EAED] text-[#202124] px-4 py-2 rounded-xl border border-[#E8EAED] transition shadow-xs cursor-pointer"
           >
-            <RefreshCw className="w-3.5 h-3.5 text-sky-400" />
+            <RefreshCw className="w-3.5 h-3.5 text-[#F58220]" />
             <span>New Chat</span>
           </button>
         </div>
       </div>
 
-      {/* 1. Interactive Voice Console (Matching Exact UI from Photo 1) */}
+      {/* 1. Interactive Voice Console (Matching Exact UI from Photo 1 in White & Orange) */}
       <div id="voice-console-section">
         <VoiceConsole
           messages={messages}
