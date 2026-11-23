@@ -2,55 +2,61 @@ import React, { useMemo } from 'react';
 
 /**
  * FallingParticles Component
- * - Lightweight, pure CSS animated falling particles across full-screen background
- * - Warm orange (#F58220) with delicate soft peach / amber particles
- * - Varied dot sizes (2px to 7px), varied falling speeds (8s to 22s), opacities (0.15 to 0.55), and delays
- * - Subtle horizontal drifting (sway) for natural organic movement
- * - Continuously falling and regenerating from top to bottom
- * - Fixed full-screen layer behind all content (z-index: 0, pointer-events: none)
- * - Controlled particle count (~32 particles) for optimal CPU & battery performance
- * - Full support for prefers-reduced-motion
+ * - 25-40 small falling particles (configured to 34 particles).
+ * - Sizes: 2px–7px.
+ * - Colors: Primary warm orange (#F58220) and delicate light peach (#FFD5B8).
+ * - Continuous smooth top-to-bottom movement with subtle horizontal drift.
+ * - Lightweight pure CSS keyframes with randomized speeds, delays, opacities.
+ * - Fixed full-screen background layer strictly behind content (z-0, pointer-events: none).
+ * - Honors prefers-reduced-motion accessibility settings.
+ * - Optimized for mobile and desktop with zero CPU overhead.
  */
-export default function FallingParticles({ className = "" }) {
-  // Precompute 32 static particle parameters with natural distribution
+export default function FallingParticles() {
   const particles = useMemo(() => {
     const list = [];
-    // 32 particles total: balanced across screen width
-    for (let i = 0; i < 32; i++) {
-      const left = ((i * 3.125) + (Math.sin(i * 1.7) * 2) + 1.5).toFixed(2); // 0% to 100%
-      const size = (2 + ((i * 7) % 5.5)).toFixed(1); // 2px to 7px
-      const duration = (9 + ((i * 11) % 13)).toFixed(1); // 9s to 22s
-      const delay = (-((i * 3.7) % 18)).toFixed(1); // negative delay so screen is already full of particles on load
-      const opacity = (0.18 + ((i * 13) % 40) / 100).toFixed(2); // 0.18 to 0.55
-      const sway = (((i % 2 === 0 ? 1 : -1) * (15 + (i * 5) % 25))).toFixed(0); // -40px to +40px sway
-      
-      // Color: 75% warm orange (#F58220), 25% soft light peach (#FDBA74)
-      const color = i % 4 === 0 ? '#FDBA74' : '#F58220';
+    const count = 34; // Between 25 and 40
+
+    for (let i = 0; i < count; i++) {
+      // Particle sizes from 2px to 7px
+      const size = (2 + ((i * 7) % 5.5)).toFixed(1);
+      // Colors: Warm orange and light peach
+      const isOrange = i % 3 !== 0;
+      const color = isOrange ? '#F58220' : '#FFD5B8';
+      // Starting horizontal position 1% - 99%
+      const left = ((i * 100) / count + (i % 5) * 1.5) % 98 + 1;
+      // Duration varied between 7s and 16s
+      const duration = (7.5 + ((i * 3.7) % 8.5)).toFixed(2);
+      // Staggered animation delays between 0s and 12s
+      const delay = ((i * 1.6) % 12).toFixed(2);
+      // Soft opacity between 0.18 and 0.45
+      const opacity = (0.18 + ((i * 0.08) % 0.27)).toFixed(2);
+      // Horizontal drift sway between -25px and +25px
+      const sway = (((i % 7) - 3) * 7);
 
       list.push({
         id: i,
-        left: `${left}%`,
         size: `${size}px`,
+        color,
+        left: `${left.toFixed(2)}%`,
         duration: `${duration}s`,
-        delay: `${delay}s`,
+        delay: `-${delay}s`,
         opacity,
         sway: `${sway}px`,
-        color,
       });
     }
+
     return list;
   }, []);
 
   return (
     <div
-      className={`fixed inset-0 pointer-events-none -z-10 overflow-hidden select-none ${className}`}
+      className="fixed inset-0 pointer-events-none overflow-hidden z-0 select-none"
       aria-hidden="true"
-      style={{ pointerEvents: 'none' }}
     >
       {particles.map((p) => (
         <span
           key={p.id}
-          className="global-falling-particle"
+          className="falling-particle"
           style={{
             left: p.left,
             width: p.size,
