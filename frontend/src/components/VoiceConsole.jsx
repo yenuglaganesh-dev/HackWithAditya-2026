@@ -158,11 +158,11 @@ export default function VoiceConsole({
           <div className="mt-5 text-center space-y-1">
             <p className="text-sm font-semibold text-[#202124]">
               {isRecording
-                ? (isMicPaused ? 'Recording Paused' : `Listening... (${formatTimer(elapsedSeconds)})`)
-                : 'Click microphone to record your voice'}
+                ? (isMicPaused ? t('console.recordingPaused', 'Recording Paused') : `${t('console.listening', 'Listening...')} (${formatTimer(elapsedSeconds)})`)
+                : t('console.clickMic', 'Click microphone to record your voice')}
             </p>
             <p className="text-xs text-[#707070]">
-              Speak in Telugu, Hindi or English
+              {t('console.speakIn', 'Speak in Telugu, Hindi or English')}
             </p>
           </div>
 
@@ -216,7 +216,7 @@ export default function VoiceConsole({
         {/* Bottom Options: Language & Auto-submit */}
         <div className="w-full pt-4 border-t border-[#E8EAED] flex flex-col gap-3">
           <div className="flex items-center justify-between text-xs">
-            <span className="text-[#707070] font-medium">Target Language:</span>
+            <span className="text-[#707070] font-medium">{t('console.targetLanguage', 'Target Language:')}</span>
             <span className="font-bold text-[#E96B16]">
               {selectedLanguage === 'auto'
                 ? 'AUTO DETECT (TE / HI / EN)'
@@ -225,7 +225,7 @@ export default function VoiceConsole({
           </div>
 
           <div className="flex items-center justify-between text-xs">
-            <span className="text-[#707070]">Auto-submit when recording stops:</span>
+            <span className="text-[#707070]">{t('console.autoSubmit', 'Auto-submit when recording stops:')}</span>
             <label className="relative inline-flex items-center cursor-pointer">
               <input
                 type="checkbox"

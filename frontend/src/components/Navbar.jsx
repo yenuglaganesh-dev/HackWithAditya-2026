@@ -11,9 +11,9 @@ export default function Navbar() {
   const { selectedLanguage, changeLanguage } = useLanguage();
 
   const navLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'How It Works', path: '/how-it-works' },
-    { name: 'Voice Console', path: '/assistant' },
+    { name: t('nav.home', 'Home'), path: '/' },
+    { name: t('nav.howItWorks', 'How It Works'), path: '/how-it-works' },
+    { name: t('nav.voiceAssistant', 'Voice Console'), path: '/assistant' },
   ];
 
   const handleLangSelect = (code) => {

@@ -12,26 +12,26 @@ export default function HowItWorks() {
   const steps = [
     {
       step: "01",
-      title: "1. Speak or Type",
-      desc: "Citizens ask questions naturally in Telugu, Hindi, or English using browser-native microphone or text input with zero audio latency.",
+      title: t('howItWorks.step1Title', '1. Speak or Type'),
+      desc: t('howItWorks.step1Desc', 'Citizens ask questions naturally in Telugu, Hindi, or English using browser-native microphone or text input.'),
       icon: Mic,
     },
     {
       step: "02",
-      title: "2. Script & Code-Mix Analysis",
-      desc: "Language Agent inspects Unicode codepoints and phonetics to handle pure script or Latin-script transliterations (Tenglish/Hinglish).",
+      title: t('howItWorks.step2Title', '2. Script & Code-Mix Analysis'),
+      desc: t('howItWorks.step2Desc', 'Language Agent inspects Unicode codepoints and phonetics to handle pure script or Latin-script transliterations (Tenglish/Hinglish).'),
       icon: Languages,
     },
     {
       step: "03",
-      title: "3. ChromaDB Semantic RAG",
-      desc: "Knowledge and Research agents retrieve verified policy guidelines from local vector collections.",
+      title: t('howItWorks.step3Title', '3. ChromaDB Semantic RAG'),
+      desc: t('howItWorks.step3Desc', 'Knowledge and Research agents retrieve verified policy guidelines from local vector collections.'),
       icon: Database,
     },
     {
       step: "04",
-      title: "4. Grounded Voice Response",
-      desc: "Response Agent drafts clear answers, verified by the Verification Agent and read aloud via browser SpeechSynthesis.",
+      title: t('howItWorks.step4Title', '4. Grounded Voice Response'),
+      desc: t('howItWorks.step4Desc', 'Response Agent drafts clear answers, verified by the Verification Agent and read aloud via SpeechSynthesis.'),
       icon: Headphones,
     }
   ];
@@ -43,13 +43,13 @@ export default function HowItWorks() {
       <div className="text-center max-w-3xl mx-auto space-y-4">
         <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#FFF3E8] border border-[#FBD3B6] text-[#E96B16] text-xs font-semibold shadow-xs">
           <span className="w-2 h-2 rounded-full bg-[#F58220] animate-pulse" />
-          <span>Operational Flow & Architecture</span>
+          <span>{t('howItWorks.badge', 'Operational Flow')}</span>
         </div>
         <h1 className="text-3xl sm:text-5xl font-extrabold text-[#202124] tracking-tight leading-tight">
-          How BhashaBridge Works
+          {t('howItWorks.title', 'How BhashaBridge Works')}
         </h1>
         <p className="text-base text-[#707070] max-w-2xl mx-auto leading-relaxed">
-          A transparent, 4-step autonomous pipeline converting spoken regional queries into verified government intelligence.
+          {t('howItWorks.subtitle', 'A transparent, 4-step autonomous pipeline converting spoken regional queries into verified government intelligence.')}
         </p>
       </div>
 

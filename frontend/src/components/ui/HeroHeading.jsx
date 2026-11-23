@@ -1,22 +1,16 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
-/**
- * HeroHeading component reproducing the exact visual reference:
- * - Large responsive typography (36px mobile -> 56px tablet -> 72px desktop -> up to 84px large screen)
- * - Pure white background & dark charcoal / near-black text
- * - Very subtle warm orange outline / glow / accent (-webkit-text-stroke & text-shadow)
- * - Staggered smooth upward entrance with blur-to-sharp transition (800-1100ms)
- * - Lightweight floating decorative orange dots moving gently top to bottom
- * - Accessible to screen readers and respects prefers-reduced-motion
- */
 export default function HeroHeading() {
+  const { t } = useTranslation();
+
   const words = [
-    { text: "Your", delay: "0.05s" },
-    { text: "Voice.", delay: "0.18s" },
-    { text: "Your", delay: "0.32s" },
-    { text: "Language.", delay: "0.46s" },
-    { text: "Your", delay: "0.60s" },
-    { text: "AI.", delay: "0.74s" },
+    { text: t('hero.headlineWord1', 'Your'), delay: "0.05s" },
+    { text: t('hero.headlineWord2', 'Voice.'), delay: "0.18s" },
+    { text: t('hero.headlineWord3', 'Your'), delay: "0.32s" },
+    { text: t('hero.headlineWord4', 'Language.'), delay: "0.46s" },
+    { text: t('hero.headlineWord5', 'Your'), delay: "0.60s" },
+    { text: t('hero.headlineWord6', 'AI.'), delay: "0.74s" },
   ];
 
   // Decorative floating orange dots positioned delicately around the heading

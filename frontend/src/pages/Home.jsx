@@ -146,12 +146,12 @@ export default function Home() {
 
             {/* Subheading */}
             <h2 className="text-xl sm:text-2xl font-semibold text-[#202124]">
-              Speak Naturally. Get Answers Instantly.
+              {t('hero.subheading', 'Speak Naturally. Get Answers Instantly.')}
             </h2>
 
             {/* Description */}
             <p className="text-base sm:text-lg text-[#707070] leading-relaxed max-w-2xl mx-auto">
-              Communicate naturally in Telugu, Hindi and English. Speak your questions, get automatic transcription and receive intelligent voice responses in your preferred language.
+              {t('hero.description', 'Communicate naturally in Telugu, Hindi and English. Speak your questions, get automatic transcription and receive intelligent voice responses in your preferred language.')}
             </p>
 
             {/* CTA Buttons */}
@@ -161,7 +161,7 @@ export default function Home() {
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl btn-orange text-base font-bold shadow-md shadow-orange-500/20 active:scale-95 transition"
               >
                 <Mic className="w-5 h-5 text-white" />
-                <span>Try Voice Assistant</span>
+                <span>{t('hero.tryAssistant', 'Try Voice Assistant')}</span>
                 <ArrowRight className="w-4 h-4 text-white" />
               </Link>
 
@@ -169,17 +169,17 @@ export default function Home() {
                 href="#live-console"
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-white hover:bg-[#F8F9FA] text-[#202124] font-semibold text-base border border-[#E8EAED] shadow-soft transition"
               >
-                <span>Interactive Voice Demo</span>
+                <span>{t('hero.interactiveDemo', 'Interactive Voice Demo')}</span>
               </a>
             </div>
 
             {/* 4 Feature Indicators */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-8">
               {[
-                { label: "Multilingual AI", icon: Languages, sub: "Telugu, Hindi, English" },
-                { label: "Voice Recording", icon: Mic, sub: "Native Browser Mic" },
-                { label: "Speech-to-Text", icon: FileText, sub: "Automatic & Instant" },
-                { label: "Voice Response", icon: Volume2, sub: "Natural Regional TTS" },
+                { label: t('hero.featureMultilingual', 'Multilingual AI'), icon: Languages, sub: t('hero.featureMultilingualSub', 'Telugu, Hindi, English') },
+                { label: t('hero.featureVoiceRec', 'Voice Recording'), icon: Mic, sub: t('hero.featureVoiceRecSub', 'Native Browser Mic') },
+                { label: t('hero.featureStt', 'Speech-to-Text'), icon: FileText, sub: t('hero.featureSttSub', 'Automatic & Instant') },
+                { label: t('hero.featureTts', 'Voice Response'), icon: Volume2, sub: t('hero.featureTtsSub', 'Natural Regional TTS') },
               ].map((item, idx) => (
                 <div
                   key={idx}
@@ -203,10 +203,10 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
           <div className="text-center max-w-2xl mx-auto space-y-2">
             <h3 className="text-2xl sm:text-3xl font-bold text-[#202124]">
-              Experience Live Conversational Voice AI
+              {t('hero.liveConsoleTitle', 'Experience Live Conversational Voice AI')}
             </h3>
             <p className="text-sm text-[#707070]">
-              Speak directly in your native language or code-mixed dialects to receive verified government scheme guidance.
+              {t('hero.liveConsoleSubtitle', 'Speak directly in your native language or code-mixed dialects to receive verified government scheme guidance.')}
             </p>
           </div>
 
