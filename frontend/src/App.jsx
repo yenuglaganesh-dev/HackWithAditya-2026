@@ -15,7 +15,7 @@ import AgentsPage from './pages/AgentsPage';
 
 function PageWrapper({ children }) {
   return (
-    <div className="min-h-screen bg-[#f5faf7] text-slate-800 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#050506] text-[#f5f5f6] flex flex-col font-sans selection:bg-cyan-500/20 selection:text-cyan-200">
       <Navbar />
       <div className="flex-1">
         {children}
@@ -29,11 +29,11 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Master Home Page with Studio Voice Console */}
+        {/* Master Home Page with Sovereign Studio & Mosaic Prompt Template */}
         <Route path="/" element={<SovereignStudio />} />
         <Route path="/studio" element={<SovereignStudio />} />
 
-        {/* Global Styled Pages (Clean Emerald & Mint Theme with High Contrast) */}
+        {/* Global Dark Glassmorphism Pages */}
         <Route path="/home" element={<PageWrapper><Home /></PageWrapper>} />
         <Route path="/about" element={<PageWrapper><About /></PageWrapper>} />
         <Route path="/features" element={<PageWrapper><Features /></PageWrapper>} />

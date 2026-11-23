@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Sparkles } from 'lucide-react';
 
 export default function SwarmMeshSection() {
   const { t } = useTranslation();
@@ -18,29 +18,29 @@ export default function SwarmMeshSection() {
 
   return (
     <section className="w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8 mx-auto" id="agents-mesh-section">
-      <div className="rounded-3xl bg-white border border-emerald-100 shadow-soft p-6 sm:p-8 relative overflow-hidden">
+      <div className="rounded-3xl mosaic-glass p-6 sm:p-8 relative overflow-hidden">
         
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-emerald-100">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-white/10">
           <div className="flex items-center gap-3">
-            <span className="material-symbols-outlined text-[24px] text-emerald-600">hub</span>
+            <span className="material-symbols-outlined text-[24px] text-sky-400">hub</span>
             <div>
-              <h2 className="text-base sm:text-lg font-headline font-bold text-slate-900">
+              <h2 className="text-base sm:text-lg font-headline font-bold text-white">
                 {t('agentsSection.title', '7-Agent Autonomous Multi-Agent AI System')}
               </h2>
-              <span className="text-xs text-emerald-700 font-mono">
+              <span className="text-xs text-sky-300 font-mono">
                 {t('agentsSection.subtitle', 'BhashaBridge Modular Engine')}
               </span>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+            <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-sky-500/10 text-sky-300 border border-sky-400/20">
               🟢 {t('agentsSection.badge', 'Active Architecture')}
             </span>
             <Link
               to="/technology"
-              className="text-xs font-bold text-emerald-700 hover:text-emerald-900 flex items-center gap-1 hover:underline ml-2"
+              className="text-xs font-bold text-sky-400 hover:text-sky-200 flex items-center gap-1 hover:underline ml-2"
             >
               <span>{t('agentsSection.viewDetails', 'Explore Technology & Agents')}</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -48,39 +48,33 @@ export default function SwarmMeshSection() {
           </div>
         </div>
 
-        {/* Master Orchestrator Node */}
-        <div className="relative z-10 flex justify-center my-6">
-          <div className="flex items-center gap-3.5 px-6 py-4 rounded-2xl bg-white border-2 border-emerald-500 shadow-glow-emerald max-w-md w-full">
-            <div className="w-11 h-11 rounded-xl bg-emerald-600 flex items-center justify-center text-white shrink-0 shadow-sm">
-              <span className="material-symbols-outlined text-[22px]">account_tree</span>
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between">
-                <span className="font-headline font-bold text-sm sm:text-base text-slate-900 truncate">
-                  {agents[0].name}
-                </span>
-                <span className="text-[10px] font-mono bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold">CORE</span>
-              </div>
-              <span className="text-xs text-slate-500 font-mono block truncate">
-                {agents[0].desc}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* 6 Sub-Agent Nodes Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 pt-2">
-          {agents.slice(1).map((agent, idx) => (
-            <div key={idx} className="p-4 rounded-2xl bg-emerald-50/50 border border-emerald-100 shadow-xs flex items-center gap-3.5 hover:bg-emerald-50 hover:border-emerald-200 transition-all">
-              <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
-                <span className="material-symbols-outlined text-[20px]">{agent.icon}</span>
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center justify-between">
-                  <span className="font-headline font-bold text-xs sm:text-sm text-slate-900 truncate">{agent.name}</span>
-                  <span className="text-[9px] font-mono bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded font-bold">{agent.role}</span>
+        {/* 7 Agent Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+          {agents.map((agent, index) => (
+            <div
+              key={index}
+              className="p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-sky-400/30 hover:bg-white/10 transition-all duration-300 flex flex-col justify-between group shadow-sm"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="material-symbols-outlined text-[24px] text-sky-300 group-hover:scale-110 transition-transform">
+                    {agent.icon}
+                  </span>
+                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-white/10 text-zinc-300 border border-white/10">
+                    {agent.role}
+                  </span>
                 </div>
-                <span className="text-[11px] text-slate-500 block truncate font-medium">{agent.desc}</span>
+                <h3 className="font-headline font-bold text-sm text-white group-hover:text-sky-300 transition-colors">
+                  {agent.name}
+                </h3>
+                <p className="text-xs text-zinc-400 mt-1.5 leading-relaxed">
+                  {agent.desc}
+                </p>
+              </div>
+
+              <div className="pt-3 mt-3 border-t border-white/10 flex items-center justify-between text-[11px] text-zinc-500">
+                <span>Autonomous Node</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
               </div>
             </div>
           ))}

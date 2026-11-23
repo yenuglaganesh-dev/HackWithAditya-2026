@@ -144,6 +144,7 @@ export default function Assistant() {
       };
 
       setMessages((prev) => [...prev, aiMsg]);
+
       // Automatically play voice response
       playAudio(data.response, data.language || effectiveLanguage || 'te', data.audio_base64);
 
@@ -151,11 +152,11 @@ export default function Assistant() {
       console.error('Chat error:', err);
       const errorMsg = {
         role: 'assistant',
-        content: 'Connection Error: Unable to reach the AI Engine. Please check that the server is running.',
+        content: 'Kshaminchandi / Sorry, could not connect to the AI engine. Please ensure the backend is running.',
         language: 'en',
         verified: false,
         modelUsed: 'error',
-        agentTrace: ['ErrorHandler: Backend unreachable'],
+        agentTrace: ['System: Connection Failed'],
         sources: []
       };
       setMessages((prev) => [...prev, errorMsg]);
@@ -165,67 +166,67 @@ export default function Assistant() {
   };
 
   return (
-    <div className="pt-20 pb-8 flex flex-col h-screen max-w-7xl mx-auto px-4 sm:px-6">
+    <div className="flex flex-col h-[calc(100vh-4rem)] max-w-5xl mx-auto px-4 py-4 pt-20">
       
       {/* Sub-Header bar */}
-      <div className="bg-white border border-emerald-100 rounded-3xl p-4 sm:p-5 mb-4 shadow-soft">
+      <div className="mosaic-glass rounded-3xl p-4 sm:p-5 mb-4 shadow-xl">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
           
           <div className="flex items-center gap-3">
             <Link
               to="/"
-              className="p-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 transition"
+              className="p-2 rounded-xl bg-white/10 hover:bg-white/15 text-white transition"
               title="Return to Studio"
             >
               <ArrowLeft className="w-4 h-4" />
             </Link>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="font-headline font-bold text-base sm:text-lg text-slate-900">
+                <h1 className="font-headline font-bold text-base sm:text-lg text-white">
                   BhashaBridge Voice Console
                 </h1>
                 {backendStatus.connected ? (
-                  <span className="flex items-center gap-1 text-[10px] bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-full font-bold">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    AI Connected
+                  <span className="flex items-center gap-1 text-[10px] bg-sky-500/10 text-sky-300 border border-sky-400/20 px-2 py-0.5 rounded-full font-bold">
+                    <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse"></span>
+                    Live AI Engine
                   </span>
                 ) : (
-                  <span className="flex items-center gap-1 text-[10px] bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-full font-bold">
-                    <AlertCircle className="w-3 h-3 text-amber-600" />
+                  <span className="flex items-center gap-1 text-[10px] bg-amber-500/10 text-amber-300 border border-amber-400/20 px-2 py-0.5 rounded-full font-bold">
+                    <AlertCircle className="w-3 h-3 text-amber-400" />
                     AI Local Standby
                   </span>
                 )}
-                <span className="hidden sm:inline bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] px-2 py-0.5 rounded-full font-medium">
+                <span className="hidden sm:inline bg-white/5 text-zinc-300 border border-white/10 text-[10px] px-2 py-0.5 rounded-full font-medium">
                   Model: {backendStatus.model.split('/').pop()}
                 </span>
               </div>
-              <p className="text-[11px] text-slate-500 hidden sm:block">
-                Free-First Architecture • Speech: <span className="font-semibold text-emerald-700">Native Web Speech STT/TTS</span>
+              <p className="text-[11px] text-zinc-400 hidden sm:block">
+                Model: <span className="font-mono text-sky-300 font-semibold">{backendStatus.model}</span> • Speech: <span className="font-semibold text-sky-300">Native Web Speech STT/TTS</span>
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-2.5">
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 font-semibold">
-              <Globe className="w-3.5 h-3.5 text-emerald-600" />
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-white font-semibold">
+              <Globe className="w-3.5 h-3.5 text-sky-400" />
               <select
                 value={selectedLanguage}
                 onChange={(e) => setSelectedLanguage(e.target.value)}
-                className="bg-transparent text-emerald-950 focus:outline-none cursor-pointer"
+                className="bg-transparent text-white focus:outline-none cursor-pointer"
               >
-                <option value="auto">Auto Detect (ఆటో / ऑटो)</option>
-                <option value="te">Telugu (తెలుగు)</option>
-                <option value="hi">Hindi (हिन्दी)</option>
-                <option value="en">English (Indian)</option>
+                <option value="auto" className="bg-[#121218] text-white">Auto Detect (ఆటో / ऑटो)</option>
+                <option value="te" className="bg-[#121218] text-white">Telugu (తెలుగు)</option>
+                <option value="hi" className="bg-[#121218] text-white">Hindi (हिन्दी)</option>
+                <option value="en" className="bg-[#121218] text-white">English (Indian)</option>
               </select>
             </div>
 
             <button
               onClick={handleNewChat}
-              className="flex items-center gap-1.5 text-xs font-semibold bg-white hover:bg-emerald-50 text-emerald-800 px-3 py-1.5 rounded-full border border-emerald-200 transition shadow-xs cursor-pointer"
+              className="flex items-center gap-1.5 text-xs font-semibold bg-white/10 hover:bg-white/15 text-white px-3 py-1.5 rounded-full border border-white/10 transition shadow-sm cursor-pointer"
               title="Reset conversation"
             >
-              <RefreshCw className="w-3.5 h-3.5 text-emerald-600" />
+              <RefreshCw className="w-3.5 h-3.5 text-sky-400" />
               <span className="hidden sm:inline">New Session</span>
             </button>
           </div>
@@ -237,42 +238,6 @@ export default function Assistant() {
       <div className="flex-1 overflow-y-auto px-2 sm:px-4 py-2">
         <div className="max-w-4xl mx-auto space-y-4">
           
-          {/* Quick Prompts Suggestions */}
-          {messages.length === 1 && (
-            <div className="mb-6 p-5 rounded-3xl bg-white border border-emerald-100 shadow-soft">
-              <div className="text-xs font-bold text-emerald-800 mb-3 flex items-center gap-1.5">
-                <Sparkles className="w-4 h-4 text-emerald-600" />
-                <span>Try speaking or clicking these verified queries:</span>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
-                <button
-                  onClick={() => handleSendMessage('నమస్కారం, ఎలా ఉన్నావు?')}
-                  className="p-3 rounded-2xl bg-emerald-50/60 hover:bg-emerald-100/70 border border-emerald-100 text-left text-slate-800 transition cursor-pointer"
-                >
-                  👋 <strong>Telugu Greeting:</strong> నమస్కారం, ఎలా ఉన్నావు?
-                </button>
-                <button
-                  onClick={() => handleSendMessage('नमस्ते, आप कैसे हैं?')}
-                  className="p-3 rounded-2xl bg-emerald-50/60 hover:bg-emerald-100/70 border border-emerald-100 text-left text-slate-800 transition cursor-pointer"
-                >
-                  🙏 <strong>Hindi Greeting:</strong> नमस्ते, आप कैसे हैं?
-                </button>
-                <button
-                  onClick={() => handleSendMessage('PM Kisan eligibility enti?')}
-                  className="p-3 rounded-2xl bg-emerald-50/60 hover:bg-emerald-100/70 border border-emerald-100 text-left text-slate-800 transition cursor-pointer"
-                >
-                  🌾 <strong>Tenglish Scheme Query:</strong> PM Kisan eligibility enti?
-                </button>
-                <button
-                  onClick={() => handleSendMessage('Explain artificial intelligence in simple English.')}
-                  className="p-3 rounded-2xl bg-emerald-50/60 hover:bg-emerald-100/70 border border-emerald-100 text-left text-slate-800 transition cursor-pointer"
-                >
-                  🤖 <strong>AI Explanation:</strong> Explain artificial intelligence in simple English.
-                </button>
-              </div>
-            </div>
-          )}
-
           {/* Messages list */}
           {messages.map((msg, index) => (
             <ChatMessage
@@ -286,9 +251,9 @@ export default function Assistant() {
 
           {/* Loading / Processing Indicator */}
           {isLoading && (
-            <div className="flex items-center gap-3 p-4 bg-white rounded-2xl border border-emerald-200 w-fit animate-pulse shadow-soft">
-              <Sparkles className="w-4 h-4 text-emerald-600 animate-spin" />
-              <span className="text-xs text-emerald-900 font-semibold">
+            <div className="flex items-center gap-3 p-4 mosaic-glass rounded-2xl w-fit animate-pulse shadow-sm">
+              <Sparkles className="w-4 h-4 text-sky-400 animate-spin" />
+              <span className="text-xs text-sky-300 font-semibold">
                 Searching & synthesizing response...
               </span>
             </div>

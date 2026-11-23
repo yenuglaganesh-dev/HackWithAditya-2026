@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Mic, Bot, Sparkles, ArrowRight, ShieldCheck, Database,
+  Mic, Sparkles, ArrowRight, ShieldCheck, Database,
   Cpu, Languages, Headphones, CheckCircle2, ChevronRight, Activity
 } from 'lucide-react';
+import { PixelText } from '../components/ui/mosaic-prompt-template';
 
 export default function Home() {
   const [activeVoiceDemo, setActiveVoiceDemo] = useState('te');
@@ -30,59 +31,63 @@ export default function Home() {
   };
 
   return (
-    <div className="pt-20">
+    <div className="pt-24 pb-20">
       
       {/* HERO SECTION */}
-      <section className="relative overflow-hidden pt-12 pb-20 md:pt-16 md:pb-28">
+      <section className="relative overflow-hidden pt-8 pb-16 md:pt-12 md:pb-24">
         
-        {/* Soft Ambient Emerald Glow */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[350px] bg-emerald-400/15 blur-3xl pointer-events-none rounded-full" />
+        {/* Soft Ambient Glow */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[380px] bg-sky-500/10 blur-3xl pointer-events-none rounded-full" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center max-w-4xl mx-auto space-y-6">
             
             {/* Pill Banner */}
-            <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 shadow-xs">
-              <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-xs font-bold text-emerald-900">
+            <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 shadow-sm">
+              <span className="flex h-2 w-2 rounded-full bg-sky-400 animate-pulse" />
+              <span className="text-xs font-bold text-white">
                 National Hackathon 2026 – AI for Bharat
               </span>
-              <span className="text-emerald-300">•</span>
-              <span className="text-xs text-emerald-800 font-medium">Free-First Voice AI</span>
+              <span className="text-zinc-500">•</span>
+              <span className="text-xs text-sky-300 font-medium">Free-First Voice AI</span>
             </div>
 
-            {/* Main Headline */}
-            <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.15]">
+            {/* Pixel Title */}
+            <div className="py-2">
+              <PixelText text="BHASHABRIDGE AI" className="w-full max-w-xl mx-auto text-white" />
+            </div>
+
+            {/* Headline */}
+            <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-[1.15]">
               Your Language.{' '}
-              <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-sky-400 via-cyan-300 to-blue-400 bg-clip-text text-transparent">
                 Your Voice.
               </span>{' '}
-              <br className="hidden sm:inline" />
               Your AI.
             </h1>
 
             {/* Sub-headline */}
-            <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed font-normal">
+            <p className="text-base sm:text-lg text-zinc-400 max-w-2xl mx-auto leading-relaxed font-normal">
               Experience the next generation of voice-first artificial intelligence built for every Indian citizen. Speak naturally in{' '}
-              <span className="text-emerald-700 font-bold">Telugu</span>,{' '}
-              <span className="text-teal-700 font-bold">Hindi</span>, and{' '}
-              <span className="text-slate-900 font-bold">English</span> with zero language barriers.
+              <span className="text-sky-300 font-bold">Telugu</span>,{' '}
+              <span className="text-cyan-300 font-bold">Hindi</span>, and{' '}
+              <span className="text-white font-bold">English</span> with zero language barriers.
             </p>
 
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
               <Link
                 to="/assistant"
-                className="w-full sm:w-auto flex items-center justify-center gap-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm px-8 py-4 rounded-xl shadow-md shadow-emerald-600/20 hover:scale-105 transition cursor-pointer"
+                className="w-full sm:w-auto flex items-center justify-center gap-2.5 bg-gradient-to-r from-sky-400 to-cyan-300 hover:brightness-110 text-[#06233a] font-bold text-sm px-8 py-4 rounded-xl shadow-lg shadow-sky-400/20 hover:scale-105 transition cursor-pointer"
               >
-                <Mic className="w-5 h-5" />
+                <Mic className="w-5 h-5 text-[#06233a]" />
                 <span>Launch Voice Assistant</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
 
               <Link
                 to="/portfolio"
-                className="w-full sm:w-auto flex items-center justify-center gap-2 bg-white hover:bg-emerald-50 text-emerald-800 font-semibold text-sm px-6 py-4 rounded-xl border border-emerald-200 transition shadow-xs"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 text-white font-semibold text-sm px-6 py-4 rounded-xl border border-white/10 transition shadow-sm"
               >
                 <span>Explore Technical Portfolio</span>
               </Link>
@@ -92,170 +97,78 @@ export default function Home() {
         </div>
       </section>
 
-      {/* INTERACTIVE VOICE ACCENT DEMO */}
-      <section className="py-16 border-y border-emerald-100 bg-white">
+      {/* INTERACTIVE VOICE ACCENT DEMO IN MOSAIC GLASS */}
+      <section className="py-16 border-y border-white/10 bg-[#050506]/50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           
           <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
-            <h2 className="text-xs font-bold text-emerald-700 tracking-widest uppercase">
-              Multilingual Vernacular Audio
+            <h2 className="text-xs font-bold text-sky-400 tracking-widest uppercase">
+              Real Multi-Dialect Demonstration
             </h2>
-            <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
-              Interactive Regional Language Showcase
+            <h3 className="text-2xl sm:text-3xl font-bold text-white">
+              Instant Knowledge in Your Mother Tongue
             </h3>
-            <p className="text-xs sm:text-sm text-slate-600 font-normal">
-              Click a language tab to see how BhashaBridge understands complex citizen inquiries.
+            <p className="text-sm text-zinc-400">
+              Select an Indic dialect below to preview speech recognition and verified ChromaDB RAG responses.
             </p>
           </div>
 
-          {/* Language Tabs */}
-          <div className="flex items-center justify-center gap-2 mb-8">
-            {Object.keys(voiceDemos).map((langKey) => (
-              <button
-                key={langKey}
-                onClick={() => setActiveVoiceDemo(langKey)}
-                className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                  activeVoiceDemo === langKey
-                    ? 'bg-emerald-600 text-white shadow-xs'
-                    : 'bg-emerald-50 text-slate-700 hover:bg-emerald-100 border border-emerald-200'
-                }`}
-              >
-                {voiceDemos[langKey].lang}
-              </button>
-            ))}
-          </div>
-
-          {/* Demo Card */}
-          <div className="bg-[#f5faf7] border border-emerald-200/80 rounded-3xl p-6 sm:p-8 space-y-5 shadow-soft">
-            <div className="flex items-center justify-between border-b border-emerald-200 pb-3">
-              <span className="text-xs font-bold text-emerald-800">
-                Spoken Query in {voiceDemos[activeVoiceDemo].lang}
-              </span>
-              <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">
-                Native STT Ingest
-              </span>
+          <div className="mosaic-glass rounded-3xl p-6 sm:p-8">
+            {/* Language Selector Pills */}
+            <div className="flex items-center justify-center gap-3 mb-8">
+              {Object.keys(voiceDemos).map((code) => (
+                <button
+                  key={code}
+                  onClick={() => setActiveVoiceDemo(code)}
+                  className={`px-5 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                    activeVoiceDemo === code
+                      ? 'bg-gradient-to-r from-sky-400 to-cyan-300 text-[#06233a] shadow-md shadow-sky-400/20 scale-105'
+                      : 'bg-white/5 text-zinc-400 hover:text-white hover:bg-white/10 border border-white/10'
+                  }`}
+                >
+                  {voiceDemos[code].lang}
+                </button>
+              ))}
             </div>
 
-            <div className="text-base sm:text-lg font-semibold text-slate-900">
-              "{voiceDemos[activeVoiceDemo].script}"
-            </div>
-
-            <div className="text-xs text-slate-500 italic">
-              Meaning: {voiceDemos[activeVoiceDemo].englishTranslation}
-            </div>
-
-            <div className="bg-white p-5 rounded-2xl border border-emerald-100 space-y-2 shadow-2xs">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-700">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                <span>Verified RAG Answer (OpenRouter Free Tier + ChromaDB):</span>
-              </div>
-              <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
-                {voiceDemos[activeVoiceDemo].answer}
-              </p>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      {/* PROBLEM & SOLUTION SECTION */}
-      <section className="py-20 bg-emerald-50/50 border-y border-emerald-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          
-          <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-            <h2 className="text-xs font-bold text-emerald-800 tracking-widest uppercase">
-              The Digital Divide in India
-            </h2>
-            <h3 className="text-3xl sm:text-4xl font-extrabold text-slate-900">
-              Breaking Language Barriers with Multi-Agent AI
-            </h3>
-            <p className="text-slate-600 text-base">
-              Over 800 million citizens in Bharat face digital friction because public portals and modern AI models are heavily English-centric.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            
-            {/* The Problem */}
-            <div className="bg-white border border-rose-200/80 p-8 rounded-3xl relative overflow-hidden group hover:border-rose-400 transition shadow-soft">
-              <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center mb-6">
-                <Activity className="w-6 h-6" />
-              </div>
-              <h4 className="text-xl font-bold text-slate-900 mb-3">The Problem for Everyday Citizens</h4>
-              <ul className="space-y-3 text-sm text-slate-600">
-                <li className="flex items-start gap-2.5">
-                  <span className="text-rose-500 font-bold">•</span>
-                  <span><strong>Complex English Portals:</strong> Critical welfare schemes (PMAY, Ayushman, PM-Kisan) are buried in bureaucratic documents.</span>
-                </li>
-                <li className="flex items-start gap-2.5">
-                  <span className="text-rose-500 font-bold">•</span>
-                  <span><strong>Regional Dialect Exclusion:</strong> Millions speak mixed Telugu (Tenglish) or Hindi (Hinglish) that standard voice systems fail to transcribe.</span>
-                </li>
-                <li className="flex items-start gap-2.5">
-                  <span className="text-rose-500 font-bold">•</span>
-                  <span><strong>AI Hallucination Risk:</strong> Off-the-shelf chatbots frequently invent welfare eligibility criteria and subsidies.</span>
-                </li>
-              </ul>
-            </div>
-
-            {/* The Solution */}
-            <div className="bg-white border border-emerald-200/80 p-8 rounded-3xl relative overflow-hidden group hover:border-emerald-400 transition shadow-soft">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-6">
-                <ShieldCheck className="w-6 h-6" />
-              </div>
-              <h4 className="text-xl font-bold text-slate-900 mb-3">The BhashaBridge AI Solution</h4>
-              <ul className="space-y-3 text-sm text-slate-600">
-                <li className="flex items-start gap-2.5">
-                  <span className="text-emerald-600 font-bold">•</span>
-                  <span><strong>Native Voice In & Out:</strong> Speak directly via browser Web Speech API in Telugu, Hindi, or English without expensive speech APIs.</span>
-                </li>
-                <li className="flex items-start gap-2.5">
-                  <span className="text-emerald-600 font-bold">•</span>
-                  <span><strong>7-Agent RAG Orchestration:</strong> Verified against institutional government documents stored inside ChromaDB.</span>
-                </li>
-                <li className="flex items-start gap-2.5">
-                  <span className="text-emerald-600 font-bold">•</span>
-                  <span><strong>Free-First Architecture:</strong> Zero paid GPU or credits needed. Runs on verified OpenRouter Free models.</span>
-                </li>
-              </ul>
-            </div>
-
-          </div>
-
-        </div>
-      </section>
-
-      {/* FOUR-STEP WORKFLOW TIMELINE */}
-      <section className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          
-          <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-            <h2 className="text-xs font-bold text-emerald-700 tracking-widest uppercase">
-              How BhashaBridge Works
-            </h2>
-            <h3 className="text-3xl sm:text-4xl font-extrabold text-slate-900">
-              A Transparent, 4-Step Autonomous Flow
-            </h3>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            {[
-              { step: '01', title: 'Speak or Type', desc: 'Citizen asks a question naturally in Telugu, Hindi, or English using voice or text.', icon: Mic, color: 'text-emerald-600' },
-              { step: '02', title: 'Understand', desc: 'Language Agent detects native scripts & code-mixed dialects with zero translation delay.', icon: Languages, color: 'text-teal-600' },
-              { step: '03', title: 'Retrieve & Verify', desc: 'Knowledge & Research agents query ChromaDB vector store and official *.gov.in portals.', icon: Database, color: 'text-emerald-700' },
-              { step: '04', title: 'Speak Aloud', desc: 'Response Agent answers with step-by-step clarity, read aloud natively in the citizen’s tongue.', icon: Headphones, color: 'text-teal-700' }
-            ].map((s, idx) => (
-              <div key={idx} className="bg-white border border-emerald-100 p-6 rounded-3xl shadow-soft hover:shadow-elevated transition-all flex flex-col justify-between">
-                <div>
-                  <div className="text-3xl font-black text-emerald-200 mb-3">{s.step}</div>
-                  <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center mb-4 border border-emerald-200">
-                    <s.icon className={`w-5 h-5 ${s.color}`} />
-                  </div>
-                  <h4 className="text-lg font-bold text-slate-900 mb-2">{s.title}</h4>
-                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">{s.desc}</p>
+            {/* Current Selected Demo */}
+            <div className="space-y-6">
+              
+              {/* Citizen Question */}
+              <div className="p-5 rounded-2xl bg-white/5 border border-white/10">
+                <div className="flex items-center justify-between text-xs font-bold text-zinc-400 mb-2">
+                  <span className="flex items-center gap-1.5 text-sky-400">
+                    <Mic className="w-3.5 h-3.5 text-sky-400" />
+                    Recognized Citizen Speech
+                  </span>
+                  <span className="font-mono text-[11px] text-zinc-500">100% Free Web Speech STT</span>
                 </div>
+                <p className="text-lg sm:text-xl font-bold text-white leading-relaxed">
+                  "{voiceDemos[activeVoiceDemo].script}"
+                </p>
+                <p className="text-xs text-zinc-400 italic mt-1">
+                  En: {voiceDemos[activeVoiceDemo].englishTranslation}
+                </p>
               </div>
-            ))}
+
+              {/* AI Verified Answer */}
+              <div className="p-5 rounded-2xl bg-sky-500/10 border border-sky-400/20">
+                <div className="flex items-center justify-between text-xs font-bold text-sky-300 mb-2">
+                  <span className="flex items-center gap-1.5">
+                    <CheckCircle2 className="w-4 h-4 text-sky-400" />
+                    Verified RAG Answer (OpenRouter Free Tier + ChromaDB):
+                  </span>
+                  <span className="bg-sky-400 text-[#06233a] px-2 py-0.5 rounded text-[10px] font-mono font-bold">
+                    VERIFIED
+                  </span>
+                </div>
+                <p className="text-sm sm:text-base text-zinc-200 leading-relaxed">
+                  {voiceDemos[activeVoiceDemo].answer}
+                </p>
+              </div>
+
+            </div>
+
           </div>
 
           {/* Quick Action Banner */}

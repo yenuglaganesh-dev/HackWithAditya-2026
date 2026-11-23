@@ -41,28 +41,29 @@ export default function CapabilitiesSection() {
     <section className="w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8 mx-auto" id="capabilities-section">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {capabilities.map((c, i) => (
-          <div key={i} className="p-6 rounded-3xl bg-white border border-emerald-100 shadow-soft hover:shadow-elevated hover:border-emerald-300 transition-all flex flex-col justify-between group">
+          <div key={i} className="p-6 rounded-3xl mosaic-glass-card flex flex-col justify-between group">
             <div>
-              <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-all mb-4 shadow-xs">
+              <div className="w-10 h-10 rounded-2xl bg-white/10 text-sky-300 flex items-center justify-center group-hover:bg-gradient-to-tr group-hover:from-sky-400 group-hover:to-cyan-300 group-hover:text-[#06233a] transition-all mb-4 shadow-sm">
                 <span className="material-symbols-outlined text-[22px]">{c.icon}</span>
               </div>
-              <h3 className="font-headline font-bold text-base text-slate-900 group-hover:text-emerald-700 transition-colors">
+              <h3 className="font-headline font-bold text-base text-white group-hover:text-sky-300 transition-colors">
                 {c.title}
               </h3>
-              <p className="text-xs sm:text-sm text-slate-500 mt-2 leading-relaxed font-normal">
+              <p className="text-xs text-zinc-400 mt-2 leading-relaxed font-normal">
                 {c.desc}
               </p>
             </div>
-            <div className="mt-5 pt-3.5 border-t border-emerald-50 flex items-center justify-between">
-              <span className="font-mono text-[10px] px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 font-semibold border border-emerald-200">
+
+            <div className="pt-4 mt-4 border-t border-white/10 flex items-center justify-between">
+              <span className="text-[11px] font-mono font-bold text-sky-400 bg-sky-500/10 border border-sky-400/20 px-2 py-0.5 rounded-full">
                 {c.tag}
               </span>
               <Link
                 to={c.link}
-                className="text-xs font-bold text-emerald-700 hover:text-emerald-900 flex items-center gap-1 group-hover:translate-x-0.5 transition-transform"
+                className="text-xs text-zinc-400 group-hover:text-white flex items-center gap-1 font-semibold transition-colors"
               >
-                <span>{t('capabilities.exploreMore', 'View Details')}</span>
-                <ArrowRight className="w-3 h-3" />
+                <span>Details</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
               </Link>
             </div>
           </div>
