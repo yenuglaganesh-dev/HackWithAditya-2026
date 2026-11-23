@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Header from '../components/Header';
 import VoiceConsole from '../components/VoiceConsole';
-import SwarmMeshSection from '../components/SwarmMeshSection';
 import CapabilitiesSection from '../components/CapabilitiesSection';
 import SovereignFooter from '../components/SovereignFooter';
 import MosaicPromptTemplate from '../components/ui/mosaic-prompt-template';
@@ -238,10 +237,7 @@ export default function SovereignStudio() {
           setEnableRag={setEnableRag}
         />
 
-        {/* 4. 7-Agent Swarm Mesh Topology */}
-        <SwarmMeshSection />
-
-        {/* 5. 4 Core Capabilities */}
+        {/* 4. 4 Core Capabilities */}
         <CapabilitiesSection />
       </div>
 
