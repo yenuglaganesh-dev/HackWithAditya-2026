@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Sparkles, ArrowRight, RefreshCw } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
-export default function Header({ selectedLanguage, onLanguageChange, onNewChat }) {
-  const { t, i18n } = useTranslation();
+export default function Header({ onNewChat }) {
+  const { t } = useTranslation();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { selectedLanguage, changeLanguage } = useLanguage();
 
   const navItems = [
     { name: t('nav.home', 'Home'), path: '/' },
@@ -21,11 +23,7 @@ export default function Header({ selectedLanguage, onLanguageChange, onNewChat }
   ];
 
   const handleLangSelect = (code) => {
-    onLanguageChange(code);
-    const targetLang = code === 'auto' ? 'en' : (code.startsWith('te') ? 'te' : code.startsWith('hi') ? 'hi' : 'en');
-    i18n.changeLanguage(targetLang);
-    localStorage.setItem('bhashabridge_lang', targetLang);
-    localStorage.setItem('bhashabridge_selected_code', code);
+    changeLanguage(code);
   };
 
   const isActive = (path) => {

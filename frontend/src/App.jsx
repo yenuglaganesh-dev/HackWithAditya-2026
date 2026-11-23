@@ -13,6 +13,7 @@ import Portfolio from './pages/Portfolio';
 import HowItWorks from './pages/HowItWorks';
 import AgentsPage from './pages/AgentsPage';
 import MosaicSkyBackground from './components/ui/MosaicSkyBackground';
+import { LanguageProvider } from './context/LanguageContext';
 
 function PageWrapper({ children }) {
   return (
@@ -29,23 +30,25 @@ function PageWrapper({ children }) {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Master Home Page with Sovereign Studio & Mosaic Prompt Template */}
-        <Route path="/" element={<SovereignStudio />} />
-        <Route path="/studio" element={<SovereignStudio />} />
+    <LanguageProvider>
+      <BrowserRouter>
+        <Routes>
+          {/* Master Home Page with Sovereign Studio & Mosaic Prompt Template */}
+          <Route path="/" element={<SovereignStudio />} />
+          <Route path="/studio" element={<SovereignStudio />} />
 
-        {/* Global Dark Glassmorphism Pages */}
-        <Route path="/home" element={<PageWrapper><Home /></PageWrapper>} />
-        <Route path="/about" element={<PageWrapper><About /></PageWrapper>} />
-        <Route path="/features" element={<PageWrapper><Features /></PageWrapper>} />
-        <Route path="/agents" element={<PageWrapper><AgentsPage /></PageWrapper>} />
-        <Route path="/technology" element={<PageWrapper><Technology /></PageWrapper>} />
-        <Route path="/how-it-works" element={<PageWrapper><HowItWorks /></PageWrapper>} />
-        <Route path="/use-cases" element={<PageWrapper><UseCases /></PageWrapper>} />
-        <Route path="/portfolio" element={<PageWrapper><Portfolio /></PageWrapper>} />
-        <Route path="/assistant" element={<PageWrapper><Assistant /></PageWrapper>} />
-      </Routes>
-    </BrowserRouter>
+          {/* Global Dark Glassmorphism Pages */}
+          <Route path="/home" element={<PageWrapper><Home /></PageWrapper>} />
+          <Route path="/about" element={<PageWrapper><About /></PageWrapper>} />
+          <Route path="/features" element={<PageWrapper><Features /></PageWrapper>} />
+          <Route path="/agents" element={<PageWrapper><AgentsPage /></PageWrapper>} />
+          <Route path="/technology" element={<PageWrapper><Technology /></PageWrapper>} />
+          <Route path="/how-it-works" element={<PageWrapper><HowItWorks /></PageWrapper>} />
+          <Route path="/use-cases" element={<PageWrapper><UseCases /></PageWrapper>} />
+          <Route path="/portfolio" element={<PageWrapper><Portfolio /></PageWrapper>} />
+          <Route path="/assistant" element={<PageWrapper><Assistant /></PageWrapper>} />
+        </Routes>
+      </BrowserRouter>
+    </LanguageProvider>
   );
 }

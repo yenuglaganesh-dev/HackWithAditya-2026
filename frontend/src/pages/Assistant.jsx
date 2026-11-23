@@ -1,12 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useVoiceAudio } from '../hooks/useVoiceAudio';
-import { sendChatMessage, fetchSystemStatus, clearServerSession } from '../services/api';
-import ChatMessage from '../components/ChatMessage';
-import VoiceInputBar from '../components/VoiceInputBar';
-import {
-  Sparkles, RefreshCw, Globe, ShieldCheck, Database,
-  Cpu, ArrowLeft, Volume2, CheckCircle2, AlertCircle, Wifi, Activity
-} from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useLanguage } from '../context/LanguageContext';
+import { sendChatMessage, clearServerSession } from '../services/api';
+import VoiceConsole from '../components/VoiceConsole';
+import SwarmMeshSection from '../components/SwarmMeshSection';
+import { useSpeechSynthesis } from '../hooks/useSpeechSynthesis';
+import { ArrowLeft, RefreshCw, Sparkles, MessageSquare } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const ASSISTANT_HISTORY_KEY = 'bhashabridge_assistant_history';
@@ -15,16 +13,24 @@ const ASSISTANT_SESSION_KEY = 'bhashabridge_assistant_session';
 const INITIAL_ASSISTANT_MESSAGES = [
   {
     role: 'assistant',
-    content: 'నమస్కారం! నేను భాషాబ్రిడ్జ్ (BhashaBridge AI). నేను తెలుగు, హిందీ మరియు ఇంగ్లీష్ లో మీ ప్రశ్నలకు సహాయం చేయగలను. మైక్రోఫోన్ నొక్కి మాట్లాడండి లేదా కింద టైప్ చేయండి.\n\nNamaste! I am BhashaBridge AI. How can I help you today with government schemes, healthcare, or agriculture?',
-    language: 'te',
-    verified: false,
+    content: 'నమస్కారం! నేను భాషాబ్రిడ్జ్ (BhashaBridge AI). నేను తెలుగు, हिन्दी మరియు English లో పీఎం కిసాన్, రైతు భరోసా, ఆయుష్మాన్ భారత్ వంటి పథకాల సమాచారాన్ని అందించగలను.\n\nNamaste! I am BhashaBridge AI. Speak or type your question in Telugu, Hindi, or English.',
+    language: 'te-IN',
+    verified: true,
     modelUsed: 'gemini-4-hydrogen',
-    agentTrace: ['System: Initialized Welcome'],
-    sources: []
+    agentTrace: ['OrchestratorAgent: Ready', 'LanguageAgent: te/hi/en', 'KnowledgeAgent: Synced'],
+    sources: [
+      {
+        title: "PM Kisan Samman Nidhi",
+        source: "pmkisan.gov.in",
+        snippet: "Annual income support of Rs 6,000 in three equal installments of Rs 2,000 directly to bank accounts."
+      }
+    ]
   }
 ];
 
 export default function Assistant() {
+  const { selectedLanguage, changeLanguage } = useLanguage();
+
   const [sessionId, setSessionId] = useState(() => {
     try {
       const saved = localStorage.getItem(ASSISTANT_SESSION_KEY);
@@ -34,10 +40,8 @@ export default function Assistant() {
     }
     return 'sess_' + Math.random().toString(36).substring(2, 9);
   });
-  const [selectedLanguage, setSelectedLanguage] = useState(() => localStorage.getItem('bhashabridge_selected_code') || 'auto');
+
   const [enableRag, setEnableRag] = useState(true);
-  const [enableResearch, setEnableResearch] = useState(false);
-  const [backendStatus, setBackendStatus] = useState({ connected: false, model: 'gemini-4-hydrogen' });
 
   const [messages, setMessages] = useState(() => {
     try {
@@ -53,10 +57,9 @@ export default function Assistant() {
   });
 
   const [isLoading, setIsLoading] = useState(false);
-  const chatBottomRef = useRef(null);
 
-  // Voice playback hook
-  const { playAudio, stop, isPlaying } = useVoiceAudio();
+  // Voice playback & recording TTS hook
+  const { speak, stop, pause, resume, replay, isPlaying, isPaused } = useSpeechSynthesis();
 
   useEffect(() => {
     try {
@@ -68,39 +71,12 @@ export default function Assistant() {
     }
   }, [messages, sessionId]);
 
-  // Check live backend status on load
-  useEffect(() => {
-    async function checkHealth() {
-      const status = await fetchSystemStatus();
-      setBackendStatus({
-        connected: status.status === 'operational' || status.status === 'healthy',
-        model: status.default_model || 'gemini-4-hydrogen',
-        voiceEngine: status.voice_integration || 'Web Speech Native'
-      });
-    }
-    checkHealth();
-  }, []);
-
-  // Auto-scroll chat to latest message
-  useEffect(() => {
-    chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, isLoading]);
-
   const handleNewChat = () => {
     stop();
     clearServerSession(sessionId);
-    setSessionId('sess_' + Math.random().toString(36).substring(2, 9));
-    setMessages([
-      {
-        role: 'assistant',
-        content: 'నమస్కారం! కొత్త సంభాషణ ప్రారంభమైంది. మీ ప్రశ్న అడగండి.\nNew session started. How can I assist you today?',
-        language: 'te',
-        verified: false,
-        modelUsed: backendStatus.model,
-        agentTrace: ['System: Reset Session'],
-        sources: []
-      }
-    ]);
+    const nextSession = 'sess_' + Math.random().toString(36).substring(2, 9);
+    setSessionId(nextSession);
+    setMessages(INITIAL_ASSISTANT_MESSAGES);
   };
 
   const handleSendMessage = async (text, options = {}) => {
@@ -127,8 +103,7 @@ export default function Assistant() {
         message: text,
         language: effectiveLanguage,
         enableRag,
-        enableResearch,
-        includeAudio: Boolean(options.fromVoice)
+        enableResearch: false
       });
 
       const aiMsg = {
@@ -136,24 +111,23 @@ export default function Assistant() {
         content: data.response,
         language: data.language || effectiveLanguage || 'en',
         detectedLanguage: data.detected_language,
-        modelUsed: data.model_used,
+        modelUsed: data.model_used || 'gemini-4-hydrogen',
         verified: data.verified,
         agentTrace: data.agent_trace || [],
-        sources: data.sources || [],
-        audioBase64: data.audio_base64
+        sources: data.sources || []
       };
 
       setMessages((prev) => [...prev, aiMsg]);
 
-      // Automatically play voice response
-      playAudio(data.response, data.language || effectiveLanguage || 'te', data.audio_base64);
+      // Automatically speak the response aloud in the citizen's tongue
+      speak(data.response, data.language || effectiveLanguage);
 
     } catch (err) {
       console.error('Chat error:', err);
       const errorMsg = {
         role: 'assistant',
-        content: 'Kshaminchandi / Sorry, could not connect to the AI engine. Please ensure the backend is running.',
-        language: 'en',
+        content: 'క్షమించండి, AI ఇంజిన్ తో కనెక్ట్ కాలేకపోయాము. దయచేసి Python AI సర్వీస్ రన్ అవుతుందో లేదో తనిఖీ చేయండి.\n(Error connecting to AI backend engine. Please check that Python service is running on port 8000).',
+        language: 'te-IN',
         verified: false,
         modelUsed: 'error',
         agentTrace: ['System: Connection Failed'],
@@ -166,113 +140,69 @@ export default function Assistant() {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem)] max-w-5xl mx-auto px-4 py-4 pt-20">
+    <div className="pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8">
       
-      {/* Sub-Header bar */}
-      <div className="mosaic-glass rounded-3xl p-4 sm:p-5 mb-4 shadow-xl">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-          
-          <div className="flex items-center gap-3">
-            <Link
-              to="/"
-              className="p-2 rounded-xl bg-white/10 hover:bg-white/15 text-white transition"
-              title="Return to Studio"
-            >
-              <ArrowLeft className="w-4 h-4" />
-            </Link>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="font-headline font-bold text-base sm:text-lg text-white">
-                  BhashaBridge Voice Console
-                </h1>
-                {backendStatus.connected ? (
-                  <span className="flex items-center gap-1 text-[10px] bg-sky-500/10 text-sky-300 border border-sky-400/20 px-2 py-0.5 rounded-full font-bold">
-                    <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse"></span>
-                    Live AI Engine
-                  </span>
-                ) : (
-                  <span className="flex items-center gap-1 text-[10px] bg-amber-500/10 text-amber-300 border border-amber-400/20 px-2 py-0.5 rounded-full font-bold">
-                    <AlertCircle className="w-3 h-3 text-amber-400" />
-                    AI Local Standby
-                  </span>
-                )}
-                <span className="hidden sm:inline bg-white/5 text-zinc-300 border border-white/10 text-[10px] px-2 py-0.5 rounded-full font-medium">
-                  Model: {backendStatus.model.split('/').pop()}
-                </span>
-              </div>
-              <p className="text-[11px] text-zinc-400 hidden sm:block">
-                Model: <span className="font-mono text-sky-300 font-semibold">{backendStatus.model}</span> • Speech: <span className="font-semibold text-sky-300">Native Web Speech STT/TTS</span>
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2.5">
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-white font-semibold">
-              <Globe className="w-3.5 h-3.5 text-sky-400" />
-              <select
-                value={selectedLanguage}
-                onChange={(e) => setSelectedLanguage(e.target.value)}
-                className="bg-transparent text-white focus:outline-none cursor-pointer"
-              >
-                <option value="auto" className="bg-[#121218] text-white">Auto Detect (ఆటో / ऑटो)</option>
-                <option value="te" className="bg-[#121218] text-white">Telugu (తెలుగు)</option>
-                <option value="hi" className="bg-[#121218] text-white">Hindi (हिन्दी)</option>
-                <option value="en" className="bg-[#121218] text-white">English (Indian)</option>
-              </select>
-            </div>
-
-            <button
-              onClick={handleNewChat}
-              className="flex items-center gap-1.5 text-xs font-semibold bg-white/10 hover:bg-white/15 text-white px-3 py-1.5 rounded-full border border-white/10 transition shadow-sm cursor-pointer"
-              title="Reset conversation"
-            >
-              <RefreshCw className="w-3.5 h-3.5 text-sky-400" />
-              <span className="hidden sm:inline">New Session</span>
-            </button>
-          </div>
-
-        </div>
-      </div>
-
-      {/* Chat Messages Stream */}
-      <div className="flex-1 overflow-y-auto px-2 sm:px-4 py-2">
-        <div className="max-w-4xl mx-auto space-y-4">
-          
-          {/* Messages list */}
-          {messages.map((msg, index) => (
-            <ChatMessage
-              key={index}
-              message={msg}
-              onSpeak={playAudio}
-              onStop={stop}
-              isSpeaking={isPlaying}
-            />
-          ))}
-
-          {/* Loading / Processing Indicator */}
-          {isLoading && (
-            <div className="flex items-center gap-3 p-4 mosaic-glass rounded-2xl w-fit animate-pulse shadow-sm">
-              <Sparkles className="w-4 h-4 text-sky-400 animate-spin" />
-              <span className="text-xs text-sky-300 font-semibold">
-                Searching & synthesizing response...
+      {/* Top Banner & Navigation */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 rounded-3xl mosaic-glass">
+        <div className="flex items-center gap-3">
+          <Link
+            to="/"
+            className="p-2.5 rounded-2xl bg-white/10 hover:bg-white/15 text-white transition flex items-center justify-center cursor-pointer shadow-sm"
+            title="Return to Home Studio"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </Link>
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="font-headline font-extrabold text-lg sm:text-xl text-white tracking-tight">
+                BhashaBridge Voice Console
+              </h1>
+              <span className="flex items-center gap-1.5 text-[10px] bg-sky-500/10 text-sky-300 border border-sky-400/20 px-2.5 py-0.5 rounded-full font-bold">
+                <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse" />
+                Live AI Mesh
               </span>
             </div>
-          )}
+            <p className="text-xs text-zinc-400">
+              Interactive Multilingual Speech Assistant • Free-First Architecture
+            </p>
+          </div>
+        </div>
 
-          <div ref={chatBottomRef} />
+        <div className="flex items-center gap-2.5">
+          <button
+            onClick={handleNewChat}
+            className="flex items-center gap-1.5 text-xs font-bold bg-white/10 hover:bg-white/15 text-white px-4 py-2 rounded-xl border border-white/10 transition shadow-sm cursor-pointer"
+          >
+            <RefreshCw className="w-3.5 h-3.5 text-sky-400" />
+            <span>New Chat</span>
+          </button>
         </div>
       </div>
 
-      {/* Voice & Input Bar */}
-      <VoiceInputBar
-        onSendMessage={handleSendMessage}
-        selectedLanguage={selectedLanguage}
-        isLoading={isLoading}
-        enableRag={enableRag}
-        setEnableRag={setEnableRag}
-        enableResearch={enableResearch}
-        setEnableResearch={setEnableResearch}
-      />
+      {/* 1. Interactive Voice Console (Matching Exact UI from Photo 1) */}
+      <div id="voice-console-section">
+        <VoiceConsole
+          messages={messages}
+          onSendMessage={handleSendMessage}
+          isLoading={isLoading}
+          selectedLanguage={selectedLanguage}
+          onLanguageChange={changeLanguage}
+          speak={speak}
+          stop={stop}
+          pause={pause}
+          resume={resume}
+          replay={replay}
+          isPlaying={isPlaying}
+          isPaused={isPaused}
+          enableRag={enableRag}
+          setEnableRag={setEnableRag}
+        />
+      </div>
+
+      {/* 2. 7-Agent Autonomous Multi-Agent AI System Section */}
+      <div className="pt-4">
+        <SwarmMeshSection />
+      </div>
 
     </div>
   );

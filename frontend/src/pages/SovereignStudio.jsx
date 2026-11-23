@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import Header from '../components/Header';
 import VoiceConsole from '../components/VoiceConsole';
 import CapabilitiesSection from '../components/CapabilitiesSection';
+import ProblemSolutionSection from '../components/ProblemSolutionSection';
 import SovereignFooter from '../components/SovereignFooter';
 import MosaicPromptTemplate from '../components/ui/mosaic-prompt-template';
 import { useSpeechSynthesis } from '../hooks/useSpeechSynthesis';
 import { sendChatMessage, clearServerSession } from '../services/api';
+import { useLanguage } from '../context/LanguageContext';
 
 const STORAGE_KEY_MESSAGES = 'bhashabridge_studio_history';
 const STORAGE_KEY_SESSION = 'bhashabridge_studio_session';
@@ -39,10 +41,7 @@ export default function SovereignStudio() {
     return 'sess_' + Math.random().toString(36).substring(2, 9);
   });
 
-  // Persist selected language from localStorage or default to 'auto'
-  const [selectedLanguage, setSelectedLanguage] = useState(() => {
-    return localStorage.getItem('bhashabridge_selected_code') || 'auto';
-  });
+  const { selectedLanguage, changeLanguage } = useLanguage();
   const [enableRag, setEnableRag] = useState(true);
 
   const [messages, setMessages] = useState(() => {
@@ -64,8 +63,7 @@ export default function SovereignStudio() {
   const { speak, stop, pause, resume, replay, isPlaying, isPaused } = useSpeechSynthesis();
 
   const handleLanguageChange = (code) => {
-    setSelectedLanguage(code);
-    localStorage.setItem('bhashabridge_selected_code', code);
+    changeLanguage(code);
   };
 
   const handleNewChat = () => {
@@ -239,6 +237,9 @@ export default function SovereignStudio() {
 
         {/* 4. 4 Core Capabilities */}
         <CapabilitiesSection />
+
+        {/* 5. 2 Features: Problem & Solution Section with Direct Voice Assistant Shortcut */}
+        <ProblemSolutionSection />
       </div>
 
       {/* 6. Sovereign Footer with Pixel Wordmark */}
