@@ -10,7 +10,11 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { selectedLanguage, changeLanguage } = useLanguage();
 
-  const navLinks = [];
+  const navLinks = [
+    { name: 'Home', path: '/' },
+    { name: 'How It Works', path: '/how-it-works' },
+    { name: 'Voice Console', path: '/assistant' },
+  ];
 
   const handleLangSelect = (code) => {
     changeLanguage(code);
