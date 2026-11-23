@@ -144,6 +144,45 @@
   animation-delay: var(--dot-delay, 0s);
 }
 
+/* Global Falling Particles Animation */
+@keyframes globalParticleFall {
+  0% {
+    transform: translateY(-20px) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: var(--particle-opacity, 0.4);
+  }
+  50% {
+    transform: translateY(50vh) translateX(var(--particle-sway, 20px));
+    opacity: var(--particle-opacity, 0.4);
+  }
+  90% {
+    opacity: var(--particle-opacity, 0.4);
+  }
+  100% {
+    transform: translateY(105vh) translateX(0);
+    opacity: 0;
+  }
+}
+
+.global-falling-particle {
+  position: absolute;
+  top: 0;
+  border-radius: 9999px;
+  pointer-events: none;
+  animation: globalParticleFall var(--particle-duration, 14s) linear infinite;
+  animation-delay: var(--particle-delay, 0s);
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .global-falling-particle {
+    animation: none !important;
+    display: none !important;
+  }
+}
+
 /* Scrollbar clean styling */
 ::-webkit-scrollbar {
   width: 8px;

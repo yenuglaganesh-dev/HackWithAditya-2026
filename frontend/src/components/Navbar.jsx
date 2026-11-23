@@ -12,8 +12,11 @@ export default function Navbar() {
 
   const navLinks = [
     { name: t('nav.home', 'Home'), path: '/' },
+    { name: t('nav.about', 'About Mission'), path: '/about' },
+    { name: t('nav.features', 'Features'), path: '/features' },
+    { name: t('nav.agents', 'AI Agents Mesh'), path: '/agents' },
     { name: t('nav.howItWorks', 'How It Works'), path: '/how-it-works' },
-    { name: t('nav.voiceAssistant', 'Voice Console'), path: '/assistant' },
+    { name: t('nav.voiceAssistant', 'Voice Assistant'), path: '/assistant' },
   ];
 
   const handleLangSelect = (code) => {

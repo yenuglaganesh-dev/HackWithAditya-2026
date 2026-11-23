@@ -265,14 +265,16 @@ export default function VoiceConsole({
                   className={`max-w-[85%] rounded-2xl p-4 sm:p-5 shadow-soft ${
                     isUser
                       ? 'bg-[#202124] text-white rounded-tr-xs'
+                      : msg.isError
+                      ? 'bg-rose-50 border border-rose-200 text-rose-900 rounded-tl-xs'
                       : 'bg-white border border-[#E8EAED] text-[#202124] rounded-tl-xs'
                   }`}
                 >
                   {/* Top Bar for Assistant message */}
                   {!isUser && (
                     <div className="flex items-center justify-between gap-2 mb-2 pb-2 border-b border-[#F1F3F4] text-xs">
-                      <span className="font-bold text-[#F58220]">
-                        BhashaBridge AI
+                      <span className={`font-bold ${msg.isError ? 'text-rose-600' : 'text-[#F58220]'}`}>
+                        {msg.isError ? 'Service Notice' : 'BhashaBridge AI'}
                       </span>
                       {msg.verified && (
                         <span className="flex items-center gap-1 text-[11px] text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full font-bold">
@@ -280,13 +282,33 @@ export default function VoiceConsole({
                           Verified Scheme
                         </span>
                       )}
+                      {msg.isError && (
+                        <span className="flex items-center gap-1 text-[11px] text-rose-700 bg-rose-100 border border-rose-300 px-2 py-0.5 rounded-full font-bold">
+                          <AlertCircle className="w-3 h-3 text-rose-600" />
+                          Error
+                        </span>
+                      )}
                     </div>
                   )}
 
                   {/* Main Message Text */}
-                  <div className={`text-sm sm:text-base leading-relaxed whitespace-pre-line font-medium ${isUser ? 'text-white' : 'text-[#202124]'}`}>
+                  <div className={`text-sm sm:text-base leading-relaxed whitespace-pre-line font-medium ${isUser ? 'text-white' : msg.isError ? 'text-rose-900' : 'text-[#202124]'}`}>
                     {msg.content}
                   </div>
+
+                  {/* Retry button for error messages */}
+                  {!isUser && msg.isError && msg.failedQuery && (
+                    <div className="mt-3 pt-2 flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => onSendMessage(msg.failedQuery, { fromVoice: false })}
+                        className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-xl bg-white hover:bg-rose-100 text-rose-700 border border-rose-300 transition cursor-pointer"
+                      >
+                        <RotateCcw className="w-3.5 h-3.5" />
+                        <span>Retry Question</span>
+                      </button>
+                    </div>
+                  )}
 
                   {/* Verified Sources / References */}
                   {!isUser && msg.sources && msg.sources.length > 0 && (

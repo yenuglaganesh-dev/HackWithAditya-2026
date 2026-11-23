@@ -34,23 +34,23 @@ class ResponseAgent:
         if is_greeting:
             context_instruction = (
                 "The user is sharing a conversational greeting or polite remark. "
-                "Reply warmly and ask how you can help them today with government schemes, healthcare, or agriculture. "
+                "Reply warmly and ask how you can help them today. "
                 "DO NOT dump irrelevant scheme information or eligibility criteria."
             )
             sources_text = ""
         else:
             context_instruction = (
-                "Answer the user's specific query clearly and directly. "
-                "If official guidelines or scheme details are provided below, base your factual statements on them. "
-                "Never invent missing subsidy percentages or registration deadlines. "
-                "If unsure, advise the citizen to verify at their local Gram Panchayat / Seva Kendra."
+                "You are a general-purpose voice assistant capable of answering any question (science, nature, everyday knowledge, explanations, reasoning, or general curiosity), as well as citizen welfare questions. "
+                "Answer the user's specific query clearly, factually, and concisely (2-4 natural spoken sentences unless detailed steps are requested). "
+                "If official scheme guidelines are provided below and relevant to the query, base factual statements on them. "
+                "Otherwise, answer general knowledge questions accurately from your broad understanding."
             )
             if sources:
                 sources_text = "\nVERIFIED OFFICIAL GUIDELINES:\n" + "\n".join(
                     [f"- {s.title} ({s.source}): {s.snippet}" for s in sources]
                 )
             else:
-                sources_text = "\nNo direct local verified scheme document found. Provide general helpful guidance."
+                sources_text = ""
 
         system_prompt = f"""You are BhashaBridge AI, a helpful, intelligent voice and language assistant designed for Indian citizens.
 {lang_rule}

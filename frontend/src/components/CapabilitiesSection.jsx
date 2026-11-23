@@ -26,7 +26,7 @@ export default function CapabilitiesSection() {
       title: t('capabilities.c3Title', 'ChromaDB RAG Citations'),
       desc: t('capabilities.c3Desc', 'Zero-cost local vector knowledge base retrieving verified guidelines for PM-Kisan, PMAY, and Ayushman Bharat.'),
       tag: t('capabilities.c3Tag', 'Verified Sources'),
-      link: '/technology'
+      link: '/how-it-works'
     },
     {
       icon: "diversity_3",

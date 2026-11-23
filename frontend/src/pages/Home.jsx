@@ -28,7 +28,17 @@ export default function Home() {
   const { t } = useTranslation();
   const { selectedLanguage, changeLanguage } = useLanguage();
 
-  const [activeVoiceDemo, setActiveVoiceDemo] = useState('te');
+  const [sessionId, setSessionId] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem('bhashabridge_home_session');
+      if (saved) return saved;
+    } catch {
+      // ignore
+    }
+    const fresh = 'sess_home_' + Math.random().toString(36).substring(2, 9);
+    try { sessionStorage.setItem('bhashabridge_home_session', fresh); } catch { }
+    return fresh;
+  });
   const [enableRag, setEnableRag] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -70,12 +80,16 @@ export default function Home() {
           : selectedLanguage;
 
       const data = await sendChatMessage({
-        sessionId: 'home_session',
+        sessionId,
         message: text,
         language: effectiveLanguage,
         enableRag,
         enableResearch: false
       });
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
 
       const aiMsg = {
         role: 'assistant',
@@ -91,12 +105,16 @@ export default function Home() {
       speak(data.response, data.language || effectiveLanguage);
     } catch (err) {
       console.error(err);
+      const errText = err instanceof Error ? err.message : String(err);
       setMessages((prev) => [
         ...prev,
         {
           role: 'assistant',
-          content: 'క్షమించండి, AI ఇంజిన్ తో కనెక్ట్ కాలేకపోయాము. దయచేసి Python AI సర్వీస్ రన్ అవుతుందో లేదో తనిఖీ చేయండి.',
-          language: 'te-IN'
+          content: `Unable to get AI response: ${errText}. Please verify the backend AI service is running or check your API key configuration.`,
+          language: 'en',
+          isError: true,
+          failedQuery: text,
+          verified: false
         }
       ]);
     } finally {
@@ -242,18 +260,17 @@ export default function Home() {
           </div>
 
           <div className="max-w-3xl mx-auto bg-white rounded-3xl p-6 sm:p-8 border border-[#E8EAED] shadow-card">
-            
+
             {/* Language Selector Pills */}
             <div className="flex items-center justify-center gap-2 mb-6">
               {Object.keys(voiceDemos).map((code) => (
                 <button
                   key={code}
                   onClick={() => setActiveVoiceDemo(code)}
-                  className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-                    activeVoiceDemo === code
-                      ? 'bg-[#F58220] text-white shadow-md shadow-orange-500/20'
-                      : 'bg-[#F8F9FA] text-[#707070] hover:text-[#202124] border border-[#E8EAED]'
-                  }`}
+                  className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${activeVoiceDemo === code
+                    ? 'bg-[#F58220] text-white shadow-md shadow-orange-500/20'
+                    : 'bg-[#F8F9FA] text-[#707070] hover:text-[#202124] border border-[#E8EAED]'
+                    }`}
                 >
                   {voiceDemos[code].lang}
                 </button>
@@ -301,39 +318,39 @@ export default function Home() {
       {/* 4. THE CHALLENGE VS SOLUTION */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          
+
           <div className="text-center max-w-2xl mx-auto mb-12 space-y-2">
             <span className="text-xs font-bold text-[#F58220] uppercase tracking-wider">
-              The Digital Divide in India
+              Accessible Voice AI
             </span>
             <h3 className="text-2xl sm:text-3xl font-bold text-[#202124]">
-              Breaking Language Barriers with Multi-Agent AI
+              Bridging Communication with Voice & Language AI
             </h3>
             <p className="text-[#707070] text-sm sm:text-base">
-              Over 800 million citizens in Bharat face digital friction due to English-only portals and dialect exclusion.
+              Overcoming digital literacy and language barriers with natural, browser-native conversational intelligence.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            
+
             {/* Problem Card */}
             <div className="bg-white border border-[#E8EAED] p-8 rounded-3xl shadow-card hover:border-rose-300 transition">
               <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center mb-5">
                 <Activity className="w-6 h-6" />
               </div>
-              <h4 className="text-xl font-bold text-[#202124] mb-3">The Problem for Everyday Citizens</h4>
+              <h4 className="text-xl font-bold text-[#202124] mb-3">Digital & Language Challenges</h4>
               <ul className="space-y-3 text-sm text-[#707070]">
                 <li className="flex items-start gap-2.5">
                   <span className="text-rose-500 font-bold">•</span>
-                  <span><strong>Complex English Portals:</strong> Critical welfare schemes (PMAY, Ayushman, PM-Kisan) are buried in bureaucratic documents.</span>
+                  <span><strong>Text-Heavy Interfaces:</strong> Traditional web applications require complex typing and navigation that exclude non-fluent and text-constrained users.</span>
                 </li>
                 <li className="flex items-start gap-2.5">
                   <span className="text-rose-500 font-bold">•</span>
-                  <span><strong>Regional Dialect Exclusion:</strong> Millions speak mixed Telugu (Tenglish) or Hindi (Hinglish) that standard voice systems fail to transcribe.</span>
+                  <span><strong>Dialect & Code-Mixing Exclusion:</strong> Millions speak everyday mixed regional dialects (Tenglish, Hinglish) that conventional voice tools fail to recognize.</span>
                 </li>
                 <li className="flex items-start gap-2.5">
                   <span className="text-rose-500 font-bold">•</span>
-                  <span><strong>AI Hallucination Risk:</strong> Off-the-shelf chatbots frequently invent welfare eligibility criteria and subsidies.</span>
+                  <span><strong>Costly Audio & API Barriers:</strong> Most commercial voice platforms demand expensive cloud speech APIs, paid subscriptions, and proprietary hardware.</span>
                 </li>
               </ul>
             </div>
@@ -343,19 +360,19 @@ export default function Home() {
               <div className="w-12 h-12 rounded-2xl bg-[#FFF3E8] text-[#F58220] flex items-center justify-center mb-5">
                 <ShieldCheck className="w-6 h-6" />
               </div>
-              <h4 className="text-xl font-bold text-[#202124] mb-3">The BhashaBridge AI Solution</h4>
+              <h4 className="text-xl font-bold text-[#202124] mb-3">The BhashaBridge AI Platform</h4>
               <ul className="space-y-3 text-sm text-[#707070]">
                 <li className="flex items-start gap-2.5">
                   <span className="text-[#F58220] font-bold">•</span>
-                  <span><strong>Native Voice In & Out:</strong> Speak directly via browser Web Speech API in Telugu, Hindi, or English without expensive speech APIs.</span>
+                  <span><strong>Zero-Cost Native Voice:</strong> Real-time microphone speech recognition and natural speech synthesis running directly in your web browser.</span>
                 </li>
                 <li className="flex items-start gap-2.5">
                   <span className="text-[#F58220] font-bold">•</span>
-                  <span><strong>7-Agent RAG Orchestration:</strong> Verified against institutional government documents stored inside ChromaDB.</span>
+                  <span><strong>Multilingual & General Knowledge:</strong> Seamlessly switch between Telugu, Hindi, and English to answer science, general curiosity, and citizen questions.</span>
                 </li>
                 <li className="flex items-start gap-2.5">
                   <span className="text-[#F58220] font-bold">•</span>
-                  <span><strong>Free-First Architecture:</strong> Zero paid GPU or credits needed. Runs on verified OpenRouter Free models.</span>
+                  <span><strong>Multi-Turn Conversational Memory:</strong> Follow-up queries understand previous context so conversations flow naturally without repeating yourself.</span>
                 </li>
               </ul>
             </div>
@@ -365,7 +382,7 @@ export default function Home() {
           {/* Quick Action Banner */}
           <div className="mt-12 bg-gradient-to-r from-[#FFF3E8] via-[#FFF8F2] to-[#FFF3E8] border border-[#FBD3B6] p-8 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-6 shadow-soft">
             <div className="space-y-1.5 text-center md:text-left">
-              <h4 className="text-xl font-bold text-[#202124]">Ready to experience conversational AI for Bharat?</h4>
+              <h4 className="text-xl font-bold text-[#202124]">Ready to experience conversational AI?</h4>
               <p className="text-sm text-[#707070]">Try our live assistant right in your browser with zero configuration.</p>
             </div>
             <Link

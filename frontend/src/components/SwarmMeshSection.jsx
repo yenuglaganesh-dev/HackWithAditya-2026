@@ -39,10 +39,10 @@ export default function SwarmMeshSection() {
               🟢 {t('agentsSection.badge', 'Active Architecture')}
             </span>
             <Link
-              to="/technology"
+              to="/how-it-works"
               className="text-xs font-bold text-[#F58220] hover:text-[#E96B16] flex items-center gap-1 hover:underline ml-2"
             >
-              <span>{t('agentsSection.viewDetails', 'Explore Technology & Agents')}</span>
+              <span>{t('agentsSection.viewDetails', 'Explore Architecture')}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>

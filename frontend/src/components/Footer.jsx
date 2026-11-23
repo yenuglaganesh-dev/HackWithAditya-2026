@@ -52,10 +52,8 @@ export default function Footer() {
               Resources
             </h4>
             <ul className="space-y-2 text-xs">
-              <li><Link to="/technology" className="text-[#707070] hover:text-[#F58220] transition">Architecture</Link></li>
               <li><Link to="/how-it-works" className="text-[#707070] hover:text-[#F58220] transition">How It Works</Link></li>
               <li><Link to="/use-cases" className="text-[#707070] hover:text-[#F58220] transition">Citizen Use Cases</Link></li>
-              <li><Link to="/portfolio" className="text-[#707070] hover:text-[#F58220] transition">Engineering Portfolio</Link></li>
             </ul>
           </div>
 

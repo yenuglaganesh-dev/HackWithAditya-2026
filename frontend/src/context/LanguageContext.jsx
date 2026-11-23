@@ -17,9 +17,16 @@ export function LanguageProvider({ children }) {
   };
 
   useEffect(() => {
+    // Sync i18n on initial mount
+    const saved = localStorage.getItem('bhashabridge_selected_code') || 'auto';
+    const targetLang = saved === 'auto' ? 'en' : (saved.startsWith('te') ? 'te' : saved.startsWith('hi') ? 'hi' : 'en');
+    i18n.changeLanguage(targetLang);
+
     const handleStorageChange = (e) => {
       if (e.key === 'bhashabridge_selected_code' && e.newValue) {
         setSelectedLanguageState(e.newValue);
+        const nextLang = e.newValue === 'auto' ? 'en' : (e.newValue.startsWith('te') ? 'te' : e.newValue.startsWith('hi') ? 'hi' : 'en');
+        i18n.changeLanguage(nextLang);
       }
     };
     window.addEventListener('storage', handleStorageChange);

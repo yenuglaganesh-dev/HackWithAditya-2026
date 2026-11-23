@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "dev": "npm --prefix frontend run dev",
+    "dev:server": "npm --prefix frontend run dev:server",
+    "start": "npm --prefix frontend start",
     "build": "npm --prefix frontend install --legacy-peer-deps && npm --prefix frontend run build && node -e \"const fs=require('fs'); fs.cpSync('frontend/dist', 'dist', {recursive: true});\""
   }
 }

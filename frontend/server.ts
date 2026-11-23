@@ -486,16 +486,16 @@ async function generateLlmResponse(params: {
 
   if (isGreeting) {
     contextInstruction =
-      'The user is sharing a conversational greeting or polite remark. Reply warmly in 1-2 short natural sentences in the exact same language and ask how you can help them today. DO NOT dump irrelevant scheme information.';
+      'The user is sharing a conversational greeting or polite remark. Reply warmly in 1-2 short natural spoken sentences in the exact same language and ask how you can help them today. DO NOT dump irrelevant scheme information.';
   } else {
     contextInstruction =
-      "Answer the user's specific query clearly, directly, and concisely (2-4 natural spoken sentences unless detailed steps are requested) in the exact same language as the user. Base factual statements on any verified guidelines below. Never invent subsidy amounts or deadlines.";
+      "You are a general-purpose voice assistant capable of answering any question (science, nature, everyday knowledge, explanations, reasoning, or general curiosity), as well as citizen welfare questions. Answer the user's specific query clearly, factually, and concisely (2-4 natural spoken sentences unless detailed steps are requested) in the exact same language as the user. If verified scheme guidelines are provided below and relevant to the question, base factual statements on them. Otherwise, answer the general question accurately using your broad knowledge.";
     if (sources.length > 0) {
       sourcesText =
         '\nVERIFIED OFFICIAL GUIDELINES:\n' +
         sources.map((s) => `- ${s.title} (${s.source}): ${s.snippet}`).join('\n');
     } else {
-      sourcesText = '\nNo direct local verified scheme document found. Provide general helpful guidance.';
+      sourcesText = '';
     }
   }
 
@@ -1078,9 +1078,12 @@ async function startServer() {
       if (enable_rag && !isGreeting) {
         agentTrace.push('KnowledgeAgent: Querying vector knowledge store');
         const ragResults = searchKnowledge(message, 3);
-        citations.push(...ragResults);
-        if (ragResults.length > 0) {
+        // Only attach RAG citations if there is genuine semantic relevance
+        if (ragResults.length > 0 && (ragResults[0].relevance_score || 0) > 0.15) {
+          citations.push(...ragResults);
           agentTrace.push(`KnowledgeAgent: Found ${ragResults.length} relevant sources`);
+        } else {
+          agentTrace.push('KnowledgeAgent: Query is general-purpose, answering from broad knowledge base');
         }
       } else if (isGreeting) {
         agentTrace.push('Orchestrator: Conversational greeting detected (RAG skipped)');
@@ -1137,7 +1140,8 @@ async function startServer() {
         sources: citations.length > 0 && !isGreeting ? citations : [],
         verified: citations.length > 0 && !isGreeting ? verification.verified : false,
         verification_notes: verification.notes,
-        audio_available: true,
+        error: genResult.error || null,
+        audio_available: !genResult.error,
         audio_base64: audioPayload,
       });
     } catch (err) {

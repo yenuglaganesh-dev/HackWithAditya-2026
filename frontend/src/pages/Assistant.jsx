@@ -106,6 +106,10 @@ export default function Assistant() {
         enableResearch: false
       });
 
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
       const aiMsg = {
         role: 'assistant',
         content: data.response,
@@ -122,13 +126,16 @@ export default function Assistant() {
 
     } catch (err) {
       console.error('Chat error:', err);
+      const errText = err instanceof Error ? err.message : String(err);
       const errorMsg = {
         role: 'assistant',
-        content: 'క్షమించండి, AI ఇంజిన్ తో కనెక్ట్ కాలేకపోయాము. దయచేసి Python AI సర్వీస్ రన్ అవుతుందో లేదో తనిఖీ చేయండి.',
-        language: 'te-IN',
+        content: `Unable to connect to AI engine: ${errText}. Please ensure the server is running with a valid GEMINI_API_KEY or OPENROUTER_API_KEY.`,
+        language: 'en',
+        isError: true,
+        failedQuery: text,
         verified: false,
         modelUsed: 'error',
-        agentTrace: ['System: Connection Failed'],
+        agentTrace: ['System: Connection or Provider Failed'],
         sources: []
       };
       setMessages((prev) => [...prev, errorMsg]);
