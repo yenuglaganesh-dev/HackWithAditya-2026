@@ -12,12 +12,14 @@ import Assistant from './pages/Assistant';
 import Portfolio from './pages/Portfolio';
 import HowItWorks from './pages/HowItWorks';
 import AgentsPage from './pages/AgentsPage';
+import MosaicSkyBackground from './components/ui/MosaicSkyBackground';
 
 function PageWrapper({ children }) {
   return (
-    <div className="min-h-screen bg-[#050506] text-[#f5f5f6] flex flex-col font-sans selection:bg-cyan-500/20 selection:text-cyan-200">
+    <div className="min-h-screen bg-[#050506] text-[#f5f5f6] flex flex-col font-sans selection:bg-cyan-500/20 selection:text-cyan-200 relative">
+      <MosaicSkyBackground />
       <Navbar />
-      <div className="flex-1">
+      <div className="flex-1 relative z-10">
         {children}
       </div>
       <Footer />

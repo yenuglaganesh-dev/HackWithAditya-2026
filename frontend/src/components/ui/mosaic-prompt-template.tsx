@@ -83,7 +83,6 @@ export interface MosaicPromptTemplateProps {
   onGetStarted?: () => void
   /** A pricing button. Defaults to scrolling home and focusing the composer. */
   onPlanSelect?: (plan: MosaicPlan, yearly: boolean) => void
-  showExtraSections?: boolean
   className?: string
 }
 
@@ -424,12 +423,121 @@ void main(){
 /* Small pieces                                                        */
 /* ------------------------------------------------------------------ */
 
-export function PixelText({ text, className, maxWidth }: { text: string; className?: string; maxWidth?: number }) {
+export function PixelText({ text, className, maxWidth, interactive = true }: { text: string; className?: string; maxWidth?: number; interactive?: boolean }) {
+  const svgRef = React.useRef<SVGSVGElement | null>(null)
   const lay = React.useMemo(() => layoutPixels(text), [text])
   const vw = lay.width + 1
   const vh = lay.height + 1
+
+  React.useEffect(() => {
+    if (!interactive) return
+    const svg = svgRef.current
+    if (!svg) return
+
+    const pxEls = Array.from(svg.querySelectorAll(".mpt-px")) as SVGRectElement[]
+    if (!pxEls.length) return
+
+    // Entrance animation: fly in and assemble pixels
+    gsap.fromTo(
+      pxEls,
+      {
+        x: () => gsap.utils.random(-30, 30),
+        y: () => gsap.utils.random(-20, 20),
+        scale: () => gsap.utils.random(0, 2),
+        opacity: 0,
+        transformOrigin: "50% 50%",
+      },
+      {
+        x: 0,
+        y: 0,
+        scale: 1,
+        opacity: 1,
+        duration: 1.2,
+        stagger: { amount: 0.6, from: "random" },
+        ease: "expo.out",
+        overwrite: "auto",
+      }
+    )
+
+    // Interactive pointer repulsion
+    const pts = pxEls.map((el) => ({
+      el,
+      x: +(el.dataset.x || 0),
+      y: +(el.dataset.y || 0),
+      off: false,
+    }))
+
+    let pending = 0
+    let last = { x: -1e4, y: -1e4 }
+    const RADIUS = 4.0
+
+    const repel = () => {
+      pending = 0
+      const r = svg.getBoundingClientRect()
+      const unit = r.width / (svg.viewBox.baseVal.width || 1)
+      const ux = (last.x - r.left) / unit - 0.5
+      const uy = (last.y - r.top) / unit - 0.5
+
+      pts.forEach((p) => {
+        const dx = p.x + 0.44 - ux
+        const dy = p.y + 0.44 - uy
+        const d = Math.hypot(dx, dy)
+        if (d < RADIUS) {
+          const push = (1 - d / RADIUS) * 1.8
+          const nx = d ? dx / d : 0
+          const ny = d ? dy / d : -1
+          p.off = true
+          gsap.to(p.el, {
+            attr: { x: p.x + nx * push, y: p.y + ny * push },
+            duration: 0.35,
+            ease: "power3.out",
+            overwrite: "auto",
+          })
+        } else if (p.off) {
+          p.off = false
+          gsap.to(p.el, {
+            attr: { x: p.x, y: p.y },
+            duration: 0.8,
+            ease: "elastic.out(1,0.5)",
+            overwrite: "auto",
+          })
+        }
+      })
+    }
+
+    const onMove = (e: PointerEvent) => {
+      last = { x: e.clientX, y: e.clientY }
+      if (!pending) pending = requestAnimationFrame(repel)
+    }
+
+    const onLeave = () => {
+      last = { x: -1e4, y: -1e4 }
+      if (!pending) pending = requestAnimationFrame(repel)
+    }
+
+    svg.addEventListener("pointermove", onMove, { passive: true })
+    svg.addEventListener("pointerleave", onLeave, { passive: true })
+
+    // Shimmer accent effect
+    const shimmerInterval = window.setInterval(() => {
+      const lit = gsap.utils.shuffle(pxEls.slice()).slice(0, 5)
+      lit.forEach((el, i) => {
+        window.setTimeout(() => el.classList.add("is-lit"), i * 80)
+        window.setTimeout(() => el.classList.remove("is-lit"), 800 + i * 80)
+      })
+    }, 3200)
+
+    return () => {
+      cancelAnimationFrame(pending)
+      clearInterval(shimmerInterval)
+      svg.removeEventListener("pointermove", onMove)
+      svg.removeEventListener("pointerleave", onLeave)
+    }
+  }, [interactive, text])
+
   return (
     <svg
+      ref={svgRef}
       className={"mpt-ptext" + (className ? " " + className : "")}
       viewBox={"-0.5 -0.5 " + vw + " " + vh}
       aria-hidden="true"
@@ -498,7 +606,6 @@ export default function MosaicPromptTemplate({
   onSubmit,
   onGetStarted,
   onPlanSelect,
-  showExtraSections = false,
   className,
 }: MosaicPromptTemplateProps) {
   const reduced = useReducedMotion()
@@ -856,59 +963,53 @@ export default function MosaicPromptTemplate({
   useIsoLayoutEffect(() => {
     const root = rootRef.current
     const hero = heroRef.current
-    if (!root || !hero) return
+    const featuresEl = featuresRef.current
+    const pricingEl = pricingRef.current
+    if (!root || !hero || !featuresEl || !pricingEl) return
     gsap.registerPlugin(ScrollTrigger)
     const scroller = findScroller(root)
     scrollerRef.current = scroller
     const R = reduced
     const state = mixRef.current
-    const featuresEl = featuresRef.current
-    const pricingEl = pricingRef.current
 
     const ctx = gsap.context((self) => {
       const q = gsap.utils.selector(root)
 
-      if (featuresEl) {
-        ScrollTrigger.create({
-          trigger: featuresEl,
-          scroller,
-          start: "top 85%",
-          end: "top 20%",
-          scrub: R ? false : 0.6,
-          onUpdate: (st) => {
-            state.a = st.progress
-            state.dirty = true
-          },
-        })
-      }
-      if (pricingEl) {
-        ScrollTrigger.create({
-          trigger: pricingEl,
-          scroller,
-          start: "top 85%",
-          end: "top 20%",
-          scrub: R ? false : 0.6,
-          onUpdate: (st) => {
-            state.b = st.progress
-            state.dirty = true
-          },
-        })
-      }
+      // the sky re-tiles into the next section's shader as it arrives
+      ScrollTrigger.create({
+        trigger: featuresEl,
+        scroller,
+        start: "top 85%",
+        end: "top 20%",
+        scrub: R ? false : 0.6,
+        onUpdate: (st) => {
+          state.a = st.progress
+          state.dirty = true
+        },
+      })
+      ScrollTrigger.create({
+        trigger: pricingEl,
+        scroller,
+        start: "top 85%",
+        end: "top 20%",
+        scrub: R ? false : 0.6,
+        onUpdate: (st) => {
+          state.b = st.progress
+          state.dirty = true
+        },
+      })
 
       // the header gains its glass once the page moves
-      if (headerRef.current) {
-        ScrollTrigger.create({
-          trigger: root,
-          scroller,
-          start: "top+=12 top",
-          end: "bottom top",
-          toggleClass: { targets: headerRef.current as Element, className: "is-scrolled" },
-        })
-      }
+      ScrollTrigger.create({
+        trigger: root,
+        scroller,
+        start: "top+=12 top",
+        end: "bottom top",
+        toggleClass: { targets: headerRef.current as Element, className: "is-scrolled" },
+      })
 
       // the nav knows where you are
-      const mark = (name: "home" | "features" | "pricing", el: Element | null) => {
-        if (!el) return
+      const mark = (name: "home" | "features" | "pricing", el: Element) =>
         ScrollTrigger.create({
           trigger: el,
           scroller,
@@ -918,10 +1019,9 @@ export default function MosaicPromptTemplate({
             if (st.isActive) setActive(name)
           },
         })
-      }
       mark("home", hero)
-      if (featuresEl) mark("features", featuresEl)
-      if (pricingEl) mark("pricing", pricingEl)
+      mark("features", featuresEl)
+      mark("pricing", pricingEl)
 
       const heroPx = q(".mpt-hero .mpt-px") as Element[]
       const heroGlyphs = q(".mpt-hero .mpt-glyph") as Element[]
@@ -951,9 +1051,9 @@ export default function MosaicPromptTemplate({
           .fromTo(q(".mpt-brand, .mpt-bar > .mpt-cta, .mpt-burger"), { opacity: 0, y: -14 }, { opacity: 1, y: 0, duration: 0.8, stagger: 0.06, clearProps: "transform" }, 0.2)
           .fromTo(q(".mpt-links"), { opacity: 0 }, { opacity: 1, duration: 0.8 }, 0.3)
 
-        // leaving the hero: glyphs scatter gently as user scrolls away
+        // leaving the hero: glyphs scatter upward one by one, the composer sinks back
         const out = gsap.timeline({
-          scrollTrigger: { trigger: hero, scroller, start: "top top", end: "bottom 40%", scrub: 0.8 },
+          scrollTrigger: { trigger: hero, scroller, start: "top top", end: "bottom top", scrub: 0.8 },
         })
         out
           .to(heroGlyphs, {
@@ -965,7 +1065,7 @@ export default function MosaicPromptTemplate({
             stagger: { amount: 0.5, from: "random" },
             ease: "power2.in",
           })
-          .to(q(".mpt-composer-wrap"), { y: -50, scale: 0.95, opacity: 0, ease: "power2.in" }, 0.15)
+          .to(q(".mpt-composer-wrap"), { y: -80, scale: 0.92, opacity: 0, ease: "power2.in" }, 0.15)
           .to(q(".mpt-cue"), { opacity: 0, y: 20 }, 0)
 
         // a few pixels catch the accent now and then
@@ -1004,46 +1104,38 @@ export default function MosaicPromptTemplate({
             { y: 18, opacity: 0 },
             { y: 0, opacity: 1, duration: 0.8, stagger: 0.08, ease: "power3.out", scrollTrigger: { trigger, scroller, start: "top 75%", toggleActions: "play none none reverse" } },
           )
-        if (featuresEl) {
-          lift(q(".mpt-features .mpt-kicker, .mpt-features .mpt-lede") as Element[], featuresEl)
-          // features drop into place, staggered, like tiles falling into a grid
-          const featGrid = q(".mpt-features-grid")[0]
-          if (featGrid) {
-            gsap.fromTo(q(".mpt-feature"), {
-              y: -70,
-              rotateX: 24,
-              transformPerspective: 900,
-              transformOrigin: "50% 0%",
-              opacity: 0,
-            }, {
-              y: 0,
-              rotateX: 0,
-              opacity: 1,
-              duration: 1,
-              ease: "back.out(1.4)",
-              stagger: { each: 0.09, grid: "auto", from: "start" },
-              clearProps: "transform",
-              scrollTrigger: { trigger: featGrid, scroller, start: "top 82%", toggleActions: "play none none reverse" },
-            })
-          }
-        }
-        if (pricingEl) {
-          lift(q(".mpt-pricing .mpt-kicker, .mpt-pricing .mpt-lede, .mpt-pricing .mpt-cycle") as Element[], pricingEl)
-          // plans rise and unfold, the featured one last and largest
-          const plansEl = q(".mpt-plans")[0]
-          if (plansEl) {
-            gsap.fromTo(q(".mpt-plan"), { y: 90, scale: 0.9, opacity: 0 }, {
-              y: 0,
-              scale: 1,
-              opacity: 1,
-              duration: 1.1,
-              ease: "expo.out",
-              stagger: (i: number, el: Element) => ((el as HTMLElement).dataset.featured ? 0.28 : i * 0.08),
-              clearProps: "transform",
-              scrollTrigger: { trigger: plansEl, scroller, start: "top 82%", toggleActions: "play none none reverse" },
-            })
-          }
-        }
+        lift(q(".mpt-features .mpt-kicker, .mpt-features .mpt-lede") as Element[], featuresEl)
+        lift(q(".mpt-pricing .mpt-kicker, .mpt-pricing .mpt-lede, .mpt-pricing .mpt-cycle") as Element[], pricingEl)
+
+        // features drop into place, staggered, like tiles falling into a grid
+        gsap.fromTo(q(".mpt-feature"), {
+          y: -70,
+          rotateX: 24,
+          transformPerspective: 900,
+          transformOrigin: "50% 0%",
+          opacity: 0,
+        }, {
+          y: 0,
+          rotateX: 0,
+          opacity: 1,
+          duration: 1,
+          ease: "back.out(1.4)",
+          stagger: { each: 0.09, grid: "auto", from: "start" },
+          clearProps: "transform",
+          scrollTrigger: { trigger: q(".mpt-features-grid")[0], scroller, start: "top 82%", toggleActions: "play none none reverse" },
+        })
+
+        // plans rise and unfold, the featured one last and largest
+        gsap.fromTo(q(".mpt-plan"), { y: 90, scale: 0.9, opacity: 0 }, {
+          y: 0,
+          scale: 1,
+          opacity: 1,
+          duration: 1.1,
+          ease: "expo.out",
+          stagger: (i: number, el: Element) => ((el as HTMLElement).dataset.featured ? 0.28 : i * 0.08),
+          clearProps: "transform",
+          scrollTrigger: { trigger: q(".mpt-plans")[0], scroller, start: "top 82%", toggleActions: "play none none reverse" },
+        })
 
         // the footer wordmark gathers its pixels as you reach the end
         const foot = q(".mpt-foot-mark .mpt-px") as Element[]
@@ -1095,7 +1187,8 @@ export default function MosaicPromptTemplate({
             })
           })
         }
-        const onMove = (e: MouseEvent | PointerEvent) => {
+        const onMove = (e: PointerEvent) => {
+          if (e.pointerType !== "mouse") return
           last = { x: e.clientX, y: e.clientY }
           if (!pending) pending = requestAnimationFrame(repel)
         }
@@ -1103,17 +1196,13 @@ export default function MosaicPromptTemplate({
           last = { x: -1e4, y: -1e4 }
           if (!pending) pending = requestAnimationFrame(repel)
         }
-        const heroEl = (q(".mpt-hero")[0] as HTMLElement | undefined) || root
-        heroEl.addEventListener("pointermove", onMove as EventListener)
-        heroEl.addEventListener("mousemove", onMove as EventListener)
-        heroEl.addEventListener("pointerleave", onLeave)
-        heroEl.addEventListener("mouseleave", onLeave)
+        const h1 = q(".mpt-h1")[0] as HTMLElement | undefined
+        h1?.addEventListener("pointermove", onMove)
+        h1?.addEventListener("pointerleave", onLeave)
         self.add(() => () => {
           cancelAnimationFrame(pending)
-          heroEl.removeEventListener("pointermove", onMove as EventListener)
-          heroEl.removeEventListener("mousemove", onMove as EventListener)
-          heroEl.removeEventListener("pointerleave", onLeave)
-          heroEl.removeEventListener("mouseleave", onLeave)
+          h1?.removeEventListener("pointermove", onMove)
+          h1?.removeEventListener("pointerleave", onLeave)
         })
       }
     }, root)
@@ -1476,141 +1565,131 @@ export default function MosaicPromptTemplate({
             </p>
           </div>
 
-          <button type="button" className="mpt-cue" onClick={() => {
-            const el = document.getElementById('voice-console-section')
-            if (el) el.scrollIntoView({ behavior: 'smooth' })
-            else go("features")
-          }} aria-label="Scroll to voice console">
+          <button type="button" className="mpt-cue" onClick={() => go("features")} aria-label="Scroll to features">
             <PixelIcon name="down" />
           </button>
         </section>
 
-        {showExtraSections && (
-          <>
-            <section ref={featuresRef} className="mpt-section mpt-features" aria-labelledby={ids.feat}>
-              <div className="mpt-inner">
-                <div className="mpt-sec-head">
-                  <span className="mpt-kicker">
-                    <i /> Features
+        <section ref={featuresRef} className="mpt-section mpt-features" aria-labelledby={ids.feat}>
+          <div className="mpt-inner">
+            <div className="mpt-sec-head">
+              <span className="mpt-kicker">
+                <i /> Features
+              </span>
+              <h2 id={ids.feat} className="mpt-h2">
+                <span className="mpt-sr">{featuresTitle}</span>
+                <PixelText text={featuresTitle} className="mpt-sec-title" />
+              </h2>
+              <p className="mpt-lede">{featuresLede}</p>
+            </div>
+            <ul className="mpt-features-grid">
+              {features.map((f, i) => (
+                <li key={f.title} className="mpt-feature mpt-glass" onPointerMove={tilt} onPointerLeave={untilt}>
+                  <span className="mpt-feature-num" aria-hidden="true">
+                    {String(i + 1).padStart(2, "0")}
                   </span>
-                  <h2 id={ids.feat} className="mpt-h2">
-                    <span className="mpt-sr">{featuresTitle}</span>
-                    <PixelText text={featuresTitle} className="mpt-sec-title" />
-                  </h2>
-                  <p className="mpt-lede">{featuresLede}</p>
-                </div>
-                <ul className="mpt-features-grid">
-                  {features.map((f, i) => (
-                    <li key={f.title} className="mpt-feature mpt-glass" onPointerMove={tilt} onPointerLeave={untilt}>
-                      <span className="mpt-feature-num" aria-hidden="true">
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                      <span className="mpt-feature-icon">
-                        <PixelIcon name={f.icon} />
-                      </span>
-                      <h3>{f.title}</h3>
-                      <p>{f.body}</p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </section>
+                  <span className="mpt-feature-icon">
+                    <PixelIcon name={f.icon} />
+                  </span>
+                  <h3>{f.title}</h3>
+                  <p>{f.body}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
 
-            <section ref={pricingRef} className="mpt-section mpt-pricing" aria-labelledby={ids.price}>
-              <div className="mpt-inner">
-                <div className="mpt-sec-head">
-                  <span className="mpt-kicker">
-                    <i /> Pricing
-                  </span>
-                  <h2 id={ids.price} className="mpt-h2">
-                    <span className="mpt-sr">{pricingTitle}</span>
-                    <PixelText text={pricingTitle} className="mpt-sec-title" />
-                  </h2>
-                  <p className="mpt-lede">{pricingLede}</p>
-                  <div className="mpt-cycle" role="group" aria-label="Billing cycle" data-yearly={yearly ? "true" : "false"}>
-                    <span className="mpt-cycle-pill" aria-hidden="true" />
-                    <button type="button" aria-pressed={!yearly} onClick={() => setYearly(false)}>
-                      Monthly
-                    </button>
-                    <button type="button" aria-pressed={yearly} onClick={() => setYearly(true)}>
-                      Yearly <em>-{Math.round(yearlyDiscount * 100)}%</em>
-                    </button>
-                  </div>
-                </div>
-                <ul className="mpt-plans">
-                  {plans.map((p, i) => (
-                    <li
-                      key={p.name}
-                      className="mpt-plan mpt-glass"
-                      data-featured={p.featured ? "true" : undefined}
-                      onPointerMove={tilt}
-                      onPointerLeave={untilt}
-                    >
-                      <div className="mpt-plan-head">
-                        <h3>{p.name}</h3>
-                        {p.badge && <span className="mpt-badge">{p.badge}</span>}
-                      </div>
-                      <p className="mpt-plan-blurb">{p.blurb}</p>
-                      <p className="mpt-price">
-                        <span
-                          ref={(el) => {
-                            priceRefs.current[i] = el
-                          }}
-                          className="mpt-price-num"
-                        >
-                          {money(p.price, currency)}
-                        </span>
-                        <span className="mpt-price-per">
-                          / month
-                          <small>{p.price === 0 ? "free forever" : yearly ? "billed yearly" : "billed monthly"}</small>
-                        </span>
-                      </p>
-                      <button type="button" className={p.featured ? "mpt-solid mpt-plan-cta" : "mpt-ghost mpt-plan-cta"} onClick={() => (onPlanSelect ? onPlanSelect(p, yearly) : go("home", true))}>
-                        {p.cta}
-                      </button>
-                      <ul className="mpt-plan-list">
-                        {p.features.map((f) => (
-                          <li key={f}>
-                            <PixelIcon name="check" />
-                            <span>{f}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </li>
-                  ))}
-                </ul>
+        <section ref={pricingRef} className="mpt-section mpt-pricing" aria-labelledby={ids.price}>
+          <div className="mpt-inner">
+            <div className="mpt-sec-head">
+              <span className="mpt-kicker">
+                <i /> Pricing
+              </span>
+              <h2 id={ids.price} className="mpt-h2">
+                <span className="mpt-sr">{pricingTitle}</span>
+                <PixelText text={pricingTitle} className="mpt-sec-title" />
+              </h2>
+              <p className="mpt-lede">{pricingLede}</p>
+              <div className="mpt-cycle" role="group" aria-label="Billing cycle" data-yearly={yearly ? "true" : "false"}>
+                <span className="mpt-cycle-pill" aria-hidden="true" />
+                <button type="button" aria-pressed={!yearly} onClick={() => setYearly(false)}>
+                  Monthly
+                </button>
+                <button type="button" aria-pressed={yearly} onClick={() => setYearly(true)}>
+                  Yearly <em>-{Math.round(yearlyDiscount * 100)}%</em>
+                </button>
               </div>
-            </section>
-          </>
-        )}
+            </div>
+            <ul className="mpt-plans">
+              {plans.map((p, i) => (
+                <li
+                  key={p.name}
+                  className="mpt-plan mpt-glass"
+                  data-featured={p.featured ? "true" : undefined}
+                  onPointerMove={tilt}
+                  onPointerLeave={untilt}
+                >
+                  <div className="mpt-plan-head">
+                    <h3>{p.name}</h3>
+                    {p.badge && <span className="mpt-badge">{p.badge}</span>}
+                  </div>
+                  <p className="mpt-plan-blurb">{p.blurb}</p>
+                  <p className="mpt-price">
+                    <span
+                      ref={(el) => {
+                        priceRefs.current[i] = el
+                      }}
+                      className="mpt-price-num"
+                    >
+                      {money(p.price, currency)}
+                    </span>
+                    <span className="mpt-price-per">
+                      / month
+                      <small>{p.price === 0 ? "free forever" : yearly ? "billed yearly" : "billed monthly"}</small>
+                    </span>
+                  </p>
+                  <button type="button" className={p.featured ? "mpt-solid mpt-plan-cta" : "mpt-ghost mpt-plan-cta"} onClick={() => (onPlanSelect ? onPlanSelect(p, yearly) : go("home", true))}>
+                    {p.cta}
+                  </button>
+                  <ul className="mpt-plan-list">
+                    {p.features.map((f) => (
+                      <li key={f}>
+                        <PixelIcon name="check" />
+                        <span>{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
       </main>
 
-      {showExtraSections && (
-        <footer className="mpt-foot">
-          <div className="mpt-inner">
-            <div className="mpt-foot-mark" aria-hidden="true">
-              <PixelText text={brand} />
-            </div>
-            <div className="mpt-foot-row">
-              <span className="mpt-foot-brand">
-                <FMark className="mpt-mark-sm" />
-                {footerNote}
-              </span>
-              <span className="mpt-foot-links">
-                <button type="button" onClick={() => go("features")}>
-                  Features
-                </button>
-                <button type="button" onClick={() => go("pricing")}>
-                  Pricing
-                </button>
-                <button type="button" onClick={() => go("home", true)}>
-                  Back to top
-                </button>
-              </span>
-            </div>
+      <footer className="mpt-foot">
+        <div className="mpt-inner">
+          <div className="mpt-foot-mark" aria-hidden="true">
+            <PixelText text={brand} />
           </div>
-        </footer>
-      )}
+          <div className="mpt-foot-row">
+            <span className="mpt-foot-brand">
+              <FMark className="mpt-mark-sm" />
+              {footerNote}
+            </span>
+            <span className="mpt-foot-links">
+              <button type="button" onClick={() => go("features")}>
+                Features
+              </button>
+              <button type="button" onClick={() => go("pricing")}>
+                Pricing
+              </button>
+              <button type="button" onClick={() => go("home", true)}>
+                Back to top
+              </button>
+            </span>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Header from '../components/Header';
 import VoiceConsole from '../components/VoiceConsole';
+import CapabilitiesSection from '../components/CapabilitiesSection';
 import SovereignFooter from '../components/SovereignFooter';
 import MosaicPromptTemplate from '../components/ui/mosaic-prompt-template';
 import { useSpeechSynthesis } from '../hooks/useSpeechSynthesis';
@@ -170,7 +171,7 @@ export default function SovereignStudio() {
         onNewChat={handleNewChat}
       />
 
-      {/* 2. Mosaic Prompt Template Hero Composer with WebGL Interactive Sky */}
+      {/* 2. Mosaic Prompt Template Hero, 6 Features, and 3 Plans with WebGL Sky */}
       <MosaicPromptTemplate
         brand="BhashaBridge AI"
         accent="ice"
@@ -188,16 +189,36 @@ export default function SovereignStudio() {
           { label: "Gov Dashboard", icon: "bars" },
         ]}
         models={["Gemini 2.5 Flash", "Llama 3.3 70B", "DeepSeek R1"]}
-        showExtraSections={false}
+        featuresTitle="Sovereign AI"
+        featuresLede="Full-stack Indic voice intelligence engineered for 1.4 billion citizens across regional dialects with zero paid token fees."
+        features={[
+          { icon: "chat", title: "Multilingual & Dialects", body: "Fluent native Telugu, Hindi, and Indian English with robust understanding of everyday Tenglish and Hinglish code-mixing." },
+          { icon: "phone", title: "Real Voice In & Out", body: "Client-native Web Speech recording and high-fidelity regional speech synthesis with pause, resume, and instant replay." },
+          { icon: "code", title: "7-Agent Architecture", body: "Modular autonomous mesh: Orchestrator, Language Intelligence, Vector RAG, Gov Research, Response, Audit, and Voice agents." },
+          { icon: "spark", title: "ChromaDB RAG Grounding", body: "Local vector search retrieves verified guidelines for PM-Kisan, PMAY, and Ayushman Bharat directly from official docs." },
+          { icon: "eye", title: "Anti-Hallucination Audit", body: "Verification Agent cross-checks generated subsidy percentages and dates against official sources before answering." },
+          { icon: "rocket", title: "100% Free-First Model", body: "Strictly configured with verified OpenRouter Free-tier models and browser Web Speech with zero commercial API costs." },
+        ]}
+        pricingTitle="Open Access"
+        pricingLede="Sovereign infrastructure built for citizens, developers, and public welfare. Transparent and accessible everywhere."
+        plans={[
+          { name: "Citizen Free", price: 0, blurb: "Unlimited public voice inquiries in Telugu, Hindi & English.", features: ["Full voice recording & TTS", "Verified scheme RAG lookup", "Code-mixed speech support", "Mobile browser native"], cta: "Start Inquiring" },
+          { name: "Gram Panchayat", price: 0, blurb: "For local community kiosks and village administration centres.", features: ["Offline-capable vector sync", "Multi-user citizen queue", "Kiosk audio playback", "Zero subscription fees"], cta: "Deploy Kiosk", featured: true, badge: "Community" },
+          { name: "Developer", price: 0, blurb: "Open API integration for researchers and public service apps.", features: ["FastAPI REST endpoints", "7-Agent orchestration trace", "Custom ChromaDB indexing", "OpenRouter free router"], cta: "View API Docs" },
+        ]}
         footerNote="Built for 1.4B Indian Citizens • National Hackathon 2026."
         onSubmit={handleMosaicSubmit}
         onGetStarted={() => {
           const consoleEl = document.getElementById('voice-console-section');
           consoleEl?.scrollIntoView({ behavior: 'smooth' });
         }}
+        onPlanSelect={() => {
+          const consoleEl = document.getElementById('voice-console-section');
+          consoleEl?.scrollIntoView({ behavior: 'smooth' });
+        }}
       />
 
-      {/* 3. Dark Glass Voice Console with AI Chat, Speech Recording, Listen Aloud & RAG */}
+      {/* 3. Enlarged Dark Glass Voice Console with AI Chat, Speech Recording, Listen Aloud & RAG */}
       <div className="relative z-10 w-full bg-[#050506] pb-12 pt-4">
         <VoiceConsole
           messages={messages}
@@ -215,6 +236,9 @@ export default function SovereignStudio() {
           enableRag={enableRag}
           setEnableRag={setEnableRag}
         />
+
+        {/* 4. 4 Core Capabilities */}
+        <CapabilitiesSection />
       </div>
 
       {/* 6. Sovereign Footer with Pixel Wordmark */}

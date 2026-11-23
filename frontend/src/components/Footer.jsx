@@ -1,50 +1,83 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Sparkles } from 'lucide-react';
 import { PixelText } from './ui/mosaic-prompt-template';
 
 export default function Footer() {
+  const { t } = useTranslation();
+
   return (
-    <footer className="w-full bg-[#050506] border-t border-white/10 text-zinc-400 text-xs py-14 px-4 sm:px-6 lg:px-8 mt-12 relative z-10">
-      <div className="max-w-7xl mx-auto space-y-10">
+    <footer className="bg-[#050506] border-t border-white/10 text-zinc-400 text-sm mt-16 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
         
         {/* Large Pixel Wordmark */}
-        <div className="flex justify-center text-white/90 overflow-hidden py-4">
+        <div className="flex justify-center text-white/90 overflow-hidden pb-10">
           <div className="w-full max-w-4xl">
             <PixelText text="BHASHABRIDGE" />
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6 pt-6 border-t border-white/10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 pt-6 border-t border-white/10">
           
-          {/* Logo & Copyright */}
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-sky-400 to-cyan-300 flex items-center justify-center text-[#06233a] font-bold shadow-md">
-              <Sparkles className="w-4 h-4" />
-            </div>
-            <div>
-              <span className="font-bold text-white tracking-wide text-sm">
-                BhashaBridge AI
+          {/* Brand Info */}
+          <div className="space-y-4 md:col-span-1">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-400 via-cyan-300 to-blue-500 flex items-center justify-center text-[#06233a] font-bold shadow-md">
+                <Sparkles className="w-5 h-5 text-[#06233a]" />
+              </div>
+              <span className="font-extrabold text-xl text-white tracking-tight">
+                BhashaBridge <span className="text-sky-300">AI</span>
               </span>
-              <p className="text-[11px] text-zinc-500">
-                © 2026 Sovereign AI for Bharat • Free-First Multilingual Ecosystem
-              </p>
+            </div>
+            <p className="text-xs text-zinc-400 leading-relaxed">
+              Your Language. Your Voice. Your AI. Built to empower 1.4 billion Indian citizens with natural regional voice conversations and verified government services.
+            </p>
+            <div className="flex items-center gap-2 pt-2">
+              <span className="bg-sky-500/10 text-sky-300 border border-sky-400/20 text-[10px] px-2.5 py-1 rounded-full font-bold uppercase">
+                Free-First Architecture
+              </span>
             </div>
           </div>
 
-          {/* Quick Page Links */}
-          <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-zinc-400">
-            <Link to="/" className="hover:text-white transition font-medium">Home</Link>
-            <Link to="/assistant" className="text-sky-400 hover:text-sky-300 font-bold transition">Launch AI Assistant</Link>
+          {/* Navigation */}
+          <div>
+            <h4 className="text-white font-bold text-xs tracking-wider uppercase mb-4">
+              Explore Pages
+            </h4>
+            <ul className="space-y-2 text-xs">
+              <li><Link to="/" className="text-zinc-400 hover:text-white font-medium transition">Home</Link></li>
+              <li><Link to="/about" className="text-zinc-400 hover:text-white font-medium transition">About the Mission</Link></li>
+              <li><Link to="/features" className="text-zinc-400 hover:text-white font-medium transition">Key Capabilities</Link></li>
+              <li><Link to="/agents" className="text-zinc-400 hover:text-white font-medium transition">AI Agents Mesh</Link></li>
+              <li><Link to="/technology" className="text-zinc-400 hover:text-white font-medium transition">Multi-Agent Tech</Link></li>
+              <li><Link to="/how-it-works" className="text-zinc-400 hover:text-white font-medium transition">How It Works</Link></li>
+              <li><Link to="/use-cases" className="text-zinc-400 hover:text-white font-medium transition">Use Cases in Bharat</Link></li>
+              <li><Link to="/portfolio" className="text-zinc-400 hover:text-white font-medium transition">Engineering Portfolio</Link></li>
+              <li><Link to="/assistant" className="text-sky-400 font-bold hover:underline transition">Launch AI Assistant</Link></li>
+            </ul>
           </div>
 
-          {/* Architecture Badge */}
-          <div className="flex items-center gap-2">
-            <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-zinc-400 font-mono text-[11px]">
-              ChromaDB RAG • OpenRouter Free LLM
-            </span>
+          {/* Technology Highlights */}
+          <div className="space-y-4">
+            <h4 className="text-white font-bold text-xs tracking-wider uppercase mb-4">
+              System Architecture
+            </h4>
+            <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2 text-xs">
+              <div className="text-white font-bold">7 Autonomous AI Agents</div>
+              <p className="text-zinc-400 leading-relaxed">
+                Orchestrator, Language Intelligence, ChromaDB RAG, Gov Research, Response Generator, Fact Verification, and Web Voice.
+              </p>
+              <div className="pt-2 text-[11px] text-sky-300 font-mono">
+                te-IN • hi-IN • en-IN
+              </div>
+            </div>
           </div>
 
+        </div>
+
+        <div className="pt-10 mt-10 border-t border-white/10 text-center text-xs text-zinc-500">
+          <p>© 2026 BhashaBridge AI. Built for National Hackathon 2026. All rights reserved.</p>
         </div>
 
       </div>
